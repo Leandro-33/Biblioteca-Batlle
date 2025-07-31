@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> Biblioteca de Batlle </title>
+    <link rel="manifest" href="manifest.json">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 30px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: #fff;
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(102, 126, 234, 0.15), 0 1.5px 6px rgba(76, 76, 76, 0.07);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(90deg, #764ba2 0%, #667eea 100%);
+            color: #fff;
+            padding: 40px 30px 25px 30px;
+            text-align: center;
+            border-radius: 20px 20px 0 0;
+            box-shadow: 0 2px 12px rgba(102, 126, 234, 0.12);
+        }
+
+        .header h1 {
+            font-size: 2.8em;
+            margin-bottom: 8px;
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.18);
+            letter-spacing: 2px;
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.85;
+        }
+
+        .controls {
+            padding: 25px 30px;
+            background: #f6f8fc;
+            border-bottom: 1px solid #e3e6f0;
+            display: flex;
+            gap: 18px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .stats {
+            display: flex;
+            gap: 18px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+            border-radius: 12px;
+            padding: 18px 24px;
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.13);
+            text-align: center;
+            min-width: 110px;
+        }
+
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+        }
+
+        .stat-label {
+            font-size: 1em;
+            opacity: 0.85;
+        }
+
+        .btn {
+            padding: 12px 28px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            display: inline-block;
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.10);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #007bff, #764ba2);
+            color: white;
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #28a745, #667eea);
+            color: white;
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, #ffc107, #e0a800);
+            color: #212529;
+        }
+
+        .btn-secondary {
+            background: #e3e6f0;
+            color: #333;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px) scale(1.04);
+            box-shadow: 0 6px 18px rgba(102, 126, 234, 0.18);
+            opacity: 0.93;
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 260px;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 12px 20px;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+            background: #f6f8fc;
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: #764ba2;
+            box-shadow: 0 0 0 3px rgba(118, 75, 162, 0.13);
+        }
+
+        .table-container {
+            padding: 30px;
+            overflow-x: auto;
+            border: 1px solid #e3e6f0;
+            border-radius: 0 0 20px 20px;
+            background: #fff;
+        }
+
+        table {
+            width: 100%;
+            min-width: 1200px;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            margin: 0;
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.07);
+        }
+
+        th,
+        td {
+            padding: 14px 10px;
+            text-align: left;
+            border-bottom: 1px solid #e3e6f0;
+            white-space: nowrap;
+            min-width: 60px;
+        }
+
+        th {
+            background: linear-gradient(135deg, #343a40, #764ba2);
+            color: white;
+            font-weight: 600;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            border-right: 1px solid #e3e6f0;
+        }
+
+        tr:hover {
+            background-color: #f6f8fc;
+            transition: background 0.2s;
+        }
+
+        tbody tr:nth-child(even) {
+            background: #f4f8fc;
+        }
+
+        tbody tr:nth-child(odd) {
+            background: #fff;
+        }
+
+        .edit-btn {
+            background: linear-gradient(135deg, #007bff, #764ba2);
+            color: #fff;
+            border: none;
+            padding: 7px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-right: 4px;
+        }
+
+        .edit-btn:hover {
+            background: linear-gradient(135deg, #0056b3, #764ba2);
+        }
+
+        .delete-btn {
+            background: linear-gradient(135deg, #dc3545, #764ba2);
+            color: white;
+            border: none;
+            padding: 7px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .delete-btn:hover {
+            background: linear-gradient(135deg, #a71d2a, #764ba2);
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(102, 126, 234, 0.18);
+            backdrop-filter: blur(5px);
+            overflow-y: auto;
+        }
+
+        .modal-content {
+            background-color: #fff;
+            margin: 5% auto;
+            padding: 0;
+            border-radius: 20px;
+            width: 95%;
+            max-width: 600px;
+            max-height: 85vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 40px rgba(102, 126, 234, 0.22);
+            animation: modalSlideIn 0.3s ease;
+            position: relative;
+            top: 0;
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-60px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, #764ba2, #667eea);
+            color: white;
+            padding: 24px 32px;
+            border-radius: 20px 20px 0 0;
+        }
+
+        .modal-header h2 {
+            margin: 0;
+            font-size: 1.5em;
+        }
+
+        .close {
+            position: absolute;
+            right: 24px;
+            top: 24px;
+            font-size: 2em;
+            color: #fff;
+            cursor: pointer;
+            opacity: 0.8;
+        }
+
+        .close:hover {
+            opacity: 1;
+        }
+
+        .modal-body {
+            padding: 28px 32px;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: #764ba2;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1.5px solid #e3e6f0;
+            border-radius: 7px;
+            font-size: 15px;
+            background: #f6f8fc;
+            transition: border-color 0.2s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: #764ba2;
+            outline: none;
+        }
+
+        .form-group textarea {
+            min-height: 40px;
+            resize: vertical;
+        }
+
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            margin-top: 18px;
+        }
+
+        .loan-form,
+        .donation-form {
+            background: #f6f8fc;
+            border-radius: 10px;
+            padding: 14px 18px;
+            margin-bottom: 12px;
+            box-shadow: 0 1px 4px rgba(102, 126, 234, 0.07);
+        }
+
+        .loan-form h4,
+        .donation-form h4 {
+            color: #764ba2;
+            margin-bottom: 10px;
+        }
+
+        @media (max-width: 900px) {
+
+            .container,
+            .table-container,
+            .modal-content {
+                padding: 10px;
+                border-radius: 10px;
+            }
+
+            .header {
+                padding: 18px 10px;
+                border-radius: 10px 10px 0 0;
+            }
+
+            .controls {
+                padding: 10px;
+                gap: 10px;
+            }
+
+            .modal-body {
+                padding: 12px 10px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📚 Biblioteca de Batlle</h1>
+            <p>Sistema de Gestión de Biblioteca</p>
+        </div>
+        <div class="controls">
+            <!-- ...igual que el original... -->
+            <div class="stats">
+                <div class="stat-card">
+                    <div class="stat-number" id="totalBooks">0</div>
+                    <div class="stat-label">Total Libros</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="availableBooks">0</div>
+                    <div class="stat-label">Disponibles</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="loanedBooks">0</div>
+                    <div class="stat-label">Prestados</div>
+                </div>
+            </div>
+            <button class="btn btn-primary" onclick="openAddBookModal()">➕ Agregar Nuevo Libro</button>
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="🔍 Buscar libros por título, autor, año..."
+                    oninput="searchBooks()" onkeyup="searchBooks()">
+            </div>
+            <button class="btn btn-success" onclick="exportData()">📊 Exportar Datos</button>
+            <input type="file" id="importFile" accept=".xlsx,.xls,.csv" style="display: none;" onchange="importData()">
+            <button class="btn btn-warning" onclick="document.getElementById('importFile').click()">📁 Importar
+                Excel</button>
+        </div>
+        <div class="table-container">
+            <table id="booksTable">
+                <thead>
+                    <tr>
+                        <th>Ordinal</th>
+                        <th>Estante</th>
+                        <th>Apellido</th>
+                        <th>Nombre</th>
+                        <th>Título</th>
+                        <th>Año</th>
+                        <th>Encuadernado</th>
+                        <th>Observaciones</th>
+                        <th>Ejemplares</th>
+                        <th>Acción</th>
+                        <th>Editar</th>
+                        <th>Eliminar</th>
+                    </tr>
+                </thead>
+                <tbody id="booksTableBody"></tbody>
+            </table>
+        </div>
+    </div>
+    <!-- Modal para agregar/editar libro -->
+    <div id="bookModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">📖 Agregar Nuevo Libro</h2>
+                <span class="close" onclick="closeBookModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="bookForm">
+                    <input type="hidden" id="editingIndex" value="-1">
+                    <div class="form-group">
+                        <label for="estante">Estante:</label>
+                        <input type="text" id="estante" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="apellido">Apellido:</label>
+                        <input type="text" id="apellido" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="nombre">Nombre:</label>
+                        <input type="text" id="nombre" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="titulo">Título:</label>
+                        <textarea id="titulo" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="año">Año:</label>
+                        <input type="number" id="año" min="1000" max="2030">
+                    </div>
+                    <div class="form-group">
+                        <label for="encuadernado">Encuadernado:</label>
+                        <select id="encuadernado" required>
+                            <option value="">Seleccionar</option>
+                            <option value="Sí">Sí</option>
+                            <option value="No">No</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="observaciones">Observaciones:</label>
+                        <textarea id="observaciones"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="ejemplares">Ejemplares:</label>
+                        <input type="number" id="ejemplares" min="1" value="1" required>
+                    </div>
+                    <div class="form-group" id="accionGroup">
+                        <label for="accion">Acción:</label>
+                        <select id="accion" onchange="handleActionChange()">
+                            <option value="Seleccionar">Seleccionar</option>
+                            <option value="Para donar">Para donar</option>
+                            <option value="Donado">Donado</option>
+                            <option value="Prestado">Prestado</option>
+                            <option value="Disponible">Disponible</option>
+                        </select>
+                    </div>
+                    <div id="loanForm" class="loan-form">
+                        <h4>📋 Datos del Préstamo</h4>
+                        <div class="form-group">
+                            <label for="loanName">Nombre:</label>
+                            <input type="text" id="loanName">
+                        </div>
+                        <div class="form-group">
+                            <label for="loanLastName">Apellido:</label>
+                            <input type="text" id="loanLastName">
+                        </div>
+                        <div class="form-group">
+                            <label for="loanDate">Fecha de Préstamo:</label>
+                            <input type="date" id="loanDate">
+                        </div>
+                    </div>
+                    <div id="donationForm" class="donation-form">
+                        <h4>🎁 Datos de la Donación</h4>
+                        <div class="form-group">
+                            <label for="donationDate">Fecha de Donación:</label>
+                            <input type="date" id="donationDate">
+                        </div>
+                        <div class="form-group">
+                            <label for="donationPerson">Persona (opcional):</label>
+                            <input type="text" id="donationPerson">
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary" onclick="closeBookModal()">Cancelar</button>
+                        <button type="submit" class="btn btn-primary" id="submitBtn">💾 Guardar Libro</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script>
+        let books = [];
+        let nextOrdinal = 1;
+        let editingIndex = -1;
+
+        window.onload = function () {
+            loadBooks();
+            updateStats();
+            renderTable();
+            setInterval(autoSave, 30000);
+        };
+
+        function loadBooks() {
+            const stored = localStorage.getItem('bibliotecaBatlle');
+            if (stored) {
+                const data = JSON.parse(stored);
+                books = data.books || [];
+                nextOrdinal = data.nextOrdinal || 1;
+            }
+        }
+
+        function saveBooks() {
+            const data = {
+                books: books,
+                nextOrdinal: nextOrdinal,
+                lastSaved: new Date().toISOString()
+            };
+            localStorage.setItem('bibliotecaBatlle', JSON.stringify(data));
+        }
+
+        function autoSave() {
+            saveBooks();
+        }
+
+        function updateStats() {
+            const total = books.length;
+            const available = books.filter(book => book.accion === 'Disponible' || book.accion === 'Para donar').length;
+            const loaned = books.filter(book => book.accion === 'Prestado').length;
+            document.getElementById('totalBooks').textContent = total;
+            document.getElementById('availableBooks').textContent = available;
+            document.getElementById('loanedBooks').textContent = loaned;
+        }
+
+        function renderTable() {
+            const tbody = document.getElementById('booksTableBody');
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
+            let booksToShow = books;
+            if (searchTerm !== '') {
+                booksToShow = books.filter(book => {
+                    const titulo = (book.titulo || '').toString().toLowerCase();
+                    const apellido = (book.apellido || '').toString().toLowerCase();
+                    const nombre = (book.nombre || '').toString().toLowerCase();
+                    const año = (book.año || '').toString().toLowerCase();
+                    const estante = (book.estante || '').toString().toLowerCase();
+                    const observaciones = (book.observaciones || '').toString().toLowerCase();
+                    const accion = (book.accion || '').toString().toLowerCase();
+                    return titulo.includes(searchTerm) ||
+                        apellido.includes(searchTerm) ||
+                        nombre.includes(searchTerm) ||
+                        año.includes(searchTerm) ||
+                        estante.includes(searchTerm) ||
+                        observaciones.includes(searchTerm) ||
+                        accion.includes(searchTerm);
+                });
+            }
+            tbody.innerHTML = booksToShow.map((book, i) => {
+                const realIndex = books.findIndex(b => b.ordinal === book.ordinal);
+                return `
+                    <tr>
+                        <td>${book.ordinal}</td>
+                        <td>${book.estante}</td>
+                        <td>${book.apellido}</td>
+                        <td>${book.nombre}</td>
+                        <td>${book.titulo}</td>
+                        <td>${book.año}</td>
+                        <td>${book.encuadernado}</td>
+                        <td>${book.observaciones}</td>
+                        <td>${book.ejemplares}</td>
+                        <td>${formatAction(book)}</td>
+                        <td><button class="edit-btn" onclick="editBook(${realIndex})">✏️ Editar</button></td>
+                        <td><button class="delete-btn" onclick="deleteBook(${realIndex})">🗑️ Eliminar</button></td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function deleteBook(index) {
+            if (confirm('¿Seguro que deseas eliminar este libro?')) {
+                books.splice(index, 1);
+                saveBooks();
+                updateStats();
+                renderTable();
+                alert('✅ Libro eliminado correctamente.');
+            }
+        }
+
+        function formatAction(book) {
+            let action = book.accion;
+            if (book.accion === 'Prestado' && book.loanInfo) {
+                action += `<br><small>👤 ${book.loanInfo.name} ${book.loanInfo.lastName}<br>📅 ${book.loanInfo.date}</small>`;
+            } else if (book.accion === 'Donado' && book.donationInfo) {
+                let donationText = `📅 ${book.donationInfo.date}`;
+                if (book.donationInfo.person) {
+                    donationText += `<br>👤 ${book.donationInfo.person}`;
+                }
+                action += `<br><small>${donationText}</small>`;
+            }
+            return action;
+        }
+
+        function searchBooks() {
+            renderTable();
+        }
+
+        function openAddBookModal() {
+            editingIndex = -1;
+            document.getElementById('modalTitle').textContent = '📖 Agregar Nuevo Libro';
+            document.getElementById('submitBtn').textContent = '💾 Guardar Libro';
+            document.getElementById('bookForm').reset();
+            document.getElementById('editingIndex').value = '-1';
+            document.getElementById('ejemplares').value = '1';
+            document.getElementById('accionGroup').style.display = 'none';
+            document.getElementById('loanForm').style.display = 'none';
+            document.getElementById('donationForm').style.display = 'none';
+            document.getElementById('bookModal').style.display = 'block';
+        }
+
+        function editBook(index) {
+            if (index < 0 || index >= books.length) {
+                console.error('Índice de libro inválido:', index);
+                return;
+            }
+            editingIndex = index;
+            const book = books[index];
+            document.getElementById('modalTitle').textContent = '✏️ Editar Libro';
+            document.getElementById('submitBtn').textContent = '💾 Actualizar Libro';
+            document.getElementById('editingIndex').value = index;
+            document.getElementById('accionGroup').style.display = 'block';
+            document.getElementById('estante').value = book.estante || '';
+            document.getElementById('apellido').value = book.apellido || '';
+            document.getElementById('nombre').value = book.nombre || '';
+            document.getElementById('titulo').value = book.titulo || '';
+            document.getElementById('año').value = book.año || '';
+            document.getElementById('encuadernado').value = book.encuadernado || '';
+            document.getElementById('observaciones').value = book.observaciones || '';
+            document.getElementById('ejemplares').value = book.ejemplares || 1;
+            document.getElementById('accion').value = book.accion || 'Seleccionar';
+            document.getElementById('loanForm').style.display = 'none';
+            document.getElementById('donationForm').style.display = 'none';
+            document.getElementById('loanName').value = '';
+            document.getElementById('loanLastName').value = '';
+            document.getElementById('loanDate').value = '';
+            document.getElementById('donationDate').value = '';
+            document.getElementById('donationPerson').value = '';
+            if (book.loanInfo) {
+                document.getElementById('loanName').value = book.loanInfo.name || '';
+                document.getElementById('loanLastName').value = book.loanInfo.lastName || '';
+                document.getElementById('loanDate').value = book.loanInfo.date || '';
+            }
+            if (book.donationInfo) {
+                document.getElementById('donationDate').value = book.donationInfo.date || '';
+                document.getElementById('donationPerson').value = book.donationInfo.person || '';
+            }
+            handleActionChange();
+            document.getElementById('bookModal').style.display = 'block';
+        }
+
+        function closeBookModal() {
+            document.getElementById('bookModal').style.display = 'none';
+            document.getElementById('bookForm').reset();
+            document.getElementById('loanForm').style.display = 'none';
+            document.getElementById('donationForm').style.display = 'none';
+        }
+
+        function handleActionChange() {
+            const action = document.getElementById('accion').value;
+            const loanForm = document.getElementById('loanForm');
+            const donationForm = document.getElementById('donationForm');
+            loanForm.style.display = 'none';
+            donationForm.style.display = 'none';
+            if (action === 'Prestado') {
+                loanForm.style.display = 'block';
+            } else if (action === 'Donado') {
+                donationForm.style.display = 'block';
+            }
+        }
+
+        document.getElementById('bookForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+            const isEditing = editingIndex !== -1;
+            const añoValue = document.getElementById('año').value;
+            if (añoValue && (isNaN(añoValue) || añoValue < 1000 || añoValue > 2030)) {
+                alert('❌ El año debe estar entre 1000 y 2030.');
+                return;
+            }
+            const bookData = {
+                ordinal: isEditing ? books[editingIndex].ordinal : nextOrdinal,
+                estante: document.getElementById('estante').value.trim(),
+                apellido: document.getElementById('apellido').value.trim(),
+                nombre: document.getElementById('nombre').value.trim(),
+                titulo: document.getElementById('titulo').value.trim(),
+                año: añoValue || '',
+                encuadernado: document.getElementById('encuadernado').value,
+                observaciones: document.getElementById('observaciones').value.trim(),
+                ejemplares: parseInt(document.getElementById('ejemplares').value) || 1,
+                accion: isEditing ? document.getElementById('accion').value : 'Seleccionar'
+            };
+            if (!bookData.estante || !bookData.apellido || !bookData.nombre || !bookData.titulo || !bookData.encuadernado) {
+                alert('❌ Por favor completa todos los campos obligatorios.');
+                return;
+            }
+            if (isEditing) {
+                if (bookData.accion === 'Prestado') {
+                    const loanName = document.getElementById('loanName').value.trim();
+                    const loanLastName = document.getElementById('loanLastName').value.trim();
+                    const loanDate = document.getElementById('loanDate').value;
+                    if (loanName && loanLastName && loanDate) {
+                        bookData.loanInfo = {
+                            name: loanName,
+                            lastName: loanLastName,
+                            date: loanDate
+                        };
+                    }
+                } else if (bookData.accion === 'Donado') {
+                    const donationDate = document.getElementById('donationDate').value;
+                    if (donationDate) {
+                        bookData.donationInfo = {
+                            date: donationDate,
+                            person: document.getElementById('donationPerson').value.trim()
+                        };
+                    }
+                }
+            }
+            if (isEditing) {
+                books[editingIndex] = bookData;
+                alert('✅ Libro editado correctamente.');
+            } else {
+                books.push(bookData);
+                nextOrdinal++;
+                alert('✅ Libro agregado correctamente.');
+            }
+            saveBooks();
+            updateStats();
+            renderTable();
+            closeBookModal();
+        });
+
+        function exportData() {
+            const exportData = books.map(book => {
+                const row = {
+                    'ORDINAL': book.ordinal,
+                    'ESTANTE': book.estante,
+                    'APELLIDO': book.apellido,
+                    'NOMBRE': book.nombre,
+                    'TITULO': book.titulo,
+                    'AÑO': book.año,
+                    'ENCUADERNADO': book.encuadernado,
+                    'OBSERVACIONES': book.observaciones,
+                    'EJEMPLARES': book.ejemplares,
+                    'ACCION': book.accion
+                };
+                if (book.loanInfo) {
+                    row['PRESTADO_A'] = `${book.loanInfo.name} ${book.loanInfo.lastName}`;
+                    row['FECHA_PRESTAMO'] = book.loanInfo.date;
+                }
+                if (book.donationInfo) {
+                    row['FECHA_DONACION'] = book.donationInfo.date;
+                    row['PERSONA_DONACION'] = book.donationInfo.person || '';
+                }
+                return row;
+            });
+            const ws = XLSX.utils.json_to_sheet(exportData);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, 'Biblioteca Batlle');
+            const today = new Date().toISOString().split('T')[0];
+            XLSX.writeFile(wb, `Biblioteca_Batlle_${today}.xlsx`);
+        }
+
+        function importData() {
+            const file = document.getElementById('importFile').files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                try {
+                    const data = new Uint8Array(e.target.result);
+                    const workbook = XLSX.read(data, { type: 'array' });
+                    const sheetName = workbook.SheetNames[0];
+                    const worksheet = workbook.Sheets[sheetName];
+                    const jsonData = XLSX.utils.sheet_to_json(worksheet);
+                    books = jsonData.map(row => ({
+                        ordinal: row.ORDINAL || nextOrdinal++,
+                        estante: row.ESTANTE || '',
+                        apellido: row.APELLIDO || '',
+                        nombre: row.NOMBRE || '',
+                        titulo: row.TITULO || '',
+                        año: row.AÑO || '',
+                        encuadernado: row.ENCUADERNADO || 'No',
+                        observaciones: row.OBSERVACIONES || '',
+                        ejemplares: row.EJEMPLARES || 1,
+                        accion: row.ACCION || 'Disponible'
+                    }));
+                    if (books.length > 0) {
+                        nextOrdinal = Math.max(...books.map(book => book.ordinal)) + 1;
+                    }
+                    saveBooks();
+                    updateStats();
+                    renderTable();
+                    alert(`✅ Se importaron ${books.length} libros correctamente.`);
+                } catch (error) {
+                    alert('❌ Error al importar el archivo. Verifique el formato.');
+                    console.error('Error:', error);
+                }
+            };
+            reader.readAsArrayBuffer(file);
+        }
+
+        window.onclick = function (event) {
+            const modal = document.getElementById('bookModal');
+            if (event.target === modal) {
+                closeBookModal();
+            }
+        };
+
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js')
+                .then(reg => console.log('Service Worker registrado', reg))
+                .catch(err => console.error('Error al registrar SW', err));
+        }
+    </script>
+</body>
+
+</html>

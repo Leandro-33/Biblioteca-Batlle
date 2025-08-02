@@ -64,7 +64,7 @@
             color: #fff;
             border-radius: 12px;
             padding: 18px 24px;
-            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.13);
+            box-shadow: 0 2px 8px rgba(102,126,234,0.13);
             text-align: center;
             min-width: 110px;
         }
@@ -89,7 +89,7 @@
             transition: all 0.2s ease;
             text-decoration: none;
             display: inline-block;
-            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.10);
+            box-shadow: 0 2px 8px rgba(102,126,234,0.10);
         }
 
         .btn-primary {
@@ -114,29 +114,27 @@
 
         .btn:hover {
             transform: translateY(-2px) scale(1.04);
-            box-shadow: 0 6px 18px rgba(102, 126, 234, 0.18);
+            box-shadow: 0 6px 18px rgba(102,126,234,0.18);
             opacity: 0.93;
         }
 
         .search-box {
-            flex: 1;
-            min-width: 260px;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px #764ba233;
+            padding: 8px 16px;
+            display: flex;
+            align-items: center;
+            border: 1.5px solid #764ba2;
+            margin-left: 20px;
+            max-width: 320px;
         }
-
         .search-box input {
-            width: 100%;
-            padding: 12px 20px;
-            border: 2px solid #dee2e6;
-            border-radius: 8px;
-            font-size: 16px;
-            transition: border-color 0.3s ease;
-            background: #f6f8fc;
-        }
-
-        .search-box input:focus {
+            border: none;
+            background: transparent;
+            font-size: 1.1em;
             outline: none;
-            border-color: #764ba2;
-            box-shadow: 0 0 0 3px rgba(118, 75, 162, 0.13);
+            width: 100%;
         }
 
         .table-container {
@@ -146,7 +144,6 @@
             border-radius: 0 0 20px 20px;
             background: #fff;
         }
-
         table {
             width: 100%;
             min-width: 1200px;
@@ -155,18 +152,15 @@
             border-radius: 8px;
             overflow: hidden;
             margin: 0;
-            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.07);
+            box-shadow: 0 2px 8px rgba(102,126,234,0.07);
         }
-
-        th,
-        td {
+        th, td {
             padding: 14px 10px;
             text-align: left;
             border-bottom: 1px solid #e3e6f0;
             white-space: nowrap;
             min-width: 60px;
         }
-
         th {
             background: linear-gradient(135deg, #343a40, #764ba2);
             color: white;
@@ -176,20 +170,16 @@
             z-index: 10;
             border-right: 1px solid #e3e6f0;
         }
-
         tr:hover {
             background-color: #f6f8fc;
             transition: background 0.2s;
         }
-
         tbody tr:nth-child(even) {
             background: #f4f8fc;
         }
-
         tbody tr:nth-child(odd) {
             background: #fff;
         }
-
         .edit-btn {
             background: linear-gradient(135deg, #007bff, #764ba2);
             color: #fff;
@@ -200,11 +190,9 @@
             font-size: 14px;
             margin-right: 4px;
         }
-
         .edit-btn:hover {
             background: linear-gradient(135deg, #0056b3, #764ba2);
         }
-
         .delete-btn {
             background: linear-gradient(135deg, #dc3545, #764ba2);
             color: white;
@@ -214,11 +202,9 @@
             cursor: pointer;
             font-size: 14px;
         }
-
         .delete-btn:hover {
             background: linear-gradient(135deg, #a71d2a, #764ba2);
         }
-
         /* Modal */
         .modal {
             display: none;
@@ -228,11 +214,10 @@
             top: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(102, 126, 234, 0.18);
+            background-color: rgba(102,126,234,0.18);
             backdrop-filter: blur(5px);
             overflow-y: auto;
         }
-
         .modal-content {
             background-color: #fff;
             margin: 5% auto;
@@ -242,36 +227,25 @@
             max-width: 600px;
             max-height: 85vh;
             overflow-y: auto;
-            box-shadow: 0 20px 40px rgba(102, 126, 234, 0.22);
+            box-shadow: 0 20px 40px rgba(102,126,234,0.22);
             animation: modalSlideIn 0.3s ease;
             position: relative;
             top: 0;
         }
-
         @keyframes modalSlideIn {
-            from {
-                opacity: 0;
-                transform: translateY(-60px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(-60px);}
+            to { opacity: 1; transform: translateY(0);}
         }
-
         .modal-header {
             background: linear-gradient(135deg, #764ba2, #667eea);
             color: white;
             padding: 24px 32px;
             border-radius: 20px 20px 0 0;
         }
-
         .modal-header h2 {
             margin: 0;
             font-size: 1.5em;
         }
-
         .close {
             position: absolute;
             right: 24px;
@@ -281,26 +255,21 @@
             cursor: pointer;
             opacity: 0.8;
         }
-
         .close:hover {
             opacity: 1;
         }
-
         .modal-body {
             padding: 28px 32px;
         }
-
         .form-group {
             margin-bottom: 18px;
         }
-
         .form-group label {
             display: block;
             font-weight: 600;
             margin-bottom: 6px;
             color: #764ba2;
         }
-
         .form-group input,
         .form-group select,
         .form-group textarea {
@@ -312,67 +281,89 @@
             background: #f6f8fc;
             transition: border-color 0.2s;
         }
-
         .form-group input:focus,
         .form-group select:focus,
         .form-group textarea:focus {
             border-color: #764ba2;
             outline: none;
         }
-
         .form-group textarea {
             min-height: 40px;
             resize: vertical;
         }
-
         .form-actions {
             display: flex;
             justify-content: flex-end;
             gap: 12px;
             margin-top: 18px;
         }
-
-        .loan-form,
-        .donation-form {
+        .loan-form, .donation-form {
             background: #f6f8fc;
             border-radius: 10px;
             padding: 14px 18px;
             margin-bottom: 12px;
-            box-shadow: 0 1px 4px rgba(102, 126, 234, 0.07);
+            box-shadow: 0 1px 4px rgba(102,126,234,0.07);
         }
-
-        .loan-form h4,
-        .donation-form h4 {
+        .loan-form h4, .donation-form h4 {
             color: #764ba2;
             margin-bottom: 10px;
         }
-
         @media (max-width: 900px) {
-
-            .container,
-            .table-container,
-            .modal-content {
+            .container, .table-container, .modal-content {
                 padding: 10px;
                 border-radius: 10px;
             }
-
             .header {
                 padding: 18px 10px;
                 border-radius: 10px 10px 0 0;
             }
-
             .controls {
                 padding: 10px;
                 gap: 10px;
             }
-
             .modal-body {
                 padding: 12px 10px;
             }
         }
+        /* Alert flotante */
+        #autoAlert {
+            display:none;
+            position:fixed;
+            top:30px;
+            right:30px;
+            z-index:9999;
+            padding:16px 28px;
+            background:#764ba2;
+            color:#fff;
+            border-radius:8px;
+            box-shadow:0 2px 8px #764ba299;
+            font-size:1.2em;
+        }
+        .estante-box {
+            background: #f6f8fc;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px #764ba233;
+            padding: 10px 18px;
+            display: flex;
+            align-items: center;
+            border: 2px solid #764ba2;
+            margin-left: 20px;
+            gap: 8px;
+            max-width: 350px;
+        }
+        .estante-box input {
+            border: none;
+            background: transparent;
+            font-size: 1.1em;
+            outline: none;
+            width: 100px;
+            margin-right: 8px;
+        }
+        .estante-box button {
+            margin-left: 0;
+        }
     </style>
 </head>
-
 <body>
     <div class="container">
         <div class="header">
@@ -380,7 +371,6 @@
             <p>Sistema de Gestión de Biblioteca</p>
         </div>
         <div class="controls">
-            <!-- ...igual que el original... -->
             <div class="stats">
                 <div class="stat-card">
                     <div class="stat-number" id="totalBooks">0</div>
@@ -388,7 +378,7 @@
                 </div>
                 <div class="stat-card">
                     <div class="stat-number" id="availableBooks">0</div>
-                    <div class="stat-label">Disponibles</div>
+                    <div class="stat-label">Disponibles (físicos)</div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-number" id="loanedBooks">0</div>
@@ -397,13 +387,18 @@
             </div>
             <button class="btn btn-primary" onclick="openAddBookModal()">➕ Agregar Nuevo Libro</button>
             <div class="search-box">
-                <input type="text" id="searchInput" placeholder="🔍 Buscar libros por título, autor, año..."
-                    oninput="searchBooks()" onkeyup="searchBooks()">
+                <input type="text" id="searchInput" placeholder="🔍 Buscar libros por título, autor, año..." oninput="searchBooks()" onkeyup="searchBooks()">
             </div>
-            <button class="btn btn-success" onclick="exportData()">📊 Exportar Datos</button>
             <input type="file" id="importFile" accept=".xlsx,.xls,.csv" style="display: none;" onchange="importData()">
-            <button class="btn btn-warning" onclick="document.getElementById('importFile').click()">📁 Importar
-                Excel</button>
+            <div style="display: flex; align-items: center; gap: 10px; width: 100%; margin-top: 18px;">
+                <button class="btn btn-warning" onclick="document.getElementById('importFile').click()">📁 Importar Excel</button>
+                <button class="btn btn-success" onclick="exportData()">📊 Exportar Datos</button>
+                <div class="estante-box" style="margin-left:0;max-width:350px;width:100%;">
+                    <input type="number" id="searchEstante" placeholder="Estante..." min="1">
+                    <button class="btn btn-secondary" onclick="searchByEstante()">Buscar</button>
+                    <button class="btn btn-secondary" onclick="exportEstantePDF()">PDF</button>
+                </div>
+            </div>
         </div>
         <div class="table-container">
             <table id="booksTable">
@@ -425,99 +420,15 @@
                 </thead>
                 <tbody id="booksTableBody"></tbody>
             </table>
-        </div>
+        
     </div>
-    <!-- Modal para agregar/editar libro -->
-    <div id="bookModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2 id="modalTitle">📖 Agregar Nuevo Libro</h2>
-                <span class="close" onclick="closeBookModal()">&times;</span>
-            </div>
-            <div class="modal-body">
-                <form id="bookForm">
-                    <input type="hidden" id="editingIndex" value="-1">
-                    <div class="form-group">
-                        <label for="estante">Estante:</label>
-                        <input type="text" id="estante" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="apellido">Apellido:</label>
-                        <input type="text" id="apellido" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="nombre">Nombre:</label>
-                        <input type="text" id="nombre" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="titulo">Título:</label>
-                        <textarea id="titulo" required></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label for="año">Año:</label>
-                        <input type="number" id="año" min="1000" max="2030">
-                    </div>
-                    <div class="form-group">
-                        <label for="encuadernado">Encuadernado:</label>
-                        <select id="encuadernado" required>
-                            <option value="">Seleccionar</option>
-                            <option value="Sí">Sí</option>
-                            <option value="No">No</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="observaciones">Observaciones:</label>
-                        <textarea id="observaciones"></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label for="ejemplares">Ejemplares:</label>
-                        <input type="number" id="ejemplares" min="1" value="1" required>
-                    </div>
-                    <div class="form-group" id="accionGroup">
-                        <label for="accion">Acción:</label>
-                        <select id="accion" onchange="handleActionChange()">
-                            <option value="Seleccionar">Seleccionar</option>
-                            <option value="Para donar">Para donar</option>
-                            <option value="Donado">Donado</option>
-                            <option value="Prestado">Prestado</option>
-                            <option value="Disponible">Disponible</option>
-                        </select>
-                    </div>
-                    <div id="loanForm" class="loan-form">
-                        <h4>📋 Datos del Préstamo</h4>
-                        <div class="form-group">
-                            <label for="loanName">Nombre:</label>
-                            <input type="text" id="loanName">
-                        </div>
-                        <div class="form-group">
-                            <label for="loanLastName">Apellido:</label>
-                            <input type="text" id="loanLastName">
-                        </div>
-                        <div class="form-group">
-                            <label for="loanDate">Fecha de Préstamo:</label>
-                            <input type="date" id="loanDate">
-                        </div>
-                    </div>
-                    <div id="donationForm" class="donation-form">
-                        <h4>🎁 Datos de la Donación</h4>
-                        <div class="form-group">
-                            <label for="donationDate">Fecha de Donación:</label>
-                            <input type="date" id="donationDate">
-                        </div>
-                        <div class="form-group">
-                            <label for="donationPerson">Persona (opcional):</label>
-                            <input type="text" id="donationPerson">
-                        </div>
-                    </div>
-                    <div class="form-actions">
-                        <button type="button" class="btn btn-secondary" onclick="closeBookModal()">Cancelar</button>
-                        <button type="submit" class="btn btn-primary" id="submitBtn">💾 Guardar Libro</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
+    <!-- Alert flotante -->
+    <div id="autoAlert"></div>
+    <!-- Modal para agregar/editar libro (igual que antes) -->
+    <!-- ...tu modal aquí... -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
     <script>
         let books = [];
         let nextOrdinal = 1;
@@ -529,6 +440,13 @@
             renderTable();
             setInterval(autoSave, 30000);
         };
+
+        function showAutoAlert(msg, ms=2000) {
+            const el = document.getElementById('autoAlert');
+            el.textContent = msg;
+            el.style.display = 'block';
+            setTimeout(()=>{ el.style.display='none'; }, ms);
+        }
 
         function loadBooks() {
             const stored = localStorage.getItem('bibliotecaBatlle');
@@ -553,36 +471,18 @@
         }
 
         function updateStats() {
-            const total = books.length;
-            const available = books.filter(book => book.accion === 'Disponible' || book.accion === 'Para donar').length;
-            const loaned = books.filter(book => book.accion === 'Prestado').length;
+            const total = books.reduce((sum, b) => sum + (parseInt(b.ejemplares)||1), 0);
+            const donados = books.filter(b => b.accion === 'Donado').reduce((sum, b) => sum + (parseInt(b.ejemplares)||1), 0);
+            const prestados = books.filter(b => b.accion === 'Prestado').reduce((sum, b) => sum + (parseInt(b.ejemplares)||1), 0);
+            const disponibles = total - donados - prestados;
             document.getElementById('totalBooks').textContent = total;
-            document.getElementById('availableBooks').textContent = available;
-            document.getElementById('loanedBooks').textContent = loaned;
+            document.getElementById('availableBooks').textContent = disponibles;
+            document.getElementById('loanedBooks').textContent = prestados;
         }
 
-        function renderTable() {
+        function renderTable(filteredBooks) {
             const tbody = document.getElementById('booksTableBody');
-            const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
-            let booksToShow = books;
-            if (searchTerm !== '') {
-                booksToShow = books.filter(book => {
-                    const titulo = (book.titulo || '').toString().toLowerCase();
-                    const apellido = (book.apellido || '').toString().toLowerCase();
-                    const nombre = (book.nombre || '').toString().toLowerCase();
-                    const año = (book.año || '').toString().toLowerCase();
-                    const estante = (book.estante || '').toString().toLowerCase();
-                    const observaciones = (book.observaciones || '').toString().toLowerCase();
-                    const accion = (book.accion || '').toString().toLowerCase();
-                    return titulo.includes(searchTerm) ||
-                        apellido.includes(searchTerm) ||
-                        nombre.includes(searchTerm) ||
-                        año.includes(searchTerm) ||
-                        estante.includes(searchTerm) ||
-                        observaciones.includes(searchTerm) ||
-                        accion.includes(searchTerm);
-                });
-            }
+            const booksToShow = filteredBooks || books;
             tbody.innerHTML = booksToShow.map((book, i) => {
                 const realIndex = books.findIndex(b => b.ordinal === book.ordinal);
                 return `
@@ -596,7 +496,14 @@
                         <td>${book.encuadernado}</td>
                         <td>${book.observaciones}</td>
                         <td>${book.ejemplares}</td>
-                        <td>${formatAction(book)}</td>
+                        <td>
+                            <select onchange="changeAction(${realIndex}, this.value)">
+                                <option value="Disponible" ${book.accion==='Disponible'?'selected':''}>Disponible</option>
+                                <option value="Prestado" ${book.accion==='Prestado'?'selected':''}>Prestado</option>
+                                <option value="Donado" ${book.accion==='Donado'?'selected':''}>Donado</option>
+                                <option value="Para donar" ${book.accion==='Para donar'?'selected':''}>Para donar</option>
+                            </select>
+                        </td>
                         <td><button class="edit-btn" onclick="editBook(${realIndex})">✏️ Editar</button></td>
                         <td><button class="delete-btn" onclick="deleteBook(${realIndex})">🗑️ Eliminar</button></td>
                     </tr>
@@ -604,196 +511,100 @@
             }).join('');
         }
 
+        function changeAction(index, value) {
+            books[index].accion = value;
+            saveBooks();
+            updateStats();
+            renderTable();
+            showAutoAlert('Acción actualizada');
+        }
+
         function deleteBook(index) {
             if (confirm('¿Seguro que deseas eliminar este libro?')) {
                 books.splice(index, 1);
+                // Reasignar ordinales
+                books.forEach((b, i) => b.ordinal = i + 1);
+                nextOrdinal = books.length + 1;
                 saveBooks();
                 updateStats();
                 renderTable();
-                alert('✅ Libro eliminado correctamente.');
+                showAutoAlert('✅ Libro eliminado correctamente.');
             }
-        }
-
-        function formatAction(book) {
-            let action = book.accion;
-            if (book.accion === 'Prestado' && book.loanInfo) {
-                action += `<br><small>👤 ${book.loanInfo.name} ${book.loanInfo.lastName}<br>📅 ${book.loanInfo.date}</small>`;
-            } else if (book.accion === 'Donado' && book.donationInfo) {
-                let donationText = `📅 ${book.donationInfo.date}`;
-                if (book.donationInfo.person) {
-                    donationText += `<br>👤 ${book.donationInfo.person}`;
-                }
-                action += `<br><small>${donationText}</small>`;
-            }
-            return action;
         }
 
         function searchBooks() {
             renderTable();
         }
 
-        function openAddBookModal() {
-            editingIndex = -1;
-            document.getElementById('modalTitle').textContent = '📖 Agregar Nuevo Libro';
-            document.getElementById('submitBtn').textContent = '💾 Guardar Libro';
-            document.getElementById('bookForm').reset();
-            document.getElementById('editingIndex').value = '-1';
-            document.getElementById('ejemplares').value = '1';
-            document.getElementById('accionGroup').style.display = 'none';
-            document.getElementById('loanForm').style.display = 'none';
-            document.getElementById('donationForm').style.display = 'none';
-            document.getElementById('bookModal').style.display = 'block';
-        }
-
-        function editBook(index) {
-            if (index < 0 || index >= books.length) {
-                console.error('Índice de libro inválido:', index);
+        function searchByEstante() {
+            const estante = document.getElementById('searchEstante').value.trim();
+            if (!estante) {
+                renderTable();
                 return;
             }
-            editingIndex = index;
-            const book = books[index];
-            document.getElementById('modalTitle').textContent = '✏️ Editar Libro';
-            document.getElementById('submitBtn').textContent = '💾 Actualizar Libro';
-            document.getElementById('editingIndex').value = index;
-            document.getElementById('accionGroup').style.display = 'block';
-            document.getElementById('estante').value = book.estante || '';
-            document.getElementById('apellido').value = book.apellido || '';
-            document.getElementById('nombre').value = book.nombre || '';
-            document.getElementById('titulo').value = book.titulo || '';
-            document.getElementById('año').value = book.año || '';
-            document.getElementById('encuadernado').value = book.encuadernado || '';
-            document.getElementById('observaciones').value = book.observaciones || '';
-            document.getElementById('ejemplares').value = book.ejemplares || 1;
-            document.getElementById('accion').value = book.accion || 'Seleccionar';
-            document.getElementById('loanForm').style.display = 'none';
-            document.getElementById('donationForm').style.display = 'none';
-            document.getElementById('loanName').value = '';
-            document.getElementById('loanLastName').value = '';
-            document.getElementById('loanDate').value = '';
-            document.getElementById('donationDate').value = '';
-            document.getElementById('donationPerson').value = '';
-            if (book.loanInfo) {
-                document.getElementById('loanName').value = book.loanInfo.name || '';
-                document.getElementById('loanLastName').value = book.loanInfo.lastName || '';
-                document.getElementById('loanDate').value = book.loanInfo.date || '';
-            }
-            if (book.donationInfo) {
-                document.getElementById('donationDate').value = book.donationInfo.date || '';
-                document.getElementById('donationPerson').value = book.donationInfo.person || '';
-            }
-            handleActionChange();
-            document.getElementById('bookModal').style.display = 'block';
+            const filtered = books.filter(b => b.estante == estante);
+            renderTable(filtered);
         }
 
-        function closeBookModal() {
-            document.getElementById('bookModal').style.display = 'none';
-            document.getElementById('bookForm').reset();
-            document.getElementById('loanForm').style.display = 'none';
-            document.getElementById('donationForm').style.display = 'none';
-        }
-
-        function handleActionChange() {
-            const action = document.getElementById('accion').value;
-            const loanForm = document.getElementById('loanForm');
-            const donationForm = document.getElementById('donationForm');
-            loanForm.style.display = 'none';
-            donationForm.style.display = 'none';
-            if (action === 'Prestado') {
-                loanForm.style.display = 'block';
-            } else if (action === 'Donado') {
-                donationForm.style.display = 'block';
-            }
-        }
-
-        document.getElementById('bookForm').addEventListener('submit', function (e) {
-            e.preventDefault();
-            const isEditing = editingIndex !== -1;
-            const añoValue = document.getElementById('año').value;
-            if (añoValue && (isNaN(añoValue) || añoValue < 1000 || añoValue > 2030)) {
-                alert('❌ El año debe estar entre 1000 y 2030.');
+        function exportEstantePDF() {
+            const estante = document.getElementById('searchEstante').value.trim();
+            if (!estante) {
+                showAutoAlert('Ingrese un número de estante');
                 return;
             }
-            const bookData = {
-                ordinal: isEditing ? books[editingIndex].ordinal : nextOrdinal,
-                estante: document.getElementById('estante').value.trim(),
-                apellido: document.getElementById('apellido').value.trim(),
-                nombre: document.getElementById('nombre').value.trim(),
-                titulo: document.getElementById('titulo').value.trim(),
-                año: añoValue || '',
-                encuadernado: document.getElementById('encuadernado').value,
-                observaciones: document.getElementById('observaciones').value.trim(),
-                ejemplares: parseInt(document.getElementById('ejemplares').value) || 1,
-                accion: isEditing ? document.getElementById('accion').value : 'Seleccionar'
-            };
-            if (!bookData.estante || !bookData.apellido || !bookData.nombre || !bookData.titulo || !bookData.encuadernado) {
-                alert('❌ Por favor completa todos los campos obligatorios.');
+            const libros = books.filter(b => b.estante == estante);
+            if (libros.length === 0) {
+                showAutoAlert('No hay libros en ese estante');
                 return;
             }
-            if (isEditing) {
-                if (bookData.accion === 'Prestado') {
-                    const loanName = document.getElementById('loanName').value.trim();
-                    const loanLastName = document.getElementById('loanLastName').value.trim();
-                    const loanDate = document.getElementById('loanDate').value;
-                    if (loanName && loanLastName && loanDate) {
-                        bookData.loanInfo = {
-                            name: loanName,
-                            lastName: loanLastName,
-                            date: loanDate
-                        };
-                    }
-                } else if (bookData.accion === 'Donado') {
-                    const donationDate = document.getElementById('donationDate').value;
-                    if (donationDate) {
-                        bookData.donationInfo = {
-                            date: donationDate,
-                            person: document.getElementById('donationPerson').value.trim()
-                        };
+            // Crear PDF en horizontal
+            const doc = new window.jspdf.jsPDF({ orientation: "landscape" });
+
+            // Recuadro de control arriba, más ancho y alineado (rojo)
+            const pageWidth = doc.internal.pageSize.getWidth();
+            doc.setDrawColor(200, 40, 40); // Rojo fuerte para recuadro y cuadros de tick
+            doc.setTextColor(160, 20, 20); // Texto rojo oscuro
+            doc.setLineWidth(0.8);
+            doc.roundedRect(12, 10, pageWidth - 24, 22, 4, 4);
+            doc.setFontSize(13);
+            doc.text(`Control de Estante: ${estante}`, 18, 18);
+            doc.setFontSize(11);
+            doc.text(`Fecha: ${new Date().toLocaleString()}`, 18, 26);
+            doc.text("Nombre de quien controla: ___________________________", pageWidth / 2, 18);
+            doc.text("Firma: ___________________________", pageWidth / 2, 26);
+
+            // Datos para la tabla
+            const tableColumn = ["Apellido", "Nombre", "Título", "✓"];
+            const tableRows = libros.map(b => [
+                b.apellido,
+                b.nombre,
+                b.titulo,
+                "" // Aquí irá el cuadrado
+            ]);
+
+            // Generar tabla con cuadro más chico y centrado, cabecera roja
+            doc.autoTable({
+                head: [tableColumn],
+                body: tableRows,
+                startY: 38,
+                headStyles: { fillColor: [200, 40, 40], textColor: [255,255,255] }, // Cabecera tabla rojo fuerte
+                styles: { fontSize: 12, cellWidth: 'auto', textColor: [120, 20, 20] }, // Texto tabla rojo oscuro
+                columnStyles: {
+                    3: { cellWidth: 12, halign: 'center' }
+                },
+                didDrawCell: function (data) {
+                    // Dibuja un cuadrado pequeño y centrado en la columna del tick
+                    if (data.column.index === 3 && data.section === 'body') {
+                        const boxSize = 7;
+                        const x = data.cell.x + (data.cell.width - boxSize) / 2;
+                        const y = data.cell.y + (data.cell.height - boxSize) / 2;
+                        doc.setDrawColor(200, 40, 40); // Rojo fuerte
+                        doc.rect(x, y, boxSize, boxSize);
                     }
                 }
-            }
-            if (isEditing) {
-                books[editingIndex] = bookData;
-                alert('✅ Libro editado correctamente.');
-            } else {
-                books.push(bookData);
-                nextOrdinal++;
-                alert('✅ Libro agregado correctamente.');
-            }
-            saveBooks();
-            updateStats();
-            renderTable();
-            closeBookModal();
-        });
-
-        function exportData() {
-            const exportData = books.map(book => {
-                const row = {
-                    'ORDINAL': book.ordinal,
-                    'ESTANTE': book.estante,
-                    'APELLIDO': book.apellido,
-                    'NOMBRE': book.nombre,
-                    'TITULO': book.titulo,
-                    'AÑO': book.año,
-                    'ENCUADERNADO': book.encuadernado,
-                    'OBSERVACIONES': book.observaciones,
-                    'EJEMPLARES': book.ejemplares,
-                    'ACCION': book.accion
-                };
-                if (book.loanInfo) {
-                    row['PRESTADO_A'] = `${book.loanInfo.name} ${book.loanInfo.lastName}`;
-                    row['FECHA_PRESTAMO'] = book.loanInfo.date;
-                }
-                if (book.donationInfo) {
-                    row['FECHA_DONACION'] = book.donationInfo.date;
-                    row['PERSONA_DONACION'] = book.donationInfo.person || '';
-                }
-                return row;
             });
-            const ws = XLSX.utils.json_to_sheet(exportData);
-            const wb = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(wb, ws, 'Biblioteca Batlle');
-            const today = new Date().toISOString().split('T')[0];
-            XLSX.writeFile(wb, `Biblioteca_Batlle_${today}.xlsx`);
+
+            doc.save(`Estante_${estante}_control.pdf`);
         }
 
         function importData() {
@@ -821,32 +632,43 @@
                     }));
                     if (books.length > 0) {
                         nextOrdinal = Math.max(...books.map(book => book.ordinal)) + 1;
+                        saveBooks();
+                        updateStats();
+                        renderTable();
+                        showAutoAlert('📥 Datos importados correctamente');
                     }
-                    saveBooks();
-                    updateStats();
-                    renderTable();
-                    alert(`✅ Se importaron ${books.length} libros correctamente.`);
                 } catch (error) {
-                    alert('❌ Error al importar el archivo. Verifique el formato.');
-                    console.error('Error:', error);
+                    console.error('Error al importar datos:', error);
+                    showAutoAlert('Error al importar datos. Verifica el archivo y vuelve a intentar.', 4000);
                 }
             };
             reader.readAsArrayBuffer(file);
         }
 
-        window.onclick = function (event) {
-            const modal = document.getElementById('bookModal');
-            if (event.target === modal) {
-                closeBookModal();
-            }
-        };
-
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('sw.js')
-                .then(reg => console.log('Service Worker registrado', reg))
-                .catch(err => console.error('Error al registrar SW', err));
+        function exportData() {
+            const exportData = books.map(book => {
+                const row = {
+                    'ORDINAL': book.ordinal,
+                    'ESTANTE': book.estante,
+                    'APELLIDO': book.apellido,
+                    'NOMBRE': book.nombre,
+                    'TITULO': book.titulo,
+                    'AÑO': book.año,
+                    'ENCUADERNADO': book.encuadernado,
+                    'OBSERVACIONES': book.observaciones,
+                    'EJEMPLARES': book.ejemplares,
+                    'ACCION': book.accion
+                };
+                return row;
+            });
+            const ws = XLSX.utils.json_to_sheet(exportData);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, 'Biblioteca Batlle');
+            const today = new Date().toISOString().split('T')[0];
+            XLSX.writeFile(wb, `Biblioteca_Batlle_${today}.xlsx`);
         }
+
+        // ...resto de tu código JS (modal, agregar/editar libro, etc.)...
     </script>
 </body>
-
 </html>

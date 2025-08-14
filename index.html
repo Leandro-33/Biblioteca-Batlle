@@ -4,208 +4,304 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> Biblioteca de Batlle </title>
+    <title>Biblioteca de Batlle</title>
     <link rel="manifest" href="manifest.json">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400,700&display=swap" rel="stylesheet">
+    <meta name="description" content="Sistema de gestión de biblioteca escolar. Catálogo, préstamos y donaciones.">
+    <meta name="theme-color" content="#4f46e5">
+    <meta name="author" content="Batlle Biblioteca">
     <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 30px;
+        :root {
+            --primary: #4f46e5;
+            --primary-dark: #3730a3;
+            --secondary: #7c3aed;
+            --accent: #06b6d4;
+            --danger: #dc2626;
+            --border: #e5e7eb;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body,
+        #__next,
+        .container {
+            width: 100vw !important;
+            min-width: 100vw !important;
+            min-height: 100vh !important;
+            height: 100vh !important;
+            margin: 0;
+            padding: 0;
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0e7ff 100%);
         }
 
         .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            background: #fff;
-            border-radius: 20px;
-            box-shadow: 0 8px 32px rgba(102, 126, 234, 0.15), 0 1.5px 6px rgba(76, 76, 76, 0.07);
-            overflow: hidden;
+            display: flex !important;
+            flex-direction: column !important;
+            height: 100vh !important;
+            min-height: 100vh !important;
+            max-height: 100vh !important;
+            overflow: hidden !important;
         }
 
-        .header {
-            background: linear-gradient(90deg, #764ba2 0%, #667eea 100%);
+        .header,
+        header.header {
+            flex: 0 0 auto;
+            background: linear-gradient(90deg, var(--primary-dark) 0%, var(--primary) 100%);
             color: #fff;
-            padding: 40px 30px 25px 30px;
+            padding: 12px 10px 8px 10px !important;
             text-align: center;
-            border-radius: 20px 20px 0 0;
-            box-shadow: 0 2px 12px rgba(102, 126, 234, 0.12);
+            border-radius: 8px 8px 0 0 !important;
+            box-shadow: 0 1px 6px rgba(79, 70, 229, 0.10);
+            letter-spacing: 0.3px;
         }
 
         .header h1 {
-            font-size: 2.8em;
-            margin-bottom: 8px;
-            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.18);
-            letter-spacing: 2px;
+            font-size: 1.5em !important;
+            font-weight: 700;
+            margin: 0;
+            letter-spacing: 0.5px;
+            text-shadow: 0 1px 2px #2222;
         }
 
         .header p {
-            font-size: 1.2em;
-            opacity: 0.85;
+            font-size: 1em !important;
+            opacity: 0.93;
+            margin: 2px 0 0 0;
         }
 
-        .controls {
-            padding: 25px 30px;
-            background: #f6f8fc;
-            border-bottom: 1px solid #e3e6f0;
+        .stats,
+        section.stats {
+            flex: 0 0 auto;
             display: flex;
-            gap: 18px;
+            gap: 14px !important;
             flex-wrap: wrap;
-            align-items: center;
-        }
-
-        .stats {
-            display: flex;
-            gap: 18px;
+            justify-content: center;
+            margin: 10px 0 !important;
+            padding: 0 4px;
         }
 
         .stat-card {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: #fff;
-            border-radius: 12px;
-            padding: 18px 24px;
-            box-shadow: 0 2px 8px rgba(102,126,234,0.13);
+            background: #f8fafc;
+            color: var(--primary-dark);
+            border-radius: 12px !important;
+            padding: 12px 20px !important;
+            min-width: 90px !important;
             text-align: center;
-            min-width: 110px;
+            box-shadow: 0 1px 4px rgba(79, 70, 229, 0.08);
+            font-size: 1em !important;
+            font-weight: 600;
+            margin-bottom: 0;
+            border: 1px solid var(--primary);
+            transition: box-shadow 0.2s, transform 0.2s;
         }
 
         .stat-number {
-            font-size: 2em;
+            font-size: 1.3em !important;
             font-weight: bold;
+            line-height: 1;
         }
 
         .stat-label {
-            font-size: 1em;
-            opacity: 0.85;
+            font-size: 0.95em !important;
+            opacity: 0.89;
+            line-height: 1;
+            margin-top: 2px;
+        }
+
+        .controls,
+        nav.controls {
+            flex: 0 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-bottom: 1px solid var(--border);
+            padding: 4px 6px !important;
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 4px !important;
+            justify-content: flex-start;
+            box-shadow: 0 1px 4px rgba(79, 70, 229, 0.04);
         }
 
         .btn {
-            padding: 12px 28px;
             border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 16px;
+            border-radius: 4px !important;
+            padding: 4px 8px !important;
+            font-size: 0.75em !important;
             font-weight: 600;
-            transition: all 0.2s ease;
-            text-decoration: none;
-            display: inline-block;
-            box-shadow: 0 2px 8px rgba(102,126,234,0.10);
+            cursor: pointer;
+            box-shadow: 0 1px 2px rgba(79, 70, 229, 0.07);
+            transition: background 0.18s, box-shadow 0.18s, transform 0.12s;
+            outline: none;
+            margin: 0;
+            white-space: nowrap;
         }
 
         .btn-primary {
-            background: linear-gradient(135deg, #007bff, #764ba2);
-            color: white;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            color: #fff;
         }
 
         .btn-success {
-            background: linear-gradient(135deg, #28a745, #667eea);
-            color: white;
+            background: linear-gradient(90deg, #22d3ee, #38bdf8);
+            color: #fff;
         }
 
         .btn-warning {
-            background: linear-gradient(135deg, #ffc107, #e0a800);
-            color: #212529;
+            background: linear-gradient(90deg, #fbbf24, #f472b6);
+            color: #222;
         }
 
         .btn-secondary {
-            background: #e3e6f0;
-            color: #333;
+            background: #e0e7ff;
+            color: #222;
         }
 
-        .btn:hover {
-            transform: translateY(-2px) scale(1.04);
-            box-shadow: 0 6px 18px rgba(102,126,234,0.18);
-            opacity: 0.93;
+        .btn-danger {
+            background: linear-gradient(90deg, var(--danger), #ef4444);
+            color: #fff;
         }
 
-        .search-box {
-            background: #fff;
-            border-radius: 10px;
-            box-shadow: 0 2px 8px #764ba233;
-            padding: 8px 16px;
+        .btn:hover,
+        .btn:focus {
+            transform: scale(1.02) translateY(-1px);
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.16);
+            opacity: 0.96;
+        }
+
+        .search-container {
             display: flex;
+            gap: 4px;
+            flex-wrap: wrap;
             align-items: center;
-            border: 1.5px solid #764ba2;
-            margin-left: 20px;
-            max-width: 320px;
-        }
-        .search-box input {
-            border: none;
-            background: transparent;
-            font-size: 1.1em;
-            outline: none;
-            width: 100%;
+            flex: 1;
         }
 
-        .table-container {
-            padding: 30px;
-            overflow-x: auto;
-            border: 1px solid #e3e6f0;
-            border-radius: 0 0 20px 20px;
-            background: #fff;
+        .search-box,
+        .estante-box {
+            display: flex;
+            gap: 2px;
+            align-items: center;
         }
+
+        .search-box input,
+        .estante-box input {
+            padding: 4px 6px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 0.75em;
+            width: 120px;
+        }
+
+        .table-container,
+        main.table-container {
+            flex: 1 1 0;
+            min-height: 0;
+            overflow: auto;
+            max-height: 100%;
+            background: transparent;
+            padding: 4px;
+            margin: 0;
+        }
+
         table {
             width: 100%;
-            min-width: 1200px;
+            min-width: 800px;
             border-collapse: collapse;
             background: white;
-            border-radius: 8px;
+            border-radius: 6px;
             overflow: hidden;
             margin: 0;
-            box-shadow: 0 2px 8px rgba(102,126,234,0.07);
+            box-shadow: 0 1px 7px rgba(79, 70, 229, 0.06);
+            font-size: 0.8em;
         }
-        th, td {
-            padding: 14px 10px;
+
+        th,
+        td {
+            padding: 4px 3px;
             text-align: left;
-            border-bottom: 1px solid #e3e6f0;
+            border-bottom: 1px solid #e0e7ef;
+            font-size: 0.85em;
             white-space: nowrap;
-            min-width: 60px;
-        }
-        th {
-            background: linear-gradient(135deg, #343a40, #764ba2);
-            color: white;
-            font-weight: 600;
-            position: sticky;
-            top: 0;
-            z-index: 10;
-            border-right: 1px solid #e3e6f0;
-        }
-        tr:hover {
-            background-color: #f6f8fc;
+            background: rgba(255, 255, 255, 0.97);
             transition: background 0.2s;
         }
-        tbody tr:nth-child(even) {
-            background: #f4f8fc;
+
+        th {
+            background: linear-gradient(90deg, #3730a3 60%, #60a5fa 100%);
+            color: #fff;
+            font-weight: 700;
+            position: sticky;
+            top: 0;
+            z-index: 2;
+            font-size: 0.75em;
+            border-right: 1px solid #e0e7ef;
+            letter-spacing: 0.3px;
+            box-shadow: 0 2px 8px #4f46e525;
+            text-shadow: 0 1px 2px #2222;
         }
-        tbody tr:nth-child(odd) {
+
+        tr:hover {
+            background-color: #f0fdfa;
+            transition: background 0.2s;
+        }
+
+        tr:hover td {
+            background: #e0f2fe !important;
+            color: #222;
+        }
+
+        tbody tr:nth-child(even) td {
+            background: #f1f5f9;
+        }
+
+        tbody tr:nth-child(odd) td {
             background: #fff;
         }
+
+        .edit-btn,
+        .delete-btn,
+        .return-btn,
+        .qr-btn {
+            border: none;
+            padding: 3px 6px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 0.7em;
+            margin: 1px;
+            white-space: nowrap;
+        }
+
         .edit-btn {
-            background: linear-gradient(135deg, #007bff, #764ba2);
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
             color: #fff;
-            border: none;
-            padding: 7px 16px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 14px;
-            margin-right: 4px;
         }
+
         .edit-btn:hover {
-            background: linear-gradient(135deg, #0056b3, #764ba2);
+            background: linear-gradient(90deg, #312e81, var(--secondary));
         }
+
         .delete-btn {
-            background: linear-gradient(135deg, #dc3545, #764ba2);
+            background: linear-gradient(90deg, var(--danger), var(--primary));
             color: white;
-            border: none;
-            padding: 7px 16px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 14px;
         }
+
         .delete-btn:hover {
-            background: linear-gradient(135deg, #a71d2a, #764ba2);
+            background: linear-gradient(90deg, #b91c1c, var(--primary));
         }
-        /* Modal */
+
+        .return-btn {
+            background: linear-gradient(90deg, #22d3ee, var(--accent));
+            color: white;
+        }
+
+        .qr-btn {
+            background: linear-gradient(90deg, #10b981, #059669);
+            color: white;
+        }
+
         .modal {
             display: none;
             position: fixed;
@@ -214,238 +310,884 @@
             top: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(102,126,234,0.18);
-            backdrop-filter: blur(5px);
+            background-color: rgba(106, 90, 205, 0.16);
+            backdrop-filter: blur(4px);
             overflow-y: auto;
         }
+
         .modal-content {
             background-color: #fff;
-            margin: 5% auto;
+            margin: 2% auto;
             padding: 0;
-            border-radius: 20px;
+            border-radius: 12px;
             width: 95%;
-            max-width: 600px;
-            max-height: 85vh;
+            max-width: 500px;
+            max-height: 90vh;
             overflow-y: auto;
-            box-shadow: 0 20px 40px rgba(102,126,234,0.22);
+            box-shadow: 0 20px 42px rgba(106, 90, 205, 0.15);
             animation: modalSlideIn 0.3s ease;
-            position: relative;
-            top: 0;
         }
+
         @keyframes modalSlideIn {
-            from { opacity: 0; transform: translateY(-60px);}
-            to { opacity: 1; transform: translateY(0);}
+            from {
+                opacity: 0;
+                transform: translateY(-60px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
+
         .modal-header {
-            background: linear-gradient(135deg, #764ba2, #667eea);
+            background: linear-gradient(90deg, var(--primary-dark), var(--primary));
             color: white;
-            padding: 24px 32px;
-            border-radius: 20px 20px 0 0;
+            padding: 12px 16px;
+            border-radius: 12px 12px 0 0;
         }
+
         .modal-header h2 {
             margin: 0;
-            font-size: 1.5em;
+            font-size: 1.1em;
         }
+
         .close {
             position: absolute;
-            right: 24px;
-            top: 24px;
-            font-size: 2em;
+            right: 12px;
+            top: 8px;
+            font-size: 1.5em;
             color: #fff;
             cursor: pointer;
             opacity: 0.8;
+            font-weight: 400;
         }
+
         .close:hover {
             opacity: 1;
         }
+
         .modal-body {
-            padding: 28px 32px;
+            padding: 12px 16px 16px 16px;
         }
+
         .form-group {
-            margin-bottom: 18px;
+            margin-bottom: 10px;
         }
+
         .form-group label {
             display: block;
             font-weight: 600;
-            margin-bottom: 6px;
-            color: #764ba2;
+            margin-bottom: 4px;
+            color: var(--primary-dark);
+            font-size: 0.9em;
         }
+
         .form-group input,
         .form-group select,
         .form-group textarea {
             width: 100%;
-            padding: 10px 14px;
-            border: 1.5px solid #e3e6f0;
-            border-radius: 7px;
-            font-size: 15px;
-            background: #f6f8fc;
+            padding: 6px 8px;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            font-size: 0.9em;
+            background: #f9fafd;
             transition: border-color 0.2s;
         }
+
         .form-group input:focus,
         .form-group select:focus,
         .form-group textarea:focus {
-            border-color: #764ba2;
+            border-color: var(--primary);
             outline: none;
+            background: #fff;
         }
+
         .form-group textarea {
-            min-height: 40px;
+            min-height: 30px;
             resize: vertical;
         }
+
         .form-actions {
             display: flex;
             justify-content: flex-end;
-            gap: 12px;
-            margin-top: 18px;
-        }
-        .loan-form, .donation-form {
-            background: #f6f8fc;
-            border-radius: 10px;
-            padding: 14px 18px;
-            margin-bottom: 12px;
-            box-shadow: 0 1px 4px rgba(102,126,234,0.07);
-        }
-        .loan-form h4, .donation-form h4 {
-            color: #764ba2;
-            margin-bottom: 10px;
-        }
-        @media (max-width: 900px) {
-            .container, .table-container, .modal-content {
-                padding: 10px;
-                border-radius: 10px;
-            }
-            .header {
-                padding: 18px 10px;
-                border-radius: 10px 10px 0 0;
-            }
-            .controls {
-                padding: 10px;
-                gap: 10px;
-            }
-            .modal-body {
-                padding: 12px 10px;
-            }
-        }
-        /* Alert flotante */
-        #autoAlert {
-            display:none;
-            position:fixed;
-            top:30px;
-            right:30px;
-            z-index:9999;
-            padding:16px 28px;
-            background:#764ba2;
-            color:#fff;
-            border-radius:8px;
-            box-shadow:0 2px 8px #764ba299;
-            font-size:1.2em;
-        }
-        .estante-box {
-            background: #f6f8fc;
-            border-radius: 12px;
-            box-shadow: 0 2px 8px #764ba233;
-            padding: 10px 18px;
-            display: flex;
-            align-items: center;
-            border: 2px solid #764ba2;
-            margin-left: 20px;
             gap: 8px;
-            max-width: 350px;
+            margin-top: 8px;
         }
-        .estante-box input {
-            border: none;
-            background: transparent;
-            font-size: 1.1em;
-            outline: none;
-            width: 100px;
-            margin-right: 8px;
+
+        footer {
+            flex: 0 0 auto;
+            background: var(--primary-dark);
+            color: #fff;
+            text-align: center;
+            padding: 8px;
+            font-size: 0.8em;
+            border-radius: 0 0 12px 12px;
+            letter-spacing: 0.5px;
         }
-        .estante-box button {
-            margin-left: 0;
+
+        #autoAlert {
+            display: none;
+            position: fixed;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 9999;
+            padding: 20px 30px;
+            background: var(--primary);
+            color: #fff;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px #6a5acdcc;
+            font-size: 1em;
+            min-width: 250px;
+            text-align: center;
+            max-width: 90vw;
+            font-weight: 500;
+            transition: opacity 0.3s;
+            opacity: 0;
+        }
+
+        #autoAlert[style*="display: block"] {
+            opacity: 1;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* QR Modal específico */
+        .qr-modal-content {
+            text-align: center;
+            padding: 20px;
+        }
+
+        .qr-code-container {
+            margin: 20px 0;
+            display: flex;
+            justify-content: center;
+        }
+
+        /* Responsivo móvil */
+        @media (max-width: 768px) {
+            .container {
+                height: 100vh;
+                overflow: hidden;
+                padding: 0 !important;
+            }
+
+            .header {
+                padding: 8px !important;
+            }
+
+            .header h1 {
+                font-size: 1.1em !important;
+            }
+
+            .header p {
+                font-size: 0.8em !important;
+            }
+
+            .stats {
+                gap: 6px !important;
+                margin: 4px 0 !important;
+                flex-wrap: wrap;
+            }
+
+            .stat-card {
+                padding: 6px 10px !important;
+                min-width: 60px !important;
+                font-size: 0.9em !important;
+            }
+
+            .controls {
+                flex-direction: column !important;
+                align-items: stretch !important;
+                gap: 8px !important;
+                padding: 8px !important;
+            }
+
+            .controls > * {
+                width: 100% !important;
+                margin-bottom: 4px !important;
+            }
+
+            .btn {
+                padding: 10px 0 !important;
+                font-size: 1em !important;
+                width: 100% !important;
+                margin-bottom: 4px !important;
+            }
+
+            .search-box,
+            .estante-box {
+                flex-direction: column !important;
+                gap: 6px !important;
+                width: 100% !important;
+            }
+
+            .search-box input,
+            .estante-box input {
+                width: 100% !important;
+                font-size: 1em !important;
+                padding: 10px 8px !important;
+            }
+
+            .table-container {
+                overflow-x: auto !important;
+                padding: 2px !important;
+            }
+
+            table {
+                min-width: 600px !important;
+                font-size: 0.85em !important;
+            }
+
+            th,
+            td {
+                padding: 4px 2px !important;
+                font-size: 0.85em !important;
+            }
+
+            .edit-btn,
+            .delete-btn,
+            .return-btn,
+            .qr-btn {
+                padding: 6px 8px !important;
+                font-size: 0.9em !important;
+            }
+
+            .modal-content {
+                width: 99vw !important;
+                margin: 0 auto !important;
+                max-width: 99vw !important;
+                padding: 0 !important;
+            }
+
+            .modal-header,
+            .modal-body {
+                padding: 16px !important;
+            }
+
+            .form-group label {
+                font-size: 1em !important;
+            }
+
+            .form-group input,
+            .form-group select,
+            .form-group textarea {
+                font-size: 1em !important;
+                padding: 10px 8px !important;
+            }
+
+            .form-actions {
+                gap: 12px !important;
+                flex-direction: column !important;
+            }
+
+            footer {
+                padding: 8px;
+                font-size: 0.9em;
+            }
+
+            #autoAlert {
+                font-size: 1em;
+                padding: 18px 24px;
+                min-width: 200px;
+            }
         }
     </style>
 </head>
+
 <body>
-    <div class="container">
-        <div class="header">
+    <div class="container" role="main">
+        <header class="header" aria-label="Encabezado principal">
             <h1>📚 Biblioteca de Batlle</h1>
             <p>Sistema de Gestión de Biblioteca</p>
-        </div>
-        <div class="controls">
-            <div class="stats">
-                <div class="stat-card">
-                    <div class="stat-number" id="totalBooks">0</div>
-                    <div class="stat-label">Total Libros</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number" id="availableBooks">0</div>
-                    <div class="stat-label">Disponibles (físicos)</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number" id="loanedBooks">0</div>
-                    <div class="stat-label">Prestados</div>
-                </div>
+        </header>
+
+        <section class="stats" aria-label="Estadísticas de la biblioteca">
+            <div class="stat-card">
+                <div class="stat-number" id="totalBooks">0</div>
+                <div class="stat-label">Total</div>
             </div>
+            <div class="stat-card">
+                <div class="stat-number" id="availableBooks">0</div>
+                <div class="stat-label">Disponibles</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="loanedBooks">0</div>
+                <div class="stat-label">Prestados</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="donatedBooks">0</div>
+                <div class="stat-label">Donados</div>
+            </div>
+        </section>
+
+        <!-- Agrega el botón para generar QR de estantes en la barra de controles -->
+        <nav class="controls" aria-label="Controles principales"
+            style="display: flex; align-items: center; flex-wrap: wrap; gap: 14px; background: linear-gradient(90deg, #f0f4ff 60%, #e0e7ff 100%); border-radius: 14px; box-shadow: 0 2px 10px #4f46e525; padding: 14px 18px 14px 18px; margin-bottom: 10px;">
+            <!-- Botón Agregar libro junto a Importar/Exportar -->
             <button class="btn btn-primary" onclick="openAddBookModal()">➕ Agregar Nuevo Libro</button>
-            <div class="search-box">
-                <input type="text" id="searchInput" placeholder="🔍 Buscar libros por título, autor, año..." oninput="searchBooks()" onkeyup="searchBooks()">
-            </div>
+            <button class="btn btn-warning" onclick="document.getElementById('importFile').click()">📁 Importar
+                Excel</button>
+            <button class="btn btn-success" onclick="exportData()">📊 Exportar Datos</button>
+            <button class="btn btn-secondary" onclick="generarInformeRepetidos()">Informe</button>
+            <!-- NUEVO BOTÓN QR ESTANTES -->
+            <button class="btn btn-success" onclick="generarQREstantes()">QR Estantes</button>
             <input type="file" id="importFile" accept=".xlsx,.xls,.csv" style="display: none;" onchange="importData()">
-            <div style="display: flex; align-items: center; gap: 10px; width: 100%; margin-top: 18px;">
-                <button class="btn btn-warning" onclick="document.getElementById('importFile').click()">📁 Importar Excel</button>
-                <button class="btn btn-success" onclick="exportData()">📊 Exportar Datos</button>
-                <div class="estante-box" style="margin-left:0;max-width:350px;width:100%;">
-                    <input type="number" id="searchEstante" placeholder="Estante..." min="1">
-                    <button class="btn btn-secondary" onclick="searchByEstante()">Buscar</button>
+            <div style="display: flex; align-items: center; gap: 12px; margin-left: auto;">
+                <div class="estante-box"
+                    style="display: flex; align-items: center; gap: 6px; background: #f8fafc; border-radius: 8px; padding: 4px 8px; box-shadow: 0 1px 4px #4f46e525;">
+                    <input type="number" id="searchEstante" placeholder="Estante..." min="1"
+                        style="width: 80px; border-radius: 6px; border: 1.5px solid #b6b6e0; padding: 6px 8px;">
+                    <button class="btn btn-secondary" id="btnBuscarEstante" onclick="searchByEstante()">Buscar
+                        fila</button>
                     <button class="btn btn-secondary" onclick="exportEstantePDF()">PDF</button>
                 </div>
+                <div class="search-box"
+                    style="max-width: 700px; min-width: 340px; width: 540px; background: #f8fafc; border-radius: 8px; box-shadow: 0 1px 4px #4f46e525; padding: 4px 12px; display: flex; align-items: center; border: 1.5px solid #b6b6e0;">
+                    <input type="text" id="searchInput" placeholder="🔍 Buscar libros por título, autor, año..."
+                        style="width: 100%; border: none; background: transparent; font-size: 1em; outline: none;">
+                </div>
             </div>
-        </div>
-        <div class="table-container">
-            <table id="booksTable">
-                <thead>
-                    <tr>
-                        <th>Ordinal</th>
-                        <th>Estante</th>
-                        <th>Apellido</th>
-                        <th>Nombre</th>
-                        <th>Título</th>
-                        <th>Año</th>
-                        <th>Encuadernado</th>
-                        <th>Observaciones</th>
-                        <th>Ejemplares</th>
-                        <th>Acción</th>
-                        <th>Editar</th>
-                        <th>Eliminar</th>
-                    </tr>
-                </thead>
-                <tbody id="booksTableBody"></tbody>
-            </table>
-        
+        </nav>
+
+        <main class="table-container" aria-label="Listado de libros">
+            <div style="overflow-x:auto; width:100%;">
+                <table id="booksTable">
+                    <thead>
+                        <tr>
+                            <th>Ord</th>
+                            <th>Est</th>
+                            <th>Apellido</th>
+                            <th>Nombre</th>
+                            <th>Título</th>
+                            <th>Año</th>
+                            <th>Enc</th>
+                            <th>Obs</th>
+                            <th>Ej</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="booksTableBody"></tbody>
+                </table>
+            </div>
+        </main>
+
+        <footer>
+            Biblioteca de Batlle &copy; <span id="anioFooter"></span>
+        </footer>
     </div>
+
     <!-- Alert flotante -->
     <div id="autoAlert"></div>
-    <!-- Modal para agregar/editar libro (igual que antes) -->
-    <!-- ...tu modal aquí... -->
+
+    <!-- Modal para agregar/editar libro -->
+    <div id="bookModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">Agregar Nuevo Libro</h2>
+                <span class="close" onclick="closeModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="form-group"><label>Estante</label><input type="text" id="modalEstante"></div>
+                <div class="form-group"><label>Apellido</label><input type="text" id="modalApellido"></div>
+                <div class="form-group"><label>Nombre</label><input type="text" id="modalNombre"></div>
+                <div class="form-group"><label>Título</label><input type="text" id="modalTitulo"></div>
+                <!-- Campo de año en el modal de agregar/editar libro por un input numérico y opción "No especifica año" -->
+                <div class="form-group">
+                    <label>Año</label>
+                    <div style="display: flex; gap: 8px;">
+                        <input type="number" id="modalAnio" min="0" max="2100" placeholder="Ej: 2024" style="flex:1;">
+                        <button class="btn btn-secondary" type="button" onclick="document.getElementById('modalAnio').value=''">No especifica año</button>
+                    </div>
+                </div>
+                <!-- Campo Encuadernado por dos radio buttons en la misma línea -->
+                <div class="form-group">
+                    <label style="margin-right: 12px;">Encuadernado</label>
+                    <div style="display: inline-flex; gap: 18px; align-items: center;">
+                        <label style="display: flex; align-items: center; gap: 4px;">
+                            <input type="radio" name="modalEncuadernado" id="modalEncuadernadoSi" value="Sí" checked>
+                            Sí
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 4px;">
+                            <input type="radio" name="modalEncuadernado" id="modalEncuadernadoNo" value="No">
+                            No
+                        </label>
+                    </div>
+                </div>
+                <div class="form-group"><label>Observaciones</label><textarea id="modalObservaciones"></textarea></div>
+                <div class="form-group"><label>Ejemplares</label><input type="number" id="modalEjemplares" value="1"
+                        min="1"></div>
+                <!-- Campo ISBN y botón de escaneo en el modal de agregar libro -->
+                <div class="form-group">
+                    <label>ISBN</label>
+                    <div style="display:flex; gap:8px; align-items:center;">
+                        <input type="text" id="modalISBN" placeholder="Escanear o ingresar ISBN" style="flex:1;">
+                        <button class="btn btn-secondary" type="button" onclick="scanISBN()">📷 Escanear</button>
+                        <button class="btn btn-success" type="button" onclick="buscarDatosISBN()">Buscar</button>
+                    </div>
+                    <div id="scanner" style="display:none; margin-top:8px;"></div>
+                </div>
+                <div class="form-actions">
+                    <button class="btn btn-primary" onclick="saveBook()">Guardar</button>
+                    <button class="btn btn-secondary" onclick="closeModal()">Cancelar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para préstamo -->
+    <div id="loanModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Registrar Préstamo</h2>
+                <span class="close" onclick="closeLoanModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Fecha de Préstamo</label>
+                    <input type="date" id="loanDate" required>
+                </div>
+                <div class="form-group">
+                    <label>Nombre</label>
+                    <input type="text" id="loanName" required>
+                </div>
+                <div class="form-group">
+                    <label>Apellido</label>
+                    <input type="text" id="loanLastName" required>
+                </div>
+                <div class="form-actions">
+                    <button class="btn btn-primary" onclick="saveLoan()">Confirmar Préstamo</button>
+                    <button class="btn btn-secondary" onclick="closeLoanModal()">Cancelar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para donación -->
+    <div id="donationModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Registrar Donación</h2>
+                <span class="close" onclick="closeDonationModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Fecha de Donación</label>
+                    <input type="date" id="donationDate" required>
+                </div>
+                <div class="form-group">
+                    <label>Tipo de Destinatario</label>
+                    <select id="donationType" onchange="toggleDonationFields()">
+                        <option value="persona">Persona</option>
+                        <option value="institucion">Institución</option>
+                    </select>
+                </div>
+                <div id="personFields">
+                    <div class="form-group">
+                        <label>Nombre</label>
+                        <input type="text" id="donationPersonName">
+                    </div>
+                    <div class="form-group">
+                        <label>Apellido</label>
+                        <input type="text" id="donationPersonLastName">
+                    </div>
+                </div>
+                <div id="institutionFields" class="hidden">
+                    <div class="form-group">
+                        <label>Nombre de la Institución</label>
+                        <input type="text" id="donationInstitutionName">
+                    </div>
+                    <div class="form-group">
+                        <label>Nombre del Responsable</label>
+                        <input type="text" id="donationResponsibleName">
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <button class="btn btn-primary" onclick="saveDonation()">Confirmar Donación</button>
+                    <button class="btn btn-secondary" onclick="closeDonationModal()">Cancelar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para QR -->
+    <div id="qrModal" class="modal">
+        <div class="modal-content qr-modal-content">
+            <div class="modal-header">
+                <h2 id="qrModalTitle">Código QR</h2>
+                <span class="close" onclick="closeQRModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div id="qrCodeContainer" class="qr-code-container"></div>
+                <div class="form-actions">
+                    <button class="btn btn-success" onclick="downloadQR()">Descargar QR</button>
+                    <button class="btn btn-secondary" onclick="closeQRModal()">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Botón flotante justo antes del cierre de </body> -->
+    <button id="fabAddBook" class="btn btn-primary" onclick="openAddBookModal()" aria-label="Agregar libro"
+        style="position: fixed; right: 18px; bottom: 18px; z-index: 9999; border-radius: 50%; width: 54px; height: 54px; box-shadow: 0 4px 16px #4f46e555; display: none; font-size: 2em; align-items: center; justify-content: center; padding: 0;">
+        ➕
+    </button>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
+    <script src="https://unpkg.com/html5-qrcode@2.3.10/minified/html5-qrcode.min.js"></script>
     <script>
+        // Buscar por estante con Enter
+        document.addEventListener('DOMContentLoaded', function() {
+            const estanteInput = document.getElementById('searchEstante');
+            if (estanteInput) {
+                estanteInput.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        searchByEstante();
+                    }
+                });
+            }
+        });
+        // Filtrar libros por estante
+        function searchByEstante() {
+            const estante = document.getElementById('searchEstante').value.trim();
+            if (!estante) {
+                renderTable();
+                return;
+            }
+            const filtrados = books.filter(b => (b.estante || '').toString().trim() === estante);
+            renderTable(filtrados);
+            showAutoAlert(`Mostrando libros del estante ${estante}`, 2000);
+        }
         let books = [];
         let nextOrdinal = 1;
         let editingIndex = -1;
+        let currentActionBookIndex = -1;
+        let searchTerm = '';
+        let filteredBooks = [];
+        let currentQRData = null;
+
+        // Función para generar informe de depuración con libros repetidos
+        function generarInformeDepuracion() {
+            if (!Array.isArray(books) || books.length === 0) {
+                showAutoAlert('No hay datos de libros cargados.', 3000);
+                return;
+            }
+            // Buscar libros repetidos por título y autor
+            const mapa = {};
+            books.forEach(b => {
+                const clave = normaliza(b.titulo) + '|' + normaliza(b.apellido) + '|' + normaliza(b.nombre);
+                if (!mapa[clave]) mapa[clave] = [];
+                mapa[clave].push(b);
+            });
+            const repetidos = Object.values(mapa).filter(arr => arr.length > 1);
+            // Generar PDF con jsPDF
+            const doc = new jspdf.jsPDF();
+            doc.setFontSize(18);
+            doc.text('Informe de la Biblioteca de Batlle', 105, 20, { align: 'center' });
+            doc.setFontSize(12);
+            doc.text(`Fecha del informe: ${new Date().toLocaleDateString()}`, 105, 30, { align: 'center' });
+            doc.text(`Total de libros: ${books.length}`, 105, 38, { align: 'center' });
+            doc.text(`Grupos de libros repetidos encontrados: ${repetidos.length}`, 105, 46, { align: 'center' });
+            if (repetidos.length === 0) {
+                doc.setFontSize(14);
+                doc.text('✅ ¡Excelente! No se encontraron libros repetidos.', 105, 60, { align: 'center' });
+                doc.text('La biblioteca está bien organizada.', 105, 70, { align: 'center' });
+            } else {
+                let startY = 60;
+                repetidos.forEach((grupo, index) => {
+                    if (startY > 250) {
+                        doc.addPage();
+                        startY = 20;
+                    }
+                    doc.setFontSize(7);
+                    // Texto de grupo y autor para que no se desborde
+                    const titulo = `Grupo ${index + 1}: ${grupo[0].titulo}`;
+                    const autor = `Autor: ${grupo[0].apellido}, ${grupo[0].nombre}`;
+                    const tituloLines = doc.splitTextToSize(titulo, 130);
+                    const autorLines = doc.splitTextToSize(autor, 130);
+                    doc.text(tituloLines, 10, startY);
+                    doc.text(autorLines, 10, startY + 4);
+                    const rows = grupo.map(b => [
+                        b.ordinal || '',
+                        b.estante || '',
+                        b.año || '',
+                        b.ejemplares || ''
+                    ]);
+                    doc.autoTable({
+                        head: [['Ordinal', 'Estante', 'Año', 'Ejemplares']],
+                        body: rows,
+                        startY: startY + 8,
+                        styles: { fontSize: 7, cellPadding: 1 },
+                        headStyles: { fillColor: [44, 62, 80], textColor: 255, fontStyle: 'bold' },
+                        alternateRowStyles: { fillColor: [240, 245, 255] },
+                        margin: { left: 10, right: 10 },
+                        theme: 'grid',
+                        didDrawPage: function (data) { }
+                    });
+                    startY = doc.lastAutoTable.finalY + 6;
+                });
+            }
+            doc.save('informe_libros_repetidos.pdf');
+        }
+
+        // Función de generación de PDF de libros repetidos
+        function generarInformeRepetidos() {
+            if (!Array.isArray(books) || books.length === 0) {
+                showAutoAlert('No hay datos de libros cargados.', 3000);
+                return;
+            }
+            // Consideramos repetidos por Título y Autor (Apellido+Nombre)
+            const mapa = {};
+            books.forEach(b => {
+                const clave = normaliza(b.titulo) + '|' + normaliza(b.apellido) + '|' + normaliza(b.nombre);
+                if (!mapa[clave]) mapa[clave] = [];
+                mapa[clave].push(b);
+            });
+            const repetidos = Object.values(mapa).filter(arr => arr.length > 1);
+            if (repetidos.length === 0) {
+                showAutoAlert('No se encontraron libros repetidos.', 3500);
+                return;
+            }
+            // Generar PDF con encabezado limpio
+            const doc = new jspdf.jsPDF();
+            doc.setFontSize(16);
+            doc.setTextColor(44, 62, 80);
+            doc.text('Informe de la Biblioteca de Batlle', 105, 30, { align: 'center' });
+            doc.setFontSize(12);
+            doc.setTextColor(80, 80, 80);
+            doc.text('Fecha: ' + new Date().toLocaleString(), 105, 40, { align: 'center' });
+            doc.setFontSize(11);
+            doc.text('Cantidad de grupos repetidos: ' + repetidos.length, 105, 48, { align: 'center' });
+            doc.addPage();
+            // Tabla
+            let rows = [];
+            repetidos.forEach(arr => {
+                arr.forEach(b => {
+                    rows.push([
+                        b.ordinal || '',
+                        b.estante || '',
+                        b.apellido || '',
+                        b.nombre || '',
+                        b.titulo || '',
+                        b.año || '',
+                        b.ejemplares || ''
+                    ]);
+                });
+                // Fila vacía para separar grupos
+                rows.push(['', '', '', '', '', '', '']);
+            });
+            doc.autoTable({
+                head: [['Ordinal', 'Estante', 'Apellido', 'Nombre', 'Título', 'Año', 'Ejemplares']],
+                body: rows,
+                startY: 20,
+                styles: { fontSize: 10, cellPadding: 2 },
+                headStyles: { fillColor: [44, 62, 80], textColor: 255, fontStyle: 'bold' },
+                alternateRowStyles: { fillColor: [240, 245, 255] },
+                margin: { left: 10, right: 10 },
+                didDrawPage: function (data) {
+                    if (data.pageNumber === 1) {
+                        doc.setFontSize(14);
+                        doc.setTextColor(44, 62, 80);
+                        doc.text('Detalle de Libros Repetidos', 105, 15, { align: 'center' });
+                    }
+                }
+            });
+            doc.save('informe_libros_repetidos.pdf');
+        }
+
+        // Función para generar QR de un libro específico
+        function generarQRLibro(index) {
+            const libro = books[index];
+            const qrData = {
+                tipo: 'libro',
+                ordinal: libro.ordinal,
+                titulo: libro.titulo,
+                autor: `${libro.apellido}, ${libro.nombre}`,
+                estante: libro.estante,
+                año: libro.año,
+                biblioteca: 'Batlle'
+            };
+
+            currentQRData = qrData;
+            mostrarQR(JSON.stringify(qrData), `QR - ${libro.titulo}`);
+        }
+
+        // Función para generar QR de todos los estantes
+        function generarQREstantes() {
+            const estantes = [...new Set(books.map(b => b.estante).filter(e => e))].sort((a, b) => {
+                return parseInt(a) - parseInt(b);
+            });
+
+            if (estantes.length === 0) {
+                showAutoAlert('No hay estantes registrados', 3000);
+                return;
+            }
+
+            // Generar PDF con QR de todos los estantes
+            const doc = new jspdf.jsPDF();
+            doc.setFontSize(18);
+            doc.text('📚 Códigos QR - Estantes', 20, 20);
+
+            let x = 20;
+            let y = 40;
+            const qrSize = 60;
+            const spacing = 80;
+
+            estantes.forEach((estante, index) => {
+                if (x > 140) {
+                    x = 20;
+                    y += spacing;
+                }
+                if (y > 250) {
+                    doc.addPage();
+                    y = 40;
+                    x = 20;
+                }
+
+                const qrData = {
+                    tipo: 'estante',
+                    numero: estante,
+                    biblioteca: 'Batlle',
+                    libros: books.filter(b => b.estante === estante).length
+                };
+
+                // Crear QR
+                const qr = qrcode(0, 'M');
+                qr.addData(JSON.stringify(qrData));
+                qr.make();
+
+                // Convertir QR a imagen base64
+                const qrImage = qr.createDataURL(8);
+                doc.addImage(qrImage, 'PNG', x, y, qrSize, qrSize);
+
+                // Agregar etiqueta
+                doc.setFontSize(12);
+                doc.text(`Estante ${estante}`, x + qrSize / 2, y + qrSize + 8, { align: 'center' });
+                doc.setFontSize(10);
+                doc.text(`${books.filter(b => b.estante === estante).length} libros`, x + qrSize / 2, y + qrSize + 16, { align: 'center' });
+
+                x += spacing;
+            });
+
+            doc.save(`QR_Estantes_${new Date().toISOString().split('T')[0]}.pdf`);
+            showAutoAlert('📱 Códigos QR de estantes generados', 3000);
+        }
+
+        // Función para mostrar QR en modal
+        function mostrarQR(data, title) {
+            document.getElementById('qrModalTitle').textContent = title;
+
+            const qr = qrcode(0, 'M');
+            qr.addData(data);
+            qr.make();
+
+            const qrContainer = document.getElementById('qrCodeContainer');
+            qrContainer.innerHTML = qr.createImgTag(8);
+
+            document.getElementById('qrModal').style.display = 'block';
+        }
+
+        // Función para descargar QR individual
+        function downloadQR() {
+            if (!currentQRData) return;
+
+            const qr = qrcode(0, 'M');
+            qr.addData(JSON.stringify(currentQRData));
+            qr.make();
+
+            const canvas = document.createElement('canvas');
+            const size = 400;
+            canvas.width = size;
+            canvas.height = size;
+            const ctx = canvas.getContext('2d');
+
+            const qrSize = qr.getModuleCount();
+            const cellSize = size / qrSize;
+
+            ctx.fillStyle = '#FFFFFF';
+            ctx.fillRect(0, 0, size, size);
+
+            ctx.fillStyle = '#000000';
+            for (let row = 0; row < qrSize; row++) {
+                for (let col = 0; col < qrSize; col++) {
+                    if (qr.isDark(row, col)) {
+                        ctx.fillRect(col * cellSize, row * cellSize, cellSize, cellSize);
+                    }
+                }
+            }
+
+            const link = document.createElement('a');
+            link.download = `QR_${currentQRData.tipo}_${currentQRData.ordinal || currentQRData.numero}.png`;
+            link.href = canvas.toDataURL();
+            link.click();
+        }
+
+        function closeQRModal() {
+            document.getElementById('qrModal').style.display = 'none';
+            currentQRData = null;
+        }
+
+        // Normalización para búsqueda amigable
+        function normaliza(txt) {
+            if (!txt) return "";
+            return txt
+                .toString()
+                .normalize("NFD")
+                .replace(/[\u0300-\u036f]/g, "")
+                .replace(/[^\w\s]/gi, "")
+                .toLowerCase()
+                .replace(/\s+/g, " ")
+                .trim();
+        }
+
+        function showAutoAlert(msg, ms = 2500) {
+            const el = document.getElementById('autoAlert');
+            el.textContent = msg;
+            el.style.display = 'block';
+            clearTimeout(window._autoAlertTimeout);
+            window._autoAlertTimeout = setTimeout(() => { el.style.display = 'none'; }, ms);
+        }
+
+        function hideAutoAlert() {
+            const el = document.getElementById('autoAlert');
+            el.style.display = 'none';
+        }
 
         window.onload = function () {
             loadBooks();
             updateStats();
             renderTable();
             setInterval(autoSave, 30000);
+
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('loanDate').value = today;
+            document.getElementById('donationDate').value = today;
+            document.getElementById('anioFooter').textContent = new Date().getFullYear();
+
+            const searchInput = document.getElementById('searchInput');
+            const debouncedSearch = debounce(function () {
+                hideAutoAlert();
+                searchBooks();
+            }, 250);
+            searchInput.addEventListener('input', debouncedSearch);
+            searchInput.addEventListener('keyup', debouncedSearch);
         };
 
-        function showAutoAlert(msg, ms=2000) {
-            const el = document.getElementById('autoAlert');
-            el.textContent = msg;
-            el.style.display = 'block';
-            setTimeout(()=>{ el.style.display='none'; }, ms);
+        // Debounce para optimizar la búsqueda
+        function debounce(fn, delay) {
+            let timer = null;
+            return function (...args) {
+                clearTimeout(timer);
+                timer = setTimeout(() => fn.apply(this, args), delay);
+            };
         }
 
         function loadBooks() {
@@ -471,140 +1213,384 @@
         }
 
         function updateStats() {
-            const total = books.reduce((sum, b) => sum + (parseInt(b.ejemplares)||1), 0);
-            const donados = books.filter(b => b.accion === 'Donado').reduce((sum, b) => sum + (parseInt(b.ejemplares)||1), 0);
-            const prestados = books.filter(b => b.accion === 'Prestado').reduce((sum, b) => sum + (parseInt(b.ejemplares)||1), 0);
+            const total = books.reduce((sum, b) => sum + (parseInt(b.ejemplares) || 1), 0);
+            const donados = books.filter(b => b.accion === 'Donado').reduce((sum, b) => sum + (parseInt(b.ejemplares) || 1), 0);
+            const prestados = books.filter(b => b.accion === 'Prestado').reduce((sum, b) => sum + (parseInt(b.ejemplares) || 1), 0);
             const disponibles = total - donados - prestados;
+
             document.getElementById('totalBooks').textContent = total;
             document.getElementById('availableBooks').textContent = disponibles;
             document.getElementById('loanedBooks').textContent = prestados;
+            document.getElementById('donatedBooks').textContent = donados;
         }
 
-        function renderTable(filteredBooks) {
+        function renderTable(booksToShow) {
+            const displayBooks = booksToShow || books;
             const tbody = document.getElementById('booksTableBody');
-            const booksToShow = filteredBooks || books;
-            tbody.innerHTML = booksToShow.map((book, i) => {
+            tbody.innerHTML = '';
+            const fragment = document.createDocumentFragment();
+
+            displayBooks.forEach((book, i) => {
                 const realIndex = books.findIndex(b => b.ordinal === book.ordinal);
-                return `
-                    <tr>
-                        <td>${book.ordinal}</td>
-                        <td>${book.estante}</td>
-                        <td>${book.apellido}</td>
-                        <td>${book.nombre}</td>
-                        <td>${book.titulo}</td>
-                        <td>${book.año}</td>
-                        <td>${book.encuadernado}</td>
-                        <td>${book.observaciones}</td>
-                        <td>${book.ejemplares}</td>
-                        <td>
-                            <select onchange="changeAction(${realIndex}, this.value)">
-                                <option value="Disponible" ${book.accion==='Disponible'?'selected':''}>Disponible</option>
-                                <option value="Prestado" ${book.accion==='Prestado'?'selected':''}>Prestado</option>
-                                <option value="Donado" ${book.accion==='Donado'?'selected':''}>Donado</option>
-                                <option value="Para donar" ${book.accion==='Para donar'?'selected':''}>Para donar</option>
-                            </select>
-                        </td>
-                        <td><button class="edit-btn" onclick="editBook(${realIndex})">✏️ Editar</button></td>
-                        <td><button class="delete-btn" onclick="deleteBook(${realIndex})">🗑️ Eliminar</button></td>
-                    </tr>
+                const row = document.createElement('tr');
+
+                let actionSelect = `
+                    <select onchange="changeAction(${realIndex}, this.value)" style="font-size: 0.7em; padding: 2px;">
+                        <option value="Disponible" ${book.accion === 'Disponible' ? 'selected' : ''}>Disponible</option>
+                        <option value="Prestado" ${book.accion === 'Prestado' ? 'selected' : ''}>Prestado</option>
+                        <option value="Donado" ${book.accion === 'Donado' ? 'selected' : ''}>Donado</option>
+                        <option value="Para donar" ${book.accion === 'Para donar' ? 'selected' : ''}>Para donar</option>
+                    </select>
                 `;
-            }).join('');
+
+                if (book.accion === 'Prestado' && book.actionDetails) {
+                    actionSelect += `<br><button class="return-btn" onclick="returnBook(${realIndex})">Devolver</button>`;
+                }
+
+                let actionDetailsHtml = '';
+                if (book.actionDetails) {
+                    actionDetailsHtml = `<div class="action-details" style="font-size: 0.6em; color: #666; margin-top: 2px;">${book.actionDetails}</div>`;
+                }
+
+                row.innerHTML = `
+                    <td>${book.ordinal}</td>
+                    <td>${book.estante}</td>
+                    <td>${book.apellido}</td>
+                    <td>${book.nombre}</td>
+                    <td>${book.titulo}</td>
+                    <td>${book.año}</td>
+                    <td>${book.encuadernado}</td>
+                    <td>${book.observaciones}</td>
+                    <td>${book.ejemplares}</td>
+                    <td>
+                        ${actionSelect}
+                        ${actionDetailsHtml}
+                    </td>
+                    <td>
+                        <button class="edit-btn" onclick="editBook(${realIndex})">✏️</button>
+                        <button class="qr-btn" onclick="generarQRLibro(${realIndex})">📱</button>
+                        <button class="delete-btn" onclick="deleteBook(${realIndex})">🗑️</button>
+                    </td>
+                `;
+                fragment.appendChild(row);
+            });
+
+            tbody.appendChild(fragment);
         }
 
         function changeAction(index, value) {
-            books[index].accion = value;
+            if (value === books[index].accion) return;
+
+            currentActionBookIndex = index;
+
+            if (value === 'Prestado') {
+                document.getElementById('loanModal').style.display = 'block';
+            } else if (value === 'Donado') {
+                document.getElementById('donationModal').style.display = 'block';
+            } else if (value === 'Para donar') {
+                books[index].accion = value;
+                books[index].actionDetails = '';
+                saveBooks();
+                updateStats();
+                renderTable(filteredBooks.length > 0 ? filteredBooks : null);
+                showAutoAlert('Estado actualizado a "Para donar"');
+            } else if (value === 'Disponible') {
+                books[index].accion = value;
+                books[index].actionDetails = '';
+                saveBooks();
+                updateStats();
+                renderTable(filteredBooks.length > 0 ? filteredBooks : null);
+                showAutoAlert('Libro marcado como disponible');
+            }
+        }
+
+        function saveLoan() {
+            const date = document.getElementById('loanDate').value;
+            const name = document.getElementById('loanName').value.trim();
+            const lastName = document.getElementById('loanLastName').value.trim();
+
+            if (!date || !name || !lastName) {
+                showAutoAlert('Por favor complete todos los campos', 3000);
+                return;
+            }
+
+            const book = books[currentActionBookIndex];
+            book.accion = 'Prestado';
+            book.actionDetails = `Prestado el ${date} a ${name} ${lastName}`;
+
+            closeLoanModal();
             saveBooks();
             updateStats();
-            renderTable();
-            showAutoAlert('Acción actualizada');
+            renderTable(filteredBooks.length > 0 ? filteredBooks : null);
+            showAutoAlert('✅ Préstamo registrado correctamente');
+        }
+
+        function saveDonation() {
+            const date = document.getElementById('donationDate').value;
+            const type = document.getElementById('donationType').value;
+            let details = `Donado el ${date}`;
+
+            if (type === 'persona') {
+                const name = document.getElementById('donationPersonName').value.trim();
+                const lastName = document.getElementById('donationPersonLastName').value.trim();
+                details += ` a ${name} ${lastName}`;
+            } else {
+                const institution = document.getElementById('donationInstitutionName').value.trim();
+                const responsible = document.getElementById('donationResponsibleName').value.trim();
+                details += ` a ${institution} (Responsable: ${responsible})`;
+            }
+
+            const book = books[currentActionBookIndex];
+            book.accion = 'Donado';
+            book.actionDetails = details;
+
+            closeDonationModal();
+            saveBooks();
+            updateStats();
+            renderTable(filteredBooks.length > 0 ? filteredBooks : null);
+            showAutoAlert('✅ Donación registrada correctamente');
+        }
+
+        function openAddBookModal() {
+            // Permitir autocompletar datos por ISBN al presionar Enter en el campo ISBN
+            setTimeout(() => {
+                const isbnInput = document.getElementById("modalISBN");
+                if (isbnInput) {
+                    isbnInput.addEventListener("keydown", function(e) {
+                        if (e.key === "Enter") {
+                            e.preventDefault();
+                            buscarDatosISBNExterno();
+                        }
+                    });
+                }
+            }, 200);
+        // Buscar datos de libro por ISBN usando una API pública
+        function buscarDatosISBNExterno() {
+            let isbn = document.getElementById("modalISBN").value.trim();
+            // Limpiar guiones y espacios para la consulta
+            isbn = isbn.replace(/[-\s]/g, "");
+            if (!isbn) {
+                showAutoAlert('Ingrese un ISBN válido.', 3000);
+                return;
+            }
+            // Buscar primero en la base local
+            const libroLocal = books.find(b => b.isbn === isbn);
+            if (libroLocal) {
+                document.getElementById("modalTitulo").value = libroLocal.titulo || "";
+                document.getElementById("modalApellido").value = libroLocal.apellido || "";
+                document.getElementById("modalNombre").value = libroLocal.nombre || "";
+                document.getElementById("modalAnio").value = libroLocal.año || "";
+                document.getElementById("modalObservaciones").value = libroLocal.observaciones || "";
+                showAutoAlert('Datos del libro cargados desde la base local.', 3000);
+                return;
+            }
+            // Si no existe, buscar en Open Library
+            fetch(`https://openlibrary.org/api/books?bibkeys=ISBN:${isbn}&jscmd=data&format=json`)
+                .then(res => res.json())
+                .then(data => {
+                    const libro = data[`ISBN:${isbn}`];
+                    console.log('Respuesta OpenLibrary:', libro);
+                    if (!libro) {
+                        showAutoAlert('No se encontraron datos para ese ISBN.', 3000);
+                        return;
+                    }
+                    // Título
+                    document.getElementById("modalTitulo").value = libro.title || "";
+                    // Autor: tomar el primero, separar nombre y apellido si es posible
+                    let nombre = "", apellido = "";
+                    if (libro.authors && libro.authors.length > 0) {
+                        const autor = libro.authors[0].name;
+                        const partes = autor.split(' ');
+                        apellido = partes.length > 1 ? partes[partes.length - 1] : autor;
+                        nombre = partes.length > 1 ? partes.slice(0, -1).join(' ') : "";
+                    }
+                    document.getElementById("modalApellido").value = apellido;
+                    document.getElementById("modalNombre").value = nombre;
+                    // Año: buscar en publish_date, si es formato largo, extraer año
+                    let anio = "";
+                    if (libro.publish_date) {
+                        const match = libro.publish_date.match(/\d{4}/);
+                        anio = match ? match[0] : libro.publish_date;
+                    }
+                    document.getElementById("modalAnio").value = anio;
+                    // Observaciones
+                    document.getElementById("modalObservaciones").value = libro.notes || "";
+                    showAutoAlert('Datos del libro cargados por ISBN (Open Library).', 3000);
+                })
+                .catch((err) => {
+                    console.error('Error OpenLibrary:', err);
+                    showAutoAlert('Error al buscar datos por ISBN.', 3000);
+                });
+        }
+            editingIndex = -1;
+            document.getElementById("modalTitle").textContent = "Agregar Nuevo Libro";
+            document.getElementById("modalEstante").value = "";
+            document.getElementById("modalApellido").value = "";
+            document.getElementById("modalNombre").value = "";
+            document.getElementById("modalTitulo").value = "";
+            document.getElementById("modalAnio").value = "";
+            document.getElementById("modalObservaciones").value = "";
+            document.getElementById("modalEjemplares").value = 1;
+            document.getElementById("modalISBN").value = "";
+            document.querySelector('input[name="modalEncuadernado"][value="Sí"]').checked = true;
+            // Asegura que el modal se muestre correctamente
+            const modal = document.getElementById("bookModal");
+            modal.style.display = "block";
+            modal.focus();
+            // Permitir guardar con Enter en cualquier campo del modal
+            setTimeout(() => {
+                const fields = [
+                    "modalEstante", "modalApellido", "modalNombre", "modalTitulo",
+                    "modalAnio", "modalObservaciones", "modalEjemplares", "modalISBN"
+                ];
+                fields.forEach(id => {
+                    const el = document.getElementById(id);
+                    if (el) {
+                        el.onkeydown = function(e) {
+                            if (e.key === "Enter") {
+                                e.preventDefault();
+                                saveBook();
+                            }
+                        };
+                    }
+                });
+            }, 200);
+        }
+
+        function closeModal() {
+            document.getElementById("bookModal").style.display = "none";
+        }
+
+        function editBook(index) {
+            editingIndex = index;
+            const book = books[index];
+            document.getElementById("modalTitle").textContent = "Editar Libro";
+            document.getElementById("modalEstante").value = book.estante || "";
+            document.getElementById("modalApellido").value = book.apellido || "";
+            document.getElementById("modalNombre").value = book.nombre || "";
+            document.getElementById("modalTitulo").value = book.titulo || "";
+            document.getElementById("modalAnio").value = book.año || "";
+            document.getElementById("modalObservaciones").value = book.observaciones || "";
+            document.getElementById("modalEjemplares").value = book.ejemplares || 1;
+            document.getElementById("modalISBN").value = book.isbn || "";
+            document.querySelector('input[name="modalEncuadernado"][value="' + (book.encuadernado === 'Sí' ? 'Sí' : 'No') + '"]').checked = true;
+            document.getElementById("bookModal").style.display = "block";
+        }
+
+        function saveBook() {
+            const estante = document.getElementById("modalEstante").value.trim();
+            const apellido = document.getElementById("modalApellido").value.trim();
+            const nombre = document.getElementById("modalNombre").value.trim();
+            const titulo = document.getElementById("modalTitulo").value.trim();
+            const año = document.getElementById("modalAnio").value.trim();
+            const encuadernado = document.querySelector('input[name="modalEncuadernado"]:checked')?.value || 'No';
+            const observaciones = document.getElementById("modalObservaciones").value.trim();
+            const ejemplares = document.getElementById("modalEjemplares").value.trim();
+            const isbn = document.getElementById("modalISBN").value.trim();
+
+            // Validación visual
+            if (!estante || !apellido || !nombre || !titulo || !ejemplares) {
+                showAutoAlert('Por favor complete todos los campos obligatorios.', 3000);
+                return;
+            }
+
+            // Evitar duplicados por ISBN, título y autor
+            const existe = books.some(b =>
+                (isbn && b.isbn === isbn) ||
+                (normaliza(b.titulo) === normaliza(titulo) &&
+                 normaliza(b.apellido) === normaliza(apellido) &&
+                 normaliza(b.nombre) === normaliza(nombre))
+            );
+            if (existe && editingIndex === -1) {
+                showAutoAlert('Este libro ya está registrado.', 3500);
+                return;
+            }
+
+            if (editingIndex === -1) {
+                // Nuevo libro: ordinal = mayor existente + 1
+                const maxOrdinal = books.length > 0 ? Math.max(...books.map(b => parseInt(b.ordinal) || 0)) : 0;
+                const nuevoLibro = {
+                    ordinal: maxOrdinal + 1,
+                    estante,
+                    apellido,
+                    nombre,
+                    titulo,
+                    año,
+                    encuadernado,
+                    observaciones,
+                    ejemplares: parseInt(ejemplares),
+                    isbn,
+                    accion: 'Disponible',
+                    actionDetails: ''
+                };
+                books.push(nuevoLibro);
+                showAutoAlert('Libro agregado correctamente.', 1500);
+            } else {
+                // Edición de libro existente
+                const libroEditado = books[editingIndex];
+                libroEditado.estante = estante;
+                libroEditado.apellido = apellido;
+                libroEditado.nombre = nombre;
+                libroEditado.titulo = titulo;
+                libroEditado.año = año;
+                libroEditado.encuadernado = encuadernado;
+                libroEditado.observaciones = observaciones;
+                libroEditado.ejemplares = parseInt(ejemplares);
+                libroEditado.isbn = isbn;
+                showAutoAlert('Libro editado correctamente.', 1500);
+            }
+
+            closeModal();
+            // Guardar y actualizar solo lo necesario
+            saveBooks();
+            updateStats();
+            renderTable(filteredBooks.length > 0 ? filteredBooks : null);
         }
 
         function deleteBook(index) {
-            if (confirm('¿Seguro que deseas eliminar este libro?')) {
+            if (confirm('¿Estás seguro de que quieres eliminar este libro?')) {
                 books.splice(index, 1);
-                // Reasignar ordinales
-                books.forEach((b, i) => b.ordinal = i + 1);
-                nextOrdinal = books.length + 1;
                 saveBooks();
                 updateStats();
-                renderTable();
-                showAutoAlert('✅ Libro eliminado correctamente.');
+                renderTable(filteredBooks.length > 0 ? filteredBooks : null);
+                showAutoAlert('Libro eliminado correctamente.', 3000);
             }
+        }
+
+        function returnBook(index) {
+            const book = books[index];
+            book.accion = 'Disponible';
+            book.actionDetails = '';
+            saveBooks();
+            updateStats();
+            renderTable(filteredBooks.length > 0 ? filteredBooks : null);
+            showAutoAlert('Libro devuelto correctamente.', 3000);
         }
 
         function searchBooks() {
-            renderTable();
-        }
-
-        function searchByEstante() {
-            const estante = document.getElementById('searchEstante').value.trim();
-            if (!estante) {
+            const term = normaliza(document.getElementById('searchInput').value);
+            if (!term) {
+                filteredBooks = [];
                 renderTable();
                 return;
             }
-            const filtered = books.filter(b => b.estante == estante);
-            renderTable(filtered);
+            // Búsqueda optimizada: solo sobre los campos principales
+            filteredBooks = books.filter(b => {
+                return (
+                    (b.titulo && normaliza(b.titulo).includes(term)) ||
+                    (b.apellido && normaliza(b.apellido).includes(term)) ||
+                    (b.nombre && normaliza(b.nombre).includes(term))
+                );
+            });
+            renderTable(filteredBooks);
         }
 
-        function exportEstantePDF() {
-            const estante = document.getElementById('searchEstante').value.trim();
-            if (!estante) {
-                showAutoAlert('Ingrese un número de estante');
-                return;
-            }
-            const libros = books.filter(b => b.estante == estante);
-            if (libros.length === 0) {
-                showAutoAlert('No hay libros en ese estante');
-                return;
-            }
-            // Crear PDF en horizontal
-            const doc = new window.jspdf.jsPDF({ orientation: "landscape" });
-
-            // Recuadro de control arriba, más ancho y alineado (rojo)
-            const pageWidth = doc.internal.pageSize.getWidth();
-            doc.setDrawColor(200, 40, 40); // Rojo fuerte para recuadro y cuadros de tick
-            doc.setTextColor(160, 20, 20); // Texto rojo oscuro
-            doc.setLineWidth(0.8);
-            doc.roundedRect(12, 10, pageWidth - 24, 22, 4, 4);
-            doc.setFontSize(13);
-            doc.text(`Control de Estante: ${estante}`, 18, 18);
-            doc.setFontSize(11);
-            doc.text(`Fecha: ${new Date().toLocaleString()}`, 18, 26);
-            doc.text("Nombre de quien controla: ___________________________", pageWidth / 2, 18);
-            doc.text("Firma: ___________________________", pageWidth / 2, 26);
-
-            // Datos para la tabla
-            const tableColumn = ["Apellido", "Nombre", "Título", "✓"];
-            const tableRows = libros.map(b => [
-                b.apellido,
-                b.nombre,
-                b.titulo,
-                "" // Aquí irá el cuadrado
-            ]);
-
-            // Generar tabla con cuadro más chico y centrado, cabecera roja
-            doc.autoTable({
-                head: [tableColumn],
-                body: tableRows,
-                startY: 38,
-                headStyles: { fillColor: [200, 40, 40], textColor: [255,255,255] }, // Cabecera tabla rojo fuerte
-                styles: { fontSize: 12, cellWidth: 'auto', textColor: [120, 20, 20] }, // Texto tabla rojo oscuro
-                columnStyles: {
-                    3: { cellWidth: 12, halign: 'center' }
-                },
-                didDrawCell: function (data) {
-                    // Dibuja un cuadrado pequeño y centrado en la columna del tick
-                    if (data.column.index === 3 && data.section === 'body') {
-                        const boxSize = 7;
-                        const x = data.cell.x + (data.cell.width - boxSize) / 2;
-                        const y = data.cell.y + (data.cell.height - boxSize) / 2;
-                        doc.setDrawColor(200, 40, 40); // Rojo fuerte
-                        doc.rect(x, y, boxSize, boxSize);
-                    }
-                }
-            });
-
-            doc.save(`Estante_${estante}_control.pdf`);
+        function exportData() {
+            const wb = XLSX.utils.book_new();
+            const ws = XLSX.utils.json_to_sheet(books);
+            XLSX.utils.book_append_sheet(wb, ws, "Libros");
+            XLSX.writeFile(wb, `biblioteca_libros_${new Date().toISOString().split('T')[0]}.xlsx`);
+            showAutoAlert('Datos exportados a Excel.', 3000);
         }
 
         function importData() {
@@ -612,63 +1598,90 @@
             if (!file) return;
             const reader = new FileReader();
             reader.onload = function (e) {
-                try {
-                    const data = new Uint8Array(e.target.result);
-                    const workbook = XLSX.read(data, { type: 'array' });
-                    const sheetName = workbook.SheetNames[0];
-                    const worksheet = workbook.Sheets[sheetName];
-                    const jsonData = XLSX.utils.sheet_to_json(worksheet);
-                    books = jsonData.map(row => ({
-                        ordinal: row.ORDINAL || nextOrdinal++,
-                        estante: row.ESTANTE || '',
-                        apellido: row.APELLIDO || '',
-                        nombre: row.NOMBRE || '',
-                        titulo: row.TITULO || '',
-                        año: row.AÑO || '',
-                        encuadernado: row.ENCUADERNADO || 'No',
-                        observaciones: row.OBSERVACIONES || '',
-                        ejemplares: row.EJEMPLARES || 1,
-                        accion: row.ACCION || 'Disponible'
-                    }));
-                    if (books.length > 0) {
-                        nextOrdinal = Math.max(...books.map(book => book.ordinal)) + 1;
-                        saveBooks();
-                        updateStats();
-                        renderTable();
-                        showAutoAlert('📥 Datos importados correctamente');
-                    }
-                } catch (error) {
-                    console.error('Error al importar datos:', error);
-                    showAutoAlert('Error al importar datos. Verifica el archivo y vuelve a intentar.', 4000);
-                }
+                const data = new Uint8Array(e.target.result);
+                const workbook = XLSX.read(data, { type: 'array' });
+                const firstSheetName = workbook.SheetNames[0];
+                const worksheet = workbook.Sheets[firstSheetName];
+                const json = XLSX.utils.sheet_to_json(worksheet);
+                // Carga directa y rápida, sin validaciones ni alertas
+                // Mapear los datos a los campos estándar, usando los nombres tal como vienen en el Excel
+                // Reasignar ordinales para asegurar continuidad y evitar saltos
+                books = json.map((row, idx) => ({
+                    ordinal: idx + 1,
+                    estante: row['estante'] || row['ESTANTE'] || row['Estante'] || row['Est'] || row['Est.'] || '',
+                    apellido: row['apellido'] || row['APELLIDO'] || row['Apellido'] || '',
+                    nombre: row['nombre'] || row['NOMBRE'] || row['Nombre'] || '',
+                    titulo: row['titulo'] || row['TITULO'] || row['Título'] || row['Titulo'] || '',
+                    año: row['año'] || row['AÑO'] || row['Año'] || row['anio'] || row['ANIO'] || '',
+                    encuadernado: row['encuadernado'] || row['ENCUADERNADO'] || row['Encuadernado'] || '',
+                    observaciones: row['observaciones'] || row['OBSERVACIONES'] || row['Observaciones'] || '',
+                    ejemplares: row['ejemplares'] || row['EJEMPLARES'] || row['Ejemplares'] || 1,
+                    accion: row['accion'] || row['ACCION'] || row['Accion'] || row['Estado'] || 'Disponible',
+                    actionDetails: row['DETALLES'] || row['detalles'] || row['ActionDetails'] || '',
+                }));
+                saveBooks();
+                updateStats();
+                renderTable();
+                showAutoAlert('📥 Planilla cargada automáticamente');
             };
             reader.readAsArrayBuffer(file);
         }
 
-        function exportData() {
-            const exportData = books.map(book => {
-                const row = {
-                    'ORDINAL': book.ordinal,
-                    'ESTANTE': book.estante,
-                    'APELLIDO': book.apellido,
-                    'NOMBRE': book.nombre,
-                    'TITULO': book.titulo,
-                    'AÑO': book.año,
-                    'ENCUADERNADO': book.encuadernado,
-                    'OBSERVACIONES': book.observaciones,
-                    'EJEMPLARES': book.ejemplares,
-                    'ACCION': book.accion
-                };
-                return row;
+        // Código para escanear ISBN con la cámara
+        function scanISBN() {
+            const html5QrCode = new Html5Qrcode("scanner");
+            html5QrCode.start(
+                { facingMode: "environment" },
+                {
+                    fps: 10,
+                    qrbox: { width: 250, height: 250 }
+                },
+                qrCodeMessage => {
+                    // Manejar el código QR escaneado
+                    const data = JSON.parse(qrCodeMessage);
+                    if (data.tipo === 'libro') {
+                        document.getElementById("modalISBN").value = data.ordinal;
+                        buscarDatosISBN();
+                    } else {
+                        showAutoAlert('QR no válido para libros.', 3000);
+                    }
+                },
+                errorMessage => {
+                    // Manejar errores de escaneo si es necesario
+                }
+            ).catch(err => {
+                console.error(err);
+                showAutoAlert('Error al iniciar el escáner: ' + err.message, 5000);
             });
-            const ws = XLSX.utils.json_to_sheet(exportData);
-            const wb = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(wb, ws, 'Biblioteca Batlle');
-            const today = new Date().toISOString().split('T')[0];
-            XLSX.writeFile(wb, `Biblioteca_Batlle_${today}.xlsx`);
         }
 
-        // ...resto de tu código JS (modal, agregar/editar libro, etc.)...
+        function buscarDatosISBN() {
+            const isbn = document.getElementById("modalISBN").value.trim();
+            if (!isbn) {
+                showAutoAlert('Ingrese un ISBN válido.', 3000);
+                return;
+            }
+
+            // Simulación de búsqueda de datos por ISBN
+            setTimeout(() => {
+                const libroEncontrado = books.find(b => b.isbn === isbn);
+                if (libroEncontrado) {
+                    // Llenar el formulario con los datos del libro
+                    document.getElementById("modalEstante").value = libroEncontrado.estante || "";
+                    document.getElementById("modalApellido").value = libroEncontrado.apellido || "";
+                    document.getElementById("modalNombre").value = libroEncontrado.nombre || "";
+                    document.getElementById("modalTitulo").value = libroEncontrado.titulo || "";
+                    document.getElementById("modalAnio").value = libroEncontrado.año || "";
+                    document.getElementById("modalObservaciones").value = libroEncontrado.observaciones || "";
+                    document.getElementById("modalEjemplares").value = libroEncontrado.ejemplares || 1;
+                    document.querySelector('input[name="modalEncuadernado"][value="' + (libroEncontrado.encuadernado === 'Sí' ? 'Sí' : 'No') + '"]').checked = true;
+                    showAutoAlert('Datos del libro cargados.', 3000);
+                } else {
+                    showAutoAlert('Libro no encontrado. Puede agregarlo como nuevo.', 3000);
+                }
+            }, 1000);
+        }
     </script>
 </body>
+
 </html>

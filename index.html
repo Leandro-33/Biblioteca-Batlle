@@ -1637,16 +1637,38 @@
                 showAlert('No hay libros para exportar', 'warning');
                 return;
             }
-            
-            let csv = 'Ordinal,Estante,Apellido,Nombre,Título,Volumen,Tomo,Año,Encuadernado,Observaciones,Ejemplares,Estado,ISBN\n';
-            
-            books.forEach(b => {
-                const safe = str => `"${(str || '').replace(/"/g, '""')}"`;
-                csv += `${b.ordinal || ''},${b.estante || ''},${safe(b.apellido)},${safe(b.nombre)},${safe(b.titulo)},${safe(b.volumen)},${safe(b.tomo)},${b.año || ''},${b.encuadernado || ''},${safe(b.observaciones)},${b.ejemplares || 1},${b.accion || 'Disponible'},${b.isbn || ''}\n`;
-            });
-            
-            downloadFile(csv, `biblioteca_${new Date().toISOString().split('T')[0]}.csv`, 'text/csv');
-            showAlert(`✅ ${books.length} libros exportados`, 'success');
+
+            // Encabezados en español con tildes
+            const headers = [
+                "Ordinal", "Estante", "Apellido", "Nombre", "Título", "Volumen", "Tomo",
+                "Año", "Encuadernado", "Observaciones", "Ejemplares", "Estado", "ISBN"
+            ];
+
+            // Construir los datos para la hoja Excel
+            const data = books.map(b => ({
+                "Ordinal": b.ordinal || '',
+                "Estante": b.estante || '',
+                "Apellido": b.apellido || '',
+                "Nombre": b.nombre || '',
+                "Título": b.titulo || '',
+                "Volumen": b.volumen || '',
+                "Tomo": b.tomo || '',
+                "Año": b.año || '',
+                "Encuadernado": b.encuadernado || '',
+                "Observaciones": b.observaciones || '',
+                "Ejemplares": b.ejemplares || 1,
+                "Estado": b.accion || 'Disponible',
+                "ISBN": b.isbn || ''
+            }));
+
+            // Crear la hoja de Excel
+            const worksheet = XLSX.utils.json_to_sheet(data, { header: headers });
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, "Libros");
+
+            // Descargar el archivo .xlsx
+            XLSX.writeFile(workbook, `biblioteca_${new Date().toISOString().split('T')[0]}.xlsx`);
+            showAlert(`✅ ${books.length} libros exportados en Excel`, 'success');
         }
 
         function exportByType(type) {

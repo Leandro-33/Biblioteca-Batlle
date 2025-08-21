@@ -1256,19 +1256,22 @@
         }
 
         function updateStats() {
-            // Total: suma de ejemplares de todos los libros
-            const total = books.reduce((sum, b) => sum + (parseInt(b.ejemplares) || 1), 0);
-            // Prestados: suma de ejemplares con acción 'Prestado'
-            const prestados = books.filter(b => b.accion === 'Prestado').reduce((sum, b) => sum + (parseInt(b.ejemplares) || 1), 0);
-            // Donados: suma de ejemplares con acción 'Donado'
-            const donados = books.filter(b => b.accion === 'Donado').reduce((sum, b) => sum + (parseInt(b.ejemplares) || 1), 0);
-            // Disponibles: total - prestados - donados
-            const disponibles = total - prestados - donados;
-
+            // Total: cantidad de libros (registros)
+            const total = books.length;
+            // Sumatorias de ejemplares por estado
+            let ejemplaresTotal = 0, ejemplaresPrestados = 0, ejemplaresDonados = 0;
+            books.forEach(b => {
+                const ej = parseInt(b.ejemplares) || 1;
+                ejemplaresTotal += ej;
+                if (b.accion === 'Prestado') ejemplaresPrestados += ej;
+                if (b.accion === 'Donado') ejemplaresDonados += ej;
+            });
+            // Disponibles: ejemplares totales menos prestados y donados
+            const disponibles = ejemplaresTotal - ejemplaresPrestados - ejemplaresDonados;
             document.getElementById('totalBooks').textContent = total;
             document.getElementById('availableBooks').textContent = disponibles;
-            document.getElementById('loanedBooks').textContent = prestados;
-            document.getElementById('donatedBooks').textContent = donados;
+            document.getElementById('loanedBooks').textContent = ejemplaresPrestados;
+            document.getElementById('donatedBooks').textContent = ejemplaresDonados;
         }
 
         function renderTable() {

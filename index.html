@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -57,7 +58,7 @@
             font-weight: 700;
             margin: 0 0 2px 0;
             text-align: center;
-            text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
         }
 
         .header p {
@@ -127,8 +128,15 @@
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-5px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(-5px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .dropdown-item {
@@ -226,7 +234,7 @@
             border-radius: 8px;
             padding: 8px 12px;
             min-width: 200px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
         }
 
         .search-estante label {
@@ -256,7 +264,7 @@
             border-radius: 8px;
             padding: 8px 16px;
             flex: 1;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
         }
 
         .search-todos input {
@@ -315,7 +323,7 @@
             background: var(--bg-light);
             color: var(--primary);
             border: 1px solid var(--border);
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
         }
 
         .btn-danger {
@@ -331,7 +339,7 @@
             margin: 0 16px 8px 16px;
             border-radius: 8px;
             background: white;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         }
 
         table {
@@ -341,7 +349,8 @@
             font-size: 0.85em;
         }
 
-        th, td {
+        th,
+        td {
             padding: 8px 6px;
             text-align: left;
             border-bottom: 1px solid var(--border);
@@ -356,7 +365,7 @@
             top: 0;
             z-index: 10;
             font-size: 0.8em;
-            text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
         }
 
         tbody tr:nth-child(even) {
@@ -368,7 +377,10 @@
         }
 
         /* Botones de tabla */
-        .edit-btn, .delete-btn, .return-btn, .qr-btn {
+        .edit-btn,
+        .delete-btn,
+        .return-btn,
+        .qr-btn {
             border: none;
             padding: 4px 8px;
             border-radius: 4px;
@@ -425,8 +437,15 @@
         }
 
         @keyframes slideIn {
-            from { opacity: 0; transform: translateY(-30px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .modal-header {
@@ -577,8 +596,13 @@
         }
 
         @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
         }
 
         /* Alert */
@@ -618,7 +642,7 @@
             .header {
                 padding: 8px 12px;
             }
-            
+
             .header h1 {
                 font-size: 1.2em;
             }
@@ -673,7 +697,8 @@
                 font-size: 0.8em;
             }
 
-            th, td {
+            th,
+            td {
                 padding: 6px 4px;
             }
 
@@ -748,7 +773,8 @@
                 <button class="btn btn-warning" onclick="document.getElementById('importFile').click()">
                     📁 Importar Excel
                 </button>
-                <input type="file" id="importFile" accept=".xlsx,.xls,.csv" style="display: none;" onchange="importData()">
+                <input type="file" id="importFile" accept=".xlsx,.xls,.csv" style="display: none;"
+                    onchange="importData()">
                 <button class="btn btn-success" onclick="exportData()">
                     💾 Exportar Excel
                 </button>
@@ -761,11 +787,12 @@
                     <input type="number" id="searchEstante" placeholder="Nº" min="1">
                     <button class="btn btn-secondary" onclick="searchByEstante()">🔍 Buscar</button>
                 </div>
-                
+
                 <div class="search-todos">
                     <span style="color: var(--primary); font-size: 1.1em;">🔍</span>
                     <input type="text" id="searchInput" placeholder="Buscar por título, autor, año, ISBN...">
-                    <button class="btn btn-secondary" onclick="clearSearch()" id="clearSearchBtn" style="display: none;">✖ Limpiar</button>
+                    <button class="btn btn-secondary" onclick="clearSearch()" id="clearSearchBtn"
+                        style="display: none;">✖ Limpiar</button>
                 </div>
             </div>
         </nav>
@@ -1029,235 +1056,152 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
 
     <script>
-        // Variables globales
+        // Variables globales optimizadas
         let books = [];
         let nextOrdinal = 1;
         let editingIndex = -1;
-        let currentActionBookIndex = -1;
         let filteredBooks = [];
-        let currentQRData = null;
         let usuarioActual = null;
         let rolActual = null;
         let isSearchActive = false;
         let isDataLoaded = false;
 
-        // CONFIGURACIÓN DEL SERVIDOR
-        const SERVER_CONFIG = {
-            // Opción 1: JSONBin (gratuito, fácil de usar)
-            USE_JSONBIN: true,
-            JSONBIN_URL: 'https://api.jsonbin.io/v3/b/YOUR_BIN_ID', // Reemplazar con tu Bin ID
-            JSONBIN_KEY: '$2a$10$YOUR_API_KEY', // Reemplazar con tu API Key
-            
-            // Opción 2: Servidor propio
-            CUSTOM_SERVER: 'https://tu-servidor.com/api',
-            
-            // Configuración
-            AUTO_SYNC: true,
-            SYNC_INTERVAL: 30000, // 30 segundos
-            RETRY_ATTEMPTS: 3
+        // Variable que falta para préstamos y donaciones
+        let currentActionBookIndex = -1;
+
+        // Optimización: Cache de elementos DOM
+        const DOM = {
+            welcomeScreen: null,
+            mainApp: null,
+            loadingIndicator: null,
+            autoAlert: null,
+            booksTableBody: null,
+            init() {
+                this.welcomeScreen = document.getElementById('welcomeScreen');
+                this.mainApp = document.getElementById('mainApp');
+                this.loadingIndicator = document.getElementById('loadingIndicator');
+                this.autoAlert = document.getElementById('autoAlert');
+                this.booksTableBody = document.getElementById('booksTableBody');
+            }
         };
 
-        // Sistema de eventos mejorado con servidor
-        class BibliotecaEventSystem {
-            constructor() {
-                this.syncTimer = null;
-                this.lastSync = null;
-                this.isOnline = navigator.onLine;
-                this.init();
+        // CONFIGURACIÓN SIMPLIFICADA
+        const SERVER_CONFIG = {
+            USE_JSONBIN: false,
+            JSONBIN_URL: '',
+            JSONBIN_KEY: '',
+            CUSTOM_SERVER: '',
+            AUTO_SYNC: false
+        };
+
+        // FUNCIONES DE AUTENTICACIÓN OPTIMIZADAS
+        function hashPassword(password) {
+            let hash = 0;
+            for (let i = 0; i < password.length; i++) {
+                const char = password.charCodeAt(i);
+                hash = ((hash << 5) - hash) + char;
+                hash = hash & hash;
+            }
+            return hash.toString();
+        }
+
+        function welcomeLogin() {
+            const username = document.getElementById('welcomeUser').value.trim();
+            const password = document.getElementById('welcomePassword').value.trim();
+
+            if (!username || !password) {
+                showAlert('Complete todos los campos', 'warning');
+                return;
             }
 
-            init() {
-                // Eventos de red
-                window.addEventListener('online', () => {
-                    this.isOnline = true;
-                    showAlert('🌐 Conexión restaurada - Sincronizando...', 'success');
-                    this.syncWithServer();
-                });
+            const users = JSON.parse(localStorage.getItem('usuariosBiblioteca') || '[]');
+            const user = users.find(u => u.username === username && u.password === hashPassword(password));
 
-                window.addEventListener('offline', () => {
-                    this.isOnline = false;
-                    showAlert('📡 Sin conexión - Trabajando offline', 'warning', 3000);
-                });
+            if (user) {
+                usuarioActual = user.username;
+                rolActual = user.role;
 
-                // Auto-sincronización
-                if (SERVER_CONFIG.AUTO_SYNC) {
-                    this.startAutoSync();
-                }
+                localStorage.setItem('sessionBiblioteca', JSON.stringify({
+                    username: user.username,
+                    role: user.role,
+                    loginTime: new Date().toISOString()
+                }));
 
-                // Sincronización cruzada entre pestañas
-                window.addEventListener('storage', (e) => {
-                    if (e.key === 'bibliotecaBatlle_server' && isDataLoaded) {
-                        this.handleCrossTabUpdate();
-                    }
-                });
+                DOM.welcomeScreen.style.display = 'none';
+                DOM.mainApp.style.display = 'flex';
+                updateUserInterface();
+                loadData();
+                showAlert(`Bienvenido, ${user.username}!`, 'success');
+            } else {
+                showAlert('Usuario o contraseña incorrectos', 'error');
             }
+        }
 
-            startAutoSync() {
-                this.syncTimer = setInterval(() => {
-                    if (this.isOnline && rolActual === 'admin') {
-                        this.syncWithServer();
-                    }
-                }, SERVER_CONFIG.SYNC_INTERVAL);
+        function checkSession() {
+            const session = localStorage.getItem('sessionBiblioteca');
+            if (session) {
+                const sessionData = JSON.parse(session);
+                usuarioActual = sessionData.username;
+                rolActual = sessionData.role;
+                updateUserInterface();
+                return true;
             }
+            return false;
+        }
 
-            stopAutoSync() {
-                if (this.syncTimer) {
-                    clearInterval(this.syncTimer);
-                    this.syncTimer = null;
-                }
+        function logout() {
+            localStorage.removeItem('sessionBiblioteca');
+            usuarioActual = null;
+            rolActual = null;
+            DOM.welcomeScreen.style.display = 'flex';
+            DOM.mainApp.style.display = 'none';
+            document.getElementById('welcomeUser').value = '';
+            document.getElementById('welcomePassword').value = '';
+            showAlert('Sesión cerrada', 'info');
+        }
+
+        function updateUserInterface() {
+            document.getElementById('currentUser').textContent = usuarioActual;
+            const dropdownContent = document.getElementById('userDropdownContent');
+            
+            if (rolActual === 'admin') {
+                dropdownContent.innerHTML = `
+                    <button class="dropdown-item" onclick="openUserModal()">👤 Crear Usuario</button>
+                    <button class="dropdown-item" onclick="openManageUsersModal()">👥 Gestionar Usuarios</button>
+                    <button class="dropdown-item" onclick="exportarPrestamos()">📤 Exportar Préstamos</button>
+                    <button class="dropdown-item" onclick="exportarDonados()">📤 Exportar Donados</button>
+                    <button class="dropdown-item" onclick="generarQREstantes()">📱 QR Estantes</button>
+                    <button class="dropdown-item" onclick="generarQRTodosLibros()">📱 QR Catálogo</button>
+                    <button class="dropdown-item" onclick="setupServer()">🌐 Configurar Servidor</button>
+                    <button class="dropdown-item danger" onclick="logout()">🚪 Cerrar Sesión</button>
+                `;
+            } else {
+                dropdownContent.innerHTML = `
+                    <button class="dropdown-item danger" onclick="logout()">🚪 Cerrar Sesión</button>
+                `;
             }
+        }
 
-            async syncWithServer() {
-                if (!this.isOnline) return;
-                
-                try {
-                    await loadDataFromServer();
-                } catch (error) {
-                    console.warn('Sync failed:', error);
-                }
-            }
+        function toggleUserDropdown() {
+            const dropdown = document.querySelector('.user-dropdown');
+            const content = document.getElementById('userDropdownContent');
+            
+            dropdown.classList.toggle('active');
+            content.classList.toggle('show');
+        }
 
-            handleCrossTabUpdate() {
+        // FUNCIONES DE DATOS OPTIMIZADAS
+        function loadData() {
+            showLoading();
+            setTimeout(() => {
                 loadDataFromLocalStorage();
-                updateStats();
-                renderTable();
-                showAlert('📊 Datos actualizados desde otra pestaña', 'info');
-            }
+                hideLoading();
+            }, 100);
         }
 
-        const eventSystem = new BibliotecaEventSystem();
-
-        // FUNCIONES DE SERVIDOR
-
-        // Cargar datos del servidor
-        async function loadDataFromServer() {
-            if (!SERVER_CONFIG.USE_JSONBIN && !SERVER_CONFIG.CUSTOM_SERVER) {
-                return loadDataFromLocalStorage();
-            }
-
-            try {
-                showServerStatus('Cargando datos del servidor...', 'loading');
-                
-                let response;
-                if (SERVER_CONFIG.USE_JSONBIN) {
-                    response = await fetch(SERVER_CONFIG.JSONBIN_URL, {
-                        method: 'GET',
-                        headers: {
-                            'X-Master-Key': SERVER_CONFIG.JSONBIN_KEY,
-                            'Content-Type': 'application/json'
-                        }
-                    });
-                } else {
-                    response = await fetch(`${SERVER_CONFIG.CUSTOM_SERVER}/biblioteca`);
-                }
-
-                if (response.ok) {
-                    const data = await response.json();
-                    const serverData = SERVER_CONFIG.USE_JSONBIN ? data.record : data;
-                    
-                    books = serverData.books || [];
-                    nextOrdinal = serverData.nextOrdinal || (books.length ? Math.max(...books.map(b => b.ordinal || 0)) + 1 : 1);
-                    
-                    // Guardar localmente como respaldo
-                    saveDataToLocalStorage(serverData);
-                    
-                    isDataLoaded = true;
-                    updateStats();
-                    renderTable();
-                    
-                    eventSystem.lastSync = new Date();
-                    showServerStatus(`✅ ${books.length} libros sincronizados`, 'success');
-                    
-                    // Marcar timestamp para otras pestañas
-                    localStorage.setItem('bibliotecaBatlle_server', JSON.stringify({
-                        lastUpdate: eventSystem.lastSync.toISOString(),
-                        booksCount: books.length
-                    }));
-                    
-                } else {
-                    throw new Error(`Error del servidor: ${response.status}`);
-                }
-            } catch (error) {
-                console.error('Error cargando del servidor:', error);
-                showServerStatus('❌ Error de servidor - Usando datos locales', 'error');
-                loadDataFromLocalStorage(); // Fallback
-            }
-        }
-
-        // Guardar datos en el servidor
-        async function saveDataToServer() {
-            if (!SERVER_CONFIG.USE_JSONBIN && !SERVER_CONFIG.CUSTOM_SERVER) {
-                return saveDataToLocalStorage();
-            }
-
+        function saveData() {
             if (rolActual !== 'admin') return;
-
-            try {
-                showServerStatus('Guardando en servidor...', 'loading');
-                
-                const data = {
-                    books,
-                    nextOrdinal,
-                    lastSaved: new Date().toISOString(),
-                    savedBy: usuarioActual,
-                    version: '3.1'
-                };
-
-                let response;
-                if (SERVER_CONFIG.USE_JSONBIN) {
-                    response = await fetch(SERVER_CONFIG.JSONBIN_URL, {
-                        method: 'PUT',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-Master-Key': SERVER_CONFIG.JSONBIN_KEY
-                        },
-                        body: JSON.stringify(data)
-                    });
-                } else {
-                    response = await fetch(`${SERVER_CONFIG.CUSTOM_SERVER}/biblioteca`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify(data)
-                    });
-                }
-
-                if (response.ok) {
-                    // También guardar localmente
-                    saveDataToLocalStorage(data);
-                    showServerStatus('✅ Datos guardados', 'success');
-                    
-                    // Notificar a otras pestañas
-                    localStorage.setItem('bibliotecaBatlle_server', JSON.stringify({
-                        lastUpdate: new Date().toISOString(),
-                        booksCount: books.length
-                    }));
-                    
-                } else {
-                    throw new Error(`Error del servidor: ${response.status}`);
-                }
-            } catch (error) {
-                console.error('Error guardando en servidor:', error);
-                showServerStatus('❌ Error guardando - Guardado local', 'warning');
-                saveDataToLocalStorage(); // Fallback
-            }
-        }
-
-        // Funciones de almacenamiento local (respaldo)
-        function saveDataToLocalStorage(data) {
-            try {
-                const dataToSave = data || {
-                    books,
-                    nextOrdinal,
-                    lastSaved: new Date().toISOString(),
-                    version: '3.1'
-                };
-                localStorage.setItem('bibliotecaBatlle', JSON.stringify(dataToSave));
-            } catch (error) {
-                console.error('Error guardando localmente:', error);
-                showAlert('Error al guardar datos', 'error');
-            }
+            saveDataToLocalStorage();
         }
 
         function loadDataFromLocalStorage() {
@@ -1273,112 +1217,871 @@
                 renderTable();
                 return true;
             } catch (error) {
-                console.error('Error cargando datos locales:', error);
+                console.error('Error cargando datos:', error);
                 books = [];
                 nextOrdinal = 1;
                 return false;
             }
         }
 
-        // Indicador de estado del servidor
-        function showServerStatus(message, type, duration = 2000) {
-            const indicator = document.getElementById('serverStatus') || createServerStatusIndicator();
-            
-            const colors = {
-                loading: '#3b82f6',
-                success: '#059669',
-                error: '#dc2626',
-                warning: '#d97706'
-            };
-            
-            indicator.style.backgroundColor = colors[type] || colors.loading;
-            indicator.textContent = message;
-            indicator.style.display = 'block';
-            indicator.style.opacity = '1';
-            
-            if (duration > 0) {
-                setTimeout(() => {
-                    indicator.style.opacity = '0';
-                    setTimeout(() => {
-                        indicator.style.display = 'none';
-                    }, 300);
-                }, duration);
+        function saveDataToLocalStorage() {
+            try {
+                const dataToSave = {
+                    books,
+                    nextOrdinal,
+                    lastSaved: new Date().toISOString(),
+                    version: '3.1'
+                };
+                localStorage.setItem('bibliotecaBatlle', JSON.stringify(dataToSave));
+            } catch (error) {
+                console.error('Error guardando:', error);
             }
         }
 
-        function createServerStatusIndicator() {
-            const indicator = document.createElement('div');
-            indicator.id = 'serverStatus';
-            indicator.style.cssText = `
-                position: fixed;
-                top: 60px;
-                right: 20px;
-                background: #3b82f6;
-                color: white;
-                padding: 8px 16px;
-                border-radius: 6px;
-                font-size: 0.9em;
-                font-weight: 500;
-                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-                z-index: 9998;
-                transition: opacity 0.3s ease;
-                display: none;
-                opacity: 0;
-            `;
-            document.body.appendChild(indicator);
-            return indicator;
+        // UI OPTIMIZADA
+        function showLoading() {
+            DOM.loadingIndicator.style.display = 'block';
         }
 
-        // CONFIGURACIÓN INICIAL DEL SERVIDOR
+        function hideLoading() {
+            DOM.loadingIndicator.style.display = 'none';
+        }
+
+        function showAlert(message, type = 'info', duration = 3000) {
+            const colors = {
+                success: '#059669',
+                error: '#dc2626',
+                warning: '#d97706',
+                info: '#3b82f6'
+            };
+
+            DOM.autoAlert.textContent = message;
+            DOM.autoAlert.style.backgroundColor = colors[type] || colors.info;
+            DOM.autoAlert.style.display = 'block';
+
+            setTimeout(() => {
+                DOM.autoAlert.style.display = 'none';
+            }, duration);
+        }
+
+        // CORREGIR ESTADÍSTICAS - Total debe ser suma de ejemplares
+        function updateStats() {
+            const total = books.reduce((sum, book) => sum + (parseInt(book.ejemplares) || 1), 0);
+            let disponibles = 0;
+            let prestados = 0;
+            let donados = 0;
+
+            books.forEach(book => {
+                const ejemplares = parseInt(book.ejemplares) || 1;
+                if (book.accion === 'Prestado') {
+                    prestados += ejemplares;
+                } else if (book.accion === 'Donado') {
+                    donados += ejemplares;
+                } else {
+                    disponibles += ejemplares;
+                }
+            });
+
+            document.getElementById('totalBooks').textContent = total;
+            document.getElementById('availableBooks').textContent = disponibles;
+            document.getElementById('loanedBooks').textContent = prestados;
+            document.getElementById('donatedBooks').textContent = donados;
+        }
+
+        // RENDERIZADO OPTIMIZADO DE TABLA
+        function renderTable() {
+            const booksToShow = isSearchActive ? filteredBooks : books;
+            const tbody = DOM.booksTableBody;
+            
+            // Usar fragment para mejor rendimiento
+            const fragment = document.createDocumentFragment();
+            
+            booksToShow.forEach((book, index) => {
+                const row = document.createElement('tr');
+                const originalIndex = books.indexOf(book);
+                
+                row.innerHTML = `
+                    <td>${book.ordinal || ''}</td>
+                    <td>${book.estante || ''}</td>
+                    <td>${book.apellido || ''}</td>
+                    <td>${book.nombre || ''}</td>
+                    <td>${book.titulo || ''}</td>
+                    <td>${book.volumen || ''}</td>
+                    <td>${book.tomo || ''}</td>
+                    <td>${book.año || ''}</td>
+                    <td>${book.encuadernado || ''}</td>
+                    <td>${book.observaciones || ''}</td>
+                    <td>${book.ejemplares || 1}</td>
+                    <td>${book.accion || 'Disponible'}</td>
+                    <td>${getLoanInfo(book)}</td>
+                    <td>${getActionButtons(originalIndex, book)}</td>
+                `;
+                
+                fragment.appendChild(row);
+            });
+            
+            tbody.innerHTML = '';
+            tbody.appendChild(fragment);
+        }
+
+        function getLoanInfo(book) {
+            if (book.accion === 'Prestado' && book.loanData) {
+                return `${book.loanData.name} ${book.loanData.lastName}`;
+            } else if (book.accion === 'Donado' && book.donationData) {
+                return book.donationData.type === 'persona' 
+                    ? `${book.donationData.personName} ${book.donationData.personLastName}`
+                    : book.donationData.institutionName;
+            }
+            return '';
+        }
+
+        // CORREGIR BOTONES DE ACCIÓN - Agregar QR en cada fila
+        function getActionButtons(index, book) {
+            let buttons = '';
+            if (rolActual === 'admin') {
+                buttons += `<button class="edit-btn" onclick="editBook(${index})">✏️</button>`;
+                buttons += `<button class="delete-btn" onclick="deleteBook(${index})">🗑️</button>`;
+                
+                if (book.accion !== 'Prestado' && book.accion !== 'Donado') {
+                    buttons += `<button class="btn" style="background: #f59e0b; color: white; font-size: 0.7em; padding: 2px 6px; margin: 1px;" onclick="openLoanModal(${index})">Prestar</button>`;
+                    buttons += `<button class="btn" style="background: #8b5cf6; color: white; font-size: 0.7em; padding: 2px 6px; margin: 1px;" onclick="openDonationModal(${index})">Donar</button>`;
+                }
+                
+                if (book.accion === 'Prestado') {
+                    buttons += `<button class="return-btn" onclick="returnBook(${index})">↩️</button>`;
+                }
+            }
+            
+            // QR disponible para todos los usuarios
+            buttons += `<button class="qr-btn" onclick="generateBookQR(${index})">📱</button>`;
+            
+            return buttons;
+        }
+
+        // FUNCIÓN QR PARA LIBROS INDIVIDUALES
+        function generateBookQR(index) {
+            const book = books[index];
+            if (!book) return;
+            
+            const qrData = {
+                biblioteca: 'Biblioteca Batlle',
+                ordinal: book.ordinal,
+                titulo: book.titulo,
+                autor: `${book.apellido}, ${book.nombre}`,
+                estante: book.estante,
+                año: book.año,
+                volumen: book.volumen || '',
+                tomo: book.tomo || '',
+                ejemplares: book.ejemplares || 1,
+                estado: book.accion || 'Disponible',
+                isbn: book.isbn || '',
+                fecha: new Date().toLocaleDateString('es-ES')
+            };
+            
+            showQR(JSON.stringify(qrData, null, 2), `QR - ${book.titulo}`);
+        }
+
+        // FUNCIONES DE LIBROS OPTIMIZADAS
+        function openAddBookModal() {
+            if (!checkPermission('edit')) return;
+            editingIndex = -1;
+            document.getElementById('modalTitle').textContent = 'Agregar Nuevo Libro';
+            clearBookForm();
+            document.getElementById('bookModal').style.display = 'block';
+        }
+
+        function editBook(index) {
+            if (!checkPermission('edit')) return;
+            
+            editingIndex = index;
+            const book = books[index];
+            
+            document.getElementById('modalTitle').textContent = 'Editar Libro';
+            document.getElementById('modalEstante').value = book.estante || '';
+            document.getElementById('modalApellido').value = book.apellido || '';
+            document.getElementById('modalNombre').value = book.nombre || '';
+            document.getElementById('modalTitulo').value = book.titulo || '';
+            document.getElementById('modalVolumen').value = book.volumen || '';
+            document.getElementById('modalTomo').value = book.tomo || '';
+            document.getElementById('modalAnio').value = book.año || '';
+            document.getElementById('modalEjemplares').value = book.ejemplares || 1;
+            document.getElementById('modalISBN').value = book.isbn || '';
+            document.getElementById('modalObservaciones').value = book.observaciones || '';
+            
+            const encuadernadoRadios = document.querySelectorAll('input[name="modalEncuadernado"]');
+            encuadernadoRadios.forEach(radio => {
+                radio.checked = radio.value === (book.encuadernado || 'Sí');
+            });
+            
+            document.getElementById('bookModal').style.display = 'block';
+        }
+
+        function saveBook() {
+            const estante = document.getElementById('modalEstante').value.trim();
+            const apellido = document.getElementById('modalApellido').value.trim();
+            const nombre = document.getElementById('modalNombre').value.trim();
+            const titulo = document.getElementById('modalTitulo').value.trim();
+
+            if (!estante || !apellido || !nombre || !titulo) {
+                showAlert('Complete los campos obligatorios', 'warning');
+                return;
+            }
+
+            const bookData = {
+                ordinal: editingIndex === -1 ? nextOrdinal++ : books[editingIndex].ordinal,
+                estante: estante,
+                apellido: apellido,
+                nombre: nombre,
+                titulo: titulo,
+                volumen: document.getElementById('modalVolumen').value.trim(),
+                tomo: document.getElementById('modalTomo').value.trim(),
+                año: document.getElementById('modalAnio').value.trim(),
+                encuadernado: document.querySelector('input[name="modalEncuadernado"]:checked').value,
+                ejemplares: parseInt(document.getElementById('modalEjemplares').value) || 1,
+                isbn: document.getElementById('modalISBN').value.trim(),
+                observaciones: document.getElementById('modalObservaciones').value.trim(),
+                accion: editingIndex === -1 ? 'Disponible' : books[editingIndex].accion,
+                loanData: editingIndex === -1 ? null : books[editingIndex].loanData,
+                donationData: editingIndex === -1 ? null : books[editingIndex].donationData
+            };
+
+            if (editingIndex === -1) {
+                books.push(bookData);
+                showAlert('✅ Libro agregado', 'success');
+            } else {
+                books[editingIndex] = bookData;
+                showAlert('✅ Libro actualizado', 'success');
+            }
+
+            saveData();
+            updateStats();
+            renderTable();
+            closeModal();
+        }
+
+        function deleteBook(index) {
+            if (!checkPermission('delete')) return;
+            if (confirm('¿Eliminar este libro?')) {
+                books.splice(index, 1);
+                saveData();
+                updateStats();
+                renderTable();
+                showAlert('Libro eliminado', 'info');
+            }
+        }
+
+        function clearBookForm() {
+            document.getElementById('modalEstante').value = '';
+            document.getElementById('modalApellido').value = '';
+            document.getElementById('modalNombre').value = '';
+            document.getElementById('modalTitulo').value = '';
+            document.getElementById('modalVolumen').value = '';
+            document.getElementById('modalTomo').value = '';
+            document.getElementById('modalAnio').value = '';
+            document.getElementById('modalEjemplares').value = '1';
+            document.getElementById('modalISBN').value = '';
+            document.getElementById('modalObservaciones').value = '';
+            document.querySelector('input[name="modalEncuadernado"][value="Sí"]').checked = true;
+        }
+
+        function closeModal() {
+            document.getElementById('bookModal').style.display = 'none';
+        }
+
+        // BÚSQUEDA OPTIMIZADA
+        function performSearch() {
+            const searchTerm = document.getElementById('searchInput').value.trim().toLowerCase();
+            
+            if (!searchTerm) {
+                clearSearch();
+                return;
+            }
+            
+            filteredBooks = books.filter(book => 
+                (book.titulo || '').toLowerCase().includes(searchTerm) ||
+                (book.apellido || '').toLowerCase().includes(searchTerm) ||
+                (book.nombre || '').toLowerCase().includes(searchTerm) ||
+                (book.año || '').toString().includes(searchTerm) ||
+                (book.isbn || '').toLowerCase().includes(searchTerm)
+            );
+            
+            isSearchActive = true;
+            document.getElementById('clearSearchBtn').style.display = 'inline-block';
+            renderTable();
+            showAlert(`${filteredBooks.length} libro(s) encontrado(s)`, 'info', 1500);
+        }
+
+        function clearSearch() {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('clearSearchBtn').style.display = 'none';
+            isSearchActive = false;
+            renderTable();
+        }
+
+        function searchByEstante() {
+            const estante = document.getElementById('searchEstante').value.trim();
+            if (!estante) {
+                showAlert('Ingrese un número de estante', 'warning');
+                return;
+            }
+            
+            filteredBooks = books.filter(book => book.estante == estante);
+            isSearchActive = true;
+            renderTable();
+            showAlert(`${filteredBooks.length} libro(s) en estante ${estante}`, 'info');
+        }
+
+        // EXPORTACIÓN CORREGIDA - Mantener formato del programa
+        function exportData() {
+            if (!checkPermission('export')) return;
+            
+            if (!books.length) {
+                showAlert('No hay libros para exportar', 'warning');
+                return;
+            }
+
+            try {
+                const data = books.map(b => ({
+                    "Ordinal": b.ordinal || '',
+                    "Estante": b.estante || '',
+                    "Apellido": b.apellido || '',
+                    "Nombre": b.nombre || '',
+                    "Título": b.titulo || '',
+                    "Volumen": b.volumen || '',
+                    "Tomo": b.tomo || '',
+                    "Año": b.año || '',
+                    "Encuadernado": b.encuadernado || 'Sí',
+                    "Observaciones": b.observaciones || '',
+                    "Ejemplares": b.ejemplares || 1,
+                    "Estado": b.accion || 'Disponible',
+                    "ISBN": b.isbn || ''
+                }));
+
+                // Crear hoja con formato específico
+                const worksheet = XLSX.utils.json_to_sheet(data, {
+                    header: ["Ordinal", "Estante", "Apellido", "Nombre", "Título", "Volumen", "Tomo", "Año", "Encuadernado", "Observaciones", "Ejemplares", "Estado", "ISBN"]
+                });
+
+                // Ajustar ancho de columnas
+                const colWidths = [
+                    {wch: 8},   // Ordinal
+                    {wch: 8},   // Estante
+                    {wch: 15},  // Apellido
+                    {wch: 15},  // Nombre
+                    {wch: 30},  // Título
+                    {wch: 8},   // Volumen
+                    {wch: 8},   // Tomo
+                    {wch: 6},   // Año
+                    {wch: 12},  // Encuadernado
+                    {wch: 20},  // Observaciones
+                    {wch: 10},  // Ejemplares
+                    {wch: 12},  // Estado
+                    {wch: 15}   // ISBN
+                ];
+                worksheet['!cols'] = colWidths;
+
+                const workbook = XLSX.utils.book_new();
+                XLSX.utils.book_append_sheet(workbook, worksheet, "Biblioteca Batlle");
+
+                XLSX.writeFile(workbook, `biblioteca_batlle_${new Date().toISOString().split('T')[0]}.xlsx`);
+                showAlert(`✅ ${books.length} libros exportados correctamente`, 'success');
+            } catch (error) {
+                console.error('Error exportando:', error);
+                showAlert('Error al exportar', 'error');
+            }
+        }
+
+        // IMPORTACIÓN CORREGIDA
+        function importData() {
+            if (!checkPermission('import')) return;
+            
+            const fileInput = document.getElementById('importFile');
+            const file = fileInput.files[0];
+            
+            if (!file) {
+                showAlert('Seleccione un archivo', 'warning');
+                return;
+            }
+
+            showLoading();
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = new Uint8Array(e.target.result);
+                    const workbook = XLSX.read(data, { type: 'array' });
+                    const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+                    const jsonData = XLSX.utils.sheet_to_json(firstSheet, { 
+                        header: 1,
+                        defval: ''
+                    });
+
+                    if (jsonData.length < 2) {
+                        hideLoading();
+                        showAlert('El archivo debe tener al menos encabezados y una fila de datos', 'warning');
+                        return;
+                    }
+
+                    // Obtener encabezados (primera fila)
+                    const headers = jsonData[0];
+                    console.log('Encabezados encontrados:', headers);
+
+                    // Mapear encabezados a índices
+                    const headerMap = {};
+                    headers.forEach((header, index) => {
+                        if (header) {
+                            const normalizedHeader = header.toString().toLowerCase().trim();
+                            headerMap[normalizedHeader] = index;
+                        }
+                    });
+
+                    console.log('Mapa de encabezados:', headerMap);
+
+                    books = [];
+                    nextOrdinal = 1;
+
+                    // Procesar filas de datos (saltear encabezados)
+                    for (let i = 1; i < jsonData.length; i++) {
+                        const row = jsonData[i];
+                        if (!row || row.length === 0 || !row.some(cell => cell)) continue;
+
+                        const book = {
+                            ordinal: nextOrdinal++,
+                            estante: getValueFromRow(row, headerMap, ['estante', 'est']) || '',
+                            apellido: getValueFromRow(row, headerMap, ['apellido', 'autor', 'apellidos']) || '',
+                            nombre: getValueFromRow(row, headerMap, ['nombre', 'nombres']) || '',
+                            titulo: getValueFromRow(row, headerMap, ['titulo', 'título', 'title']) || '',
+                            volumen: getValueFromRow(row, headerMap, ['volumen', 'vol', 'volume']) || '',
+                            tomo: getValueFromRow(row, headerMap, ['tomo', 'tome']) || '',
+                            año: getValueFromRow(row, headerMap, ['año', 'ano', 'year', 'fecha']) || '',
+                            encuadernado: getValueFromRow(row, headerMap, ['encuadernado', 'enc']) || 'Sí',
+                            observaciones: getValueFromRow(row, headerMap, ['observaciones', 'obs', 'notas']) || '',
+                            ejemplares: parseInt(getValueFromRow(row, headerMap, ['ejemplares', 'ej', 'cantidad'])) || 1,
+                            accion: getValueFromRow(row, headerMap, ['estado', 'accion', 'status']) || 'Disponible',
+                            isbn: getValueFromRow(row, headerMap, ['isbn', 'codigo']) || ''
+                        };
+
+                        // Solo agregar si tiene datos mínimos
+                        if (book.titulo || book.apellido || book.nombre) {
+                            books.push(book);
+                        }
+                    }
+
+                    hideLoading();
+
+                    if (books.length === 0) {
+                        showAlert('No se encontraron libros válidos en el archivo', 'warning');
+                        return;
+                    }
+
+                    saveData();
+                    updateStats();
+                    renderTable();
+                    showAlert(`✅ ${books.length} libros importados correctamente`, 'success');
+
+                    // Limpiar input
+                    fileInput.value = '';
+
+                } catch (error) {
+                    hideLoading();
+                    console.error('Error importando:', error);
+                    showAlert('Error al procesar el archivo. Verifique el formato.', 'error');
+                }
+            };
+
+            reader.onerror = function() {
+                hideLoading();
+                showAlert('Error al leer el archivo', 'error');
+            };
+
+            reader.readAsArrayBuffer(file);
+        }
+
+        function getValueFromRow(row, headerMap, possibleHeaders) {
+            for (const header of possibleHeaders) {
+                const index = headerMap[header];
+                if (index !== undefined && row[index] !== undefined) {
+                    return row[index].toString().trim();
+                }
+            }
+            return '';
+        }
+
+        // FUNCIONES DE PRÉSTAMOS Y DONACIONES
+        function openLoanModal(index) {
+            if (!checkPermission('edit')) return;
+            currentActionBookIndex = index;
+            document.getElementById('loanDate').value = new Date().toISOString().split('T')[0];
+            document.getElementById('loanName').value = '';
+            document.getElementById('loanLastName').value = '';
+            document.getElementById('loanModal').style.display = 'block';
+        }
+
+        function saveLoan() {
+            const date = document.getElementById('loanDate').value;
+            const name = document.getElementById('loanName').value.trim();
+            const lastName = document.getElementById('loanLastName').value.trim();
+
+            if (!date || !name || !lastName) {
+                showAlert('Complete todos los campos', 'warning');
+                return;
+            }
+
+            books[currentActionBookIndex].accion = 'Prestado';
+            books[currentActionBookIndex].loanData = {
+                date: date,
+                name: name,
+                lastName: lastName
+            };
+
+            saveData();
+            updateStats();
+            renderTable();
+            closeLoanModal();
+            showAlert('Préstamo registrado correctamente', 'success');
+        }
+
+        function closeLoanModal() {
+            document.getElementById('loanModal').style.display = 'none';
+            currentActionBookIndex = -1;
+        }
+
+        function openDonationModal(index) {
+            if (!checkPermission('edit')) return;
+            currentActionBookIndex = index;
+            document.getElementById('donationDate').value = new Date().toISOString().split('T')[0];
+            document.getElementById('donationType').value = 'persona';
+            toggleDonationFields();
+            document.getElementById('donationModal').style.display = 'block';
+        }
+
+        function toggleDonationFields() {
+            const type = document.getElementById('donationType').value;
+            const personFields = document.getElementById('personFields');
+            const institutionFields = document.getElementById('institutionFields');
+
+            if (type === 'persona') {
+                personFields.classList.remove('hidden');
+                institutionFields.classList.add('hidden');
+            } else {
+                personFields.classList.add('hidden');
+                institutionFields.classList.remove('hidden');
+            }
+        }
+
+        function saveDonation() {
+            const date = document.getElementById('donationDate').value;
+            const type = document.getElementById('donationType').value;
+
+            if (!date) {
+                showAlert('Complete la fecha', 'warning');
+                return;
+            }
+
+            let donationData = { date: date, type: type };
+
+            if (type === 'persona') {
+                const name = document.getElementById('donationPersonName').value.trim();
+                const lastName = document.getElementById('donationPersonLastName').value.trim();
+                
+                if (!name || !lastName) {
+                    showAlert('Complete nombre y apellido', 'warning');
+                    return;
+                }
+                
+                donationData.personName = name;
+                donationData.personLastName = lastName;
+            } else {
+                const institutionName = document.getElementById('donationInstitutionName').value.trim();
+                const responsibleName = document.getElementById('donationResponsibleName').value.trim();
+                
+                if (!institutionName || !responsibleName) {
+                    showAlert('Complete institución y responsable', 'warning');
+                    return;
+                }
+                
+                donationData.institutionName = institutionName;
+                donationData.responsibleName = responsibleName;
+            }
+
+            books[currentActionBookIndex].accion = 'Donado';
+            books[currentActionBookIndex].donationData = donationData;
+
+            saveData();
+            updateStats();
+            renderTable();
+            closeDonationModal();
+            showAlert('Donación registrada correctamente', 'success');
+        }
+
+        function closeDonationModal() {
+            document.getElementById('donationModal').style.display = 'none';
+            currentActionBookIndex = -1;
+        }
+
+        function returnBook(index) {
+            if (!checkPermission('edit')) return;
+            
+            if (confirm('¿Confirmar devolución del libro?')) {
+                books[index].accion = 'Disponible';
+                books[index].loanData = null;
+                
+                saveData();
+                updateStats();
+                renderTable();
+                showAlert('Libro devuelto correctamente', 'success');
+            }
+        }
+
+        // FUNCIONES RESTAURADAS DEL MENÚ DE ADMINISTRADOR
+
+        // Gestión de usuarios
+        function openUserModal() {
+            if (!checkPermission('admin')) return;
+            
+            document.getElementById('userName').value = '';
+            document.getElementById('userPassword').value = '';
+            document.getElementById('userRole').value = 'lector';
+            document.getElementById('userModal').style.display = 'block';
+        }
+
+        function createUser() {
+            const username = document.getElementById('userName').value.trim();
+            const password = document.getElementById('userPassword').value.trim();
+            const role = document.getElementById('userRole').value;
+
+            if (!username || !password) {
+                showAlert('Complete todos los campos', 'warning');
+                return;
+            }
+
+            let users = JSON.parse(localStorage.getItem('usuariosBiblioteca') || '[]');
+            
+            if (users.find(u => u.username === username)) {
+                showAlert('El usuario ya existe', 'warning');
+                return;
+            }
+
+            users.push({
+                username: username,
+                password: hashPassword(password),
+                role: role,
+                created: new Date().toISOString()
+            });
+
+            localStorage.setItem('usuariosBiblioteca', JSON.stringify(users));
+            showAlert(`Usuario ${username} creado correctamente`, 'success');
+            closeUserModal();
+        }
+
+        function closeUserModal() {
+            document.getElementById('userModal').style.display = 'none';
+        }
+
+        function openManageUsersModal() {
+            if (!checkPermission('admin')) return;
+            
+            const users = JSON.parse(localStorage.getItem('usuariosBiblioteca') || '[]');
+            const usersList = document.getElementById('usersList');
+            
+            usersList.innerHTML = '';
+            
+            users.forEach((user, index) => {
+                const li = document.createElement('li');
+                li.style.cssText = 'padding: 10px; margin: 5px 0; background: #f5f5f5; border-radius: 6px; display: flex; justify-content: space-between; align-items: center;';
+                
+                li.innerHTML = `
+                    <div>
+                        <strong>${user.username}</strong> 
+                        <span style="color: #666; font-size: 0.9em;">(${user.role})</span>
+                    </div>
+                    ${user.username !== 'Leandro' ? `<button class="btn btn-danger" style="padding: 4px 8px; font-size: 0.8em;" onclick="deleteUser(${index})">Eliminar</button>` : ''}
+                `;
+                
+                usersList.appendChild(li);
+            });
+            
+            document.getElementById('manageUsersModal').style.display = 'block';
+        }
+
+        function deleteUser(index) {
+            let users = JSON.parse(localStorage.getItem('usuariosBiblioteca') || '[]');
+            
+            if (users[index].username === 'Leandro') {
+                showAlert('No se puede eliminar el usuario principal', 'warning');
+                return;
+            }
+            
+            if (confirm(`¿Eliminar usuario ${users[index].username}?`)) {
+                users.splice(index, 1);
+                localStorage.setItem('usuariosBiblioteca', JSON.stringify(users));
+                showAlert('Usuario eliminado', 'info');
+                openManageUsersModal(); // Recargar lista
+            }
+        }
+
+        function closeManageUsersModal() {
+            document.getElementById('manageUsersModal').style.display = 'none';
+        }
+
+        // Exportaciones especiales
+        function exportarPrestamos() {
+            if (!checkPermission('admin')) return;
+            exportByType('Prestado', 'prestamos');
+        }
+
+        function exportarDonados() {
+            if (!checkPermission('admin')) return;
+            exportByType('Donado', 'donados');
+        }
+
+        function exportByType(tipo, filename) {
+            const filteredBooks = books.filter(book => book.accion === tipo);
+            
+            if (!filteredBooks.length) {
+                showAlert(`No hay libros ${tipo.toLowerCase()}s para exportar`, 'warning');
+                return;
+            }
+
+            try {
+                const data = filteredBooks.map(b => ({
+                    "Ordinal": b.ordinal || '',
+                    "Estante": b.estante || '',
+                    "Apellido": b.apellido || '',
+                    "Nombre": b.nombre || '',
+                    "Título": b.titulo || '',
+                    "Volumen": b.volumen || '',
+                    "Tomo": b.tomo || '',
+                    "Año": b.año || '',
+                    "Ejemplares": b.ejemplares || 1,
+                    "Estado": b.accion || '',
+                    "Información": getLoanInfo(b),
+                    "ISBN": b.isbn || ''
+                }));
+
+                const worksheet = XLSX.utils.json_to_sheet(data);
+                const workbook = XLSX.utils.book_new();
+                XLSX.utils.book_append_sheet(workbook, worksheet, tipo);
+
+                XLSX.writeFile(workbook, `biblioteca_${filename}_${new Date().toISOString().split('T')[0]}.xlsx`);
+                showAlert(`✅ ${filteredBooks.length} libros ${tipo.toLowerCase()}s exportados`, 'success');
+            } catch (error) {
+                console.error('Error exportando:', error);
+                showAlert('Error al exportar', 'error');
+            }
+        }
+
+        // Generación de códigos QR
+        function generarQREstantes() {
+            if (!checkPermission('admin')) return;
+            
+            const estantes = [...new Set(books.map(b => b.estante))].sort((a, b) => a - b);
+            let qrData = 'Estantes de la Biblioteca Batlle:\n\n';
+            
+            estantes.forEach(est => {
+                const librosEnEstante = books.filter(b => b.estante === est).length;
+                qrData += `Estante ${est}: ${librosEnEstante} libros\n`;
+            });
+            
+            qrData += `\nTotal: ${books.length} libros\nFecha: ${new Date().toLocaleDateString('es-ES')}`;
+            
+            showQR(qrData, 'QR - Estantes de la Biblioteca');
+        }
+
+        function generarQRTodosLibros() {
+            if (!checkPermission('admin')) return;
+            
+            const qrData = {
+                biblioteca: 'Biblioteca Batlle',
+                totalLibros: books.length,
+                disponibles: books.filter(b => b.accion === 'Disponible').length,
+                prestados: books.filter(b => b.accion === 'Prestado').length,
+                donados: books.filter(b => b.accion === 'Donado').length,
+                fecha: new Date().toISOString().split('T')[0],
+                url: window.location.href
+            };
+            
+            showQR(JSON.stringify(qrData, null, 2), 'QR - Catálogo Completo');
+        }
+
+        function showQR(data, title) {
+            document.getElementById('qrModalTitle').textContent = title;
+            
+            // Crear código QR
+            const qr = qrcode(0, 'M');
+            qr.addData(data);
+            qr.make();
+            
+            const qrContainer = document.getElementById('qrCodeContainer');
+            qrContainer.innerHTML = qr.createImgTag(4, 8);
+            
+            // Guardar datos para descarga
+            window.currentQRData = {
+                data: data,
+                title: title,
+                imgData: qr.createDataURL(4, 8)
+            };
+            
+            document.getElementById('qrModal').style.display = 'block';
+        }
+
+        function downloadQR() {
+            if (!window.currentQRData) return;
+            
+            const link = document.createElement('a');
+            link.href = window.currentQRData.imgData;
+            link.download = `${window.currentQRData.title.replace(/[^a-zA-Z0-9]/g, '_')}.png`;
+            link.click();
+        }
+
+        function closeQRModal() {
+            document.getElementById('qrModal').style.display = 'none';
+            window.currentQRData = null;
+        }
+
+        // Configuración del servidor
         function setupServer() {
+            if (!checkPermission('admin')) return;
+            
             const modal = document.createElement('div');
+            modal.id = 'serverConfigModal';
+            modal.className = 'modal';
+            modal.style.display = 'block';
             modal.innerHTML = `
-                <div class="modal" id="serverConfigModal" style="display: block;">
-                    <div class="modal-content" style="max-width: 600px;">
-                        <div class="modal-header">
-                            <h2>🌐 Configuración del Servidor</h2>
-                        </div>
-                        <div class="modal-body">
-                            <p>Para que todos los usuarios vean los mismos datos actualizados, configura un servidor:</p>
+                <div class="modal-content" style="max-width: 600px;">
+                    <div class="modal-header">
+                        <h2>🌐 Configuración del Servidor</h2>
+                        <span class="close" onclick="closeServerConfig()">&times;</span>
+                    </div>
+                    <div class="modal-body">
+                        <p style="margin-bottom: 20px; color: #666;">
+                            Para sincronizar datos entre usuarios, configura un servidor:
+                        </p>
+                        
+                        <div style="margin: 20px 0; padding: 15px; border: 2px solid #e0e7ff; border-radius: 8px; background: #f8fafc;">
+                            <h3 style="color: var(--primary); margin-top: 0;">📊 JSONBin (Gratuito)</h3>
+                            <p style="font-size: 0.9em; color: #666;">Ve a <a href="https://jsonbin.io" target="_blank">jsonbin.io</a>, crea cuenta y un Bin:</p>
                             
-                            <div style="margin: 20px 0;">
-                                <h3>Opción 1: JSONBin (Recomendado - Gratuito)</h3>
-                                <ol style="margin-left: 20px;">
-                                    <li>Ve a <a href="https://jsonbin.io" target="_blank">jsonbin.io</a></li>
-                                    <li>Crea una cuenta gratuita</li>
-                                    <li>Crea un nuevo Bin</li>
-                                    <li>Copia el Bin ID y API Key aquí:</li>
-                                </ol>
-                                
-                                <div class="form-group">
-                                    <label>Bin ID:</label>
-                                    <input type="text" id="jsonbinId" placeholder="ej: 60f2c5e8b6b3a40017c12345">
-                                </div>
-                                <div class="form-group">
-                                    <label>API Key:</label>
-                                    <input type="text" id="jsonbinKey" placeholder="ej: $2a$10$...">
-                                </div>
+                            <div class="form-group">
+                                <label>Bin ID:</label>
+                                <input type="text" id="jsonbinId" placeholder="Ej: 673abc123456789def012345">
                             </div>
-                            
-                            <div style="margin: 20px 0;">
-                                <h3>Opción 2: Servidor Personalizado</h3>
-                                <div class="form-group">
-                                    <label>URL del Servidor:</label>
-                                    <input type="text" id="customServer" placeholder="https://tu-servidor.com/api">
-                                </div>
-                            </div>
-                            
-                            <div style="margin: 20px 0;">
-                                <label style="display: flex; align-items: center; gap: 8px;">
-                                    <input type="checkbox" id="useOfflineMode">
-                                    Trabajar solo offline (sin servidor)
-                                </label>
+                            <div class="form-group">
+                                <label>API Key:</label>
+                                <input type="text" id="jsonbinKey" placeholder="Ej: $2a$10$abcd...">
                             </div>
                         </div>
-                        <div class="form-actions">
-                            <button class="btn btn-primary" onclick="saveServerConfig()">Guardar Configuración</button>
-                            <button class="btn btn-secondary" onclick="skipServerConfig()">Omitir (Solo Local)</button>
+                        
+                        <div style="margin: 20px 0;">
+                            <label style="display: flex; align-items: center; gap: 8px;">
+                                <input type="checkbox" id="useOfflineMode">
+                                Trabajar solo offline (sin sincronización)
+                            </label>
                         </div>
+                    </div>
+                    <div class="form-actions">
+                        <button class="btn btn-primary" onclick="saveServerConfig()">💾 Guardar</button>
+                        <button class="btn btn-secondary" onclick="skipServerConfig()">⏭️ Omitir</button>
                     </div>
                 </div>
             `;
@@ -1388,115 +2091,122 @@
         function saveServerConfig() {
             const jsonbinId = document.getElementById('jsonbinId').value.trim();
             const jsonbinKey = document.getElementById('jsonbinKey').value.trim();
-            const customServer = document.getElementById('customServer').value.trim();
             const useOffline = document.getElementById('useOfflineMode').checked;
             
             if (useOffline) {
                 SERVER_CONFIG.USE_JSONBIN = false;
-                SERVER_CONFIG.CUSTOM_SERVER = '';
-                showAlert('Configurado para trabajar offline', 'success');
+                showAlert('✅ Configurado para trabajar offline', 'success');
             } else if (jsonbinId && jsonbinKey) {
                 SERVER_CONFIG.USE_JSONBIN = true;
                 SERVER_CONFIG.JSONBIN_URL = `https://api.jsonbin.io/v3/b/${jsonbinId}`;
                 SERVER_CONFIG.JSONBIN_KEY = jsonbinKey;
-                showAlert('JSONBin configurado correctamente', 'success');
-            } else if (customServer) {
-                SERVER_CONFIG.USE_JSONBIN = false;
-                SERVER_CONFIG.CUSTOM_SERVER = customServer;
-                showAlert('Servidor personalizado configurado', 'success');
+                showAlert('✅ JSONBin configurado correctamente', 'success');
             } else {
-                showAlert('Complete la configuración o seleccione modo offline', 'warning');
+                showAlert('⚠️ Complete la configuración o seleccione modo offline', 'warning');
                 return;
             }
             
-            // Guardar configuración
             localStorage.setItem('bibliotecaServerConfig', JSON.stringify(SERVER_CONFIG));
-            
-            // Cerrar modal
-            document.getElementById('serverConfigModal').remove();
-            
-            // Cargar datos
-            loadData();
+            closeServerConfig();
         }
 
         function skipServerConfig() {
             SERVER_CONFIG.USE_JSONBIN = false;
-            SERVER_CONFIG.CUSTOM_SERVER = '';
             localStorage.setItem('bibliotecaServerConfig', JSON.stringify(SERVER_CONFIG));
-            document.getElementById('serverConfigModal').remove();
-            loadData();
+            closeServerConfig();
+            showAlert('📱 Trabajando en modo offline', 'info');
         }
 
-        // Modificar funciones existentes para usar el servidor
-        function saveData() {
-            if (rolActual !== 'admin') return;
-            
-            if (SERVER_CONFIG.USE_JSONBIN || SERVER_CONFIG.CUSTOM_SERVER) {
-                saveDataToServer();
-            } else {
-                saveDataToLocalStorage();
+        function closeServerConfig() {
+            const modal = document.getElementById('serverConfigModal');
+            if (modal) {
+                modal.remove();
             }
         }
 
-        function loadData() {
-            showLoading();
+        // Actualizar checkPermission para incluir 'admin'
+        function checkPermission(action) {
+            if (action === 'admin' && rolActual !== 'admin') {
+                showAlert('Solo los administradores pueden realizar esta acción', 'warning');
+                return false;
+            }
             
-            setTimeout(() => {
-                if (SERVER_CONFIG.USE_JSONBIN || SERVER_CONFIG.CUSTOM_SERVER) {
-                    loadDataFromServer().finally(() => hideLoading());
-                } else {
-                    loadDataFromLocalStorage();
-                    hideLoading();
-                    showAlert(`📚 ${books.length} libros cargados (offline)`, 'success');
-                }
-            }, 100);
-        }
-
-        // Funciones de exportación para informes
-        function exportarPrestamos() {
-            if (!checkPermission('export')) return;
-            exportByType('Prestado');
-        }
-
-        function exportarDonados() {
-            if (!checkPermission('export')) return;
-            exportByType('Donado');
-        }
-
-        function generarQREstantes() {
-            if (!checkPermission('qr')) return;
+            if (rolActual === 'admin') return true;
             
-            const estantes = [...new Set(books.map(b => b.estante))].sort((a, b) => a - b);
-            let qrData = 'Estantes de la Biblioteca Batlle:\n\n';
-            estantes.forEach(est => {
-                const librosEnEstante = books.filter(b => b.estante === est).length;
-                qrData += `Estante ${est}: ${librosEnEstante} libros\n`;
-            });
-            
-            showQR(qrData, 'QR - Estantes');
-        }
-
-        function generarQRTodosLibros() {
-            if (!checkPermission('qr')) return;
-            
-            const qrData = {
-                tipo: 'catalogo',
-                biblioteca: 'Batlle',
-                totalLibros: books.length,
-                fecha: new Date().toISOString().split('T')[0],
-                url: window.location.href
+            const allowedActions = {
+                'lector': ['view', 'search', 'export']
             };
             
-            showQR(JSON.stringify(qrData), 'QR - Catálogo Completo');
+            if (allowedActions[rolActual]?.includes(action)) return true;
+            
+            showAlert('No tiene permisos para esta acción', 'warning');
+            return false;
         }
 
-        // Modificar inicialización
+        // EVENT LISTENERS OPTIMIZADOS
+        function setupEventListeners() {
+            // Búsqueda con debounce
+            let searchTimeout;
+            document.getElementById('searchInput').addEventListener('input', () => {
+                clearTimeout(searchTimeout);
+                searchTimeout = setTimeout(performSearch, 500);
+            });
+
+            // Enter en búsquedas
+            document.getElementById('searchEstante').addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    searchByEstante();
+                }
+            });
+
+            // Login con Enter
+            document.getElementById('welcomeUser').addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    document.getElementById('welcomePassword').focus();
+                }
+            });
+
+            document.getElementById('welcomePassword').addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    welcomeLogin();
+                }
+            });
+
+            // Guardar con Enter en modales
+            const modalInputs = document.querySelectorAll('#bookModal input, #bookModal textarea');
+            modalInputs.forEach(input => {
+                input.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' && e.target.tagName !== 'TEXTAREA') {
+                        e.preventDefault();
+                        saveBook();
+                    }
+                });
+            });
+
+            // Cerrar dropdowns al hacer click fuera
+            document.addEventListener('click', (e) => {
+                const dropdown = document.querySelector('.user-dropdown');
+                if (dropdown && !dropdown.contains(e.target)) {
+                    dropdown.classList.remove('active');
+                    document.getElementById('userDropdownContent').classList.remove('show');
+                }
+            });
+
+            // Cerrar modales con ESC
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') {
+                    document.querySelectorAll('.modal').forEach(modal => {
+                        modal.style.display = 'none';
+                    });
+                }
+            });
+        }
+
+        // INICIALIZACIÓN DE LA APLICACIÓN
         function initializeApp() {
-            // Cargar configuración del servidor
-            const savedConfig = localStorage.getItem('bibliotecaServerConfig');
-            if (savedConfig) {
-                Object.assign(SERVER_CONFIG, JSON.parse(savedConfig));
-            }
+            // Inicializar cache DOM
+            DOM.init();
             
             // Usuarios por defecto
             let users = JSON.parse(localStorage.getItem('usuariosBiblioteca') || '[]');
@@ -1507,95 +2217,29 @@
                 ];
                 localStorage.setItem('usuariosBiblioteca', JSON.stringify(users));
             }
-            
-            // Verificar sesión
+
+            // Verificar sesión existente
             if (!checkSession()) {
-                document.getElementById('welcomeScreen').style.display = 'flex';
-                document.getElementById('mainApp').style.display = 'none';
+                DOM.welcomeScreen.style.display = 'flex';
+                DOM.mainApp.style.display = 'none';
                 return;
             }
-            
-            // Si no hay configuración de servidor y es admin, mostrar configuración
-            if (!savedConfig && rolActual === 'admin') {
-                setupServer();
-            } else {
-                loadData();
-            }
-            
-            setupEventListeners();
-            document.getElementById('anioFooter').textContent = new Date().getFullYear();
-        }
 
-        function setupEventListeners() {
-            // Búsqueda con debounce
-            let searchTimeout;
-            document.getElementById('searchInput').addEventListener('input', () => {
-                clearTimeout(searchTimeout);
-                searchTimeout = setTimeout(performSearch, 300);
-            });
+            // Si hay sesión, mostrar aplicación
+            DOM.welcomeScreen.style.display = 'none';
+            DOM.mainApp.style.display = 'flex';
             
-            // Enter en búsquedas
-            document.getElementById('searchEstante').addEventListener('keydown', (e) => {
-                if (e.key === 'Enter') {
-                    e.preventDefault();
-                    searchByEstante();
-                }
-            });
+            // Cargar datos y configurar
+            loadData();
+            setupEventListeners();
             
-            // Login con Enter
-            document.getElementById('welcomeUser').addEventListener('keydown', (e) => {
-                if (e.key === 'Enter') {
-                    document.getElementById('welcomePassword').focus();
-                }
-            });
-            
-            document.getElementById('welcomePassword').addEventListener('keydown', (e) => {
-                if (e.key === 'Enter') {
-                    welcomeLogin();
-                }
-            });
-            
-            // Cerrar dropdowns al hacer click fuera
-            document.addEventListener('click', (e) => {
-                const dropdown = document.querySelector('.user-dropdown');
-                if (dropdown && !dropdown.contains(e.target)) {
-                    dropdown.classList.remove('active');
-                    document.getElementById('userDropdownContent').classList.remove('show');
-                }
-            });
-            
-            // ESC para cerrar modales
-            document.addEventListener('keydown', (e) => {
-                if (e.key === 'Escape') {
-                    document.querySelectorAll('.modal').forEach(modal => {
-                        if (modal.style.display === 'block') {
-                            modal.style.display = 'none';
-                        }
-                    });
-                    
-                    const dropdown = document.querySelector('.user-dropdown');
-                    if (dropdown) {
-                        dropdown.classList.remove('active');
-                        document.getElementById('userDropdownContent').classList.remove('show');
-                    }
-                }
-            });
-            
-            // Auto-guardado
-            setInterval(() => {
-                if (rolActual === 'admin' && isDataLoaded) {
-                    saveData();
-                }
-            }, 30000);
-            
-            // Guardar al cerrar
-            window.addEventListener('beforeunload', () => {
-                if (rolActual === 'admin') saveData();
-            });
+            // Actualizar año en footer
+            document.getElementById('anioFooter').textContent = new Date().getFullYear();
         }
 
         // Inicializar cuando el DOM esté listo
         document.addEventListener('DOMContentLoaded', initializeApp);
     </script>
 </body>
+
 </html>

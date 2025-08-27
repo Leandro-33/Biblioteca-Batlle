@@ -3,12 +3,13 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>Biblioteca de Batlle</title>
     <link rel="manifest" href="manifest.json">
     <link href="https://fonts.googleapis.com/css?family=Roboto:400,700&display=swap" rel="stylesheet">
     <meta name="description" content="Sistema de gestión de biblioteca escolar. Catálogo, préstamos y donaciones.">
     <meta name="theme-color" content="#4f46e5">
+    <!-- El CSS permanece igual... -->
     <style>
         :root {
             --primary: #4f46e5;
@@ -24,6 +25,7 @@
 
         * {
             box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
@@ -34,6 +36,7 @@
             width: 100vw;
             height: 100vh;
             overflow: hidden;
+            -webkit-text-size-adjust: 100%;
         }
 
         .container {
@@ -43,36 +46,39 @@
             width: 100vw;
         }
 
-        /* Header optimizado */
+        /* Header optimizado para móvil */
         .header {
             flex: 0 0 auto;
             background: linear-gradient(90deg, var(--primary-dark) 0%, var(--primary) 100%);
             color: white;
-            padding: 10px 16px;
+            padding: 12px 16px;
             position: relative;
             box-shadow: 0 2px 8px rgba(79, 70, 229, 0.15);
+            min-height: 60px;
         }
 
         .header h1 {
-            font-size: 1.5em;
+            font-size: 1.3em;
             font-weight: 700;
-            margin: 0 0 2px 0;
+            margin: 0 0 4px 0;
             text-align: center;
             text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+            padding-right: 80px;
         }
 
         .header p {
-            font-size: 0.85em;
+            font-size: 0.8em;
             margin: 0;
             text-align: center;
             opacity: 0.9;
         }
 
-        /* Menú de usuario optimizado */
+        /* Menú de usuario - CORREGIDO */
         .user-menu {
             position: absolute;
-            top: 8px;
+            top: 12px;
             right: 16px;
+            z-index: 100;
         }
 
         .user-dropdown {
@@ -82,20 +88,24 @@
 
         .user-button {
             background: rgba(255, 255, 255, 0.15);
-            border: 1px solid rgba(255, 255, 255, 0.3);
+            border: 2px solid rgba(255, 255, 255, 0.3);
             color: white;
-            padding: 6px 12px;
-            border-radius: 6px;
+            padding: 8px 12px;
+            border-radius: 8px;
             cursor: pointer;
-            font-size: 0.9em;
+            font-size: 0.85em;
             display: flex;
             align-items: center;
             gap: 6px;
-            transition: background 0.2s;
+            transition: all 0.2s;
+            min-height: 36px;
+            touch-action: manipulation;
         }
 
-        .user-button:hover {
+        .user-button:hover,
+        .user-button:active {
             background: rgba(255, 255, 255, 0.25);
+            transform: scale(1.02);
         }
 
         .user-button::after {
@@ -113,36 +123,37 @@
             position: absolute;
             right: 0;
             top: 100%;
-            min-width: 200px;
+            min-width: 220px;
             background: white;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+            border: 2px solid #ddd;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
             z-index: 1000;
-            margin-top: 4px;
+            margin-top: 8px;
+            max-height: 400px;
+            overflow-y: auto;
         }
 
         .dropdown-content.show {
             display: block;
-            animation: fadeIn 0.2s ease;
+            animation: slideDown 0.3s ease;
         }
 
-        @keyframes fadeIn {
+        @keyframes slideDown {
             from {
                 opacity: 0;
-                transform: translateY(-5px);
+                transform: translateY(-10px) scale(0.95);
             }
-
             to {
                 opacity: 1;
-                transform: translateY(0);
+                transform: translateY(0) scale(1);
             }
         }
 
         .dropdown-item {
             display: block;
             width: 100%;
-            padding: 10px 14px;
+            padding: 12px 16px;
             color: #333;
             text-decoration: none;
             border: none;
@@ -151,18 +162,31 @@
             cursor: pointer;
             font-size: 0.9em;
             border-bottom: 1px solid #f5f5f5;
-            transition: background 0.2s;
+            transition: all 0.2s;
+            touch-action: manipulation;
         }
 
-        .dropdown-item:hover {
-            background: #f8f9fa;
+        .dropdown-item:hover,
+        .dropdown-item:active {
+            background: #f0f9ff;
+            color: var(--primary);
         }
 
         .dropdown-item:last-child {
             border-bottom: none;
+            border-radius: 0 0 10px 10px;
+        }
+
+        .dropdown-item:first-child {
+            border-radius: 10px 10px 0 0;
         }
 
         .dropdown-item.danger {
+            color: var(--danger);
+        }
+
+        .dropdown-item.danger:hover {
+            background: #fef2f2;
             color: var(--danger);
         }
 
@@ -173,32 +197,35 @@
             gap: 8px;
             justify-content: center;
             padding: 8px 16px 0 16px;
+            flex-wrap: wrap;
         }
 
         .stat-card {
             background: rgba(255, 255, 255, 0.9);
             color: var(--primary-dark);
             border-radius: 8px;
-            padding: 8px 16px;
+            padding: 8px 12px;
             text-align: center;
             box-shadow: 0 2px 6px rgba(79, 70, 229, 0.1);
             font-weight: 600;
-            min-width: 80px;
+            min-width: 70px;
+            flex: 1;
+            max-width: 100px;
         }
 
         .stat-number {
-            font-size: 1.4em;
+            font-size: 1.3em;
             font-weight: bold;
             line-height: 1;
         }
 
         .stat-label {
-            font-size: 0.8em;
+            font-size: 0.75em;
             opacity: 0.8;
             margin-top: 2px;
         }
 
-        /* Controles principales - LAYOUT MEJORADO */
+        /* Controles principales - MEJORADO para móvil */
         .main-controls {
             flex: 0 0 auto;
             background: rgba(255, 255, 255, 0.95);
@@ -208,19 +235,17 @@
             margin: 8px 16px;
         }
 
-        /* Primera línea: botones principales */
         .controls-primary {
             display: flex;
-            gap: 12px;
+            gap: 8px;
             justify-content: center;
             margin-bottom: 12px;
             flex-wrap: wrap;
         }
 
-        /* Segunda línea: búsquedas que ocupan todo el ancho */
         .controls-search {
             display: flex;
-            gap: 16px;
+            gap: 12px;
             align-items: center;
             justify-content: space-between;
         }
@@ -233,14 +258,14 @@
             border: 2px solid var(--border);
             border-radius: 8px;
             padding: 8px 12px;
-            min-width: 200px;
+            min-width: 160px;
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
         }
 
         .search-estante label {
             color: var(--primary);
             font-weight: 600;
-            font-size: 0.9em;
+            font-size: 0.85em;
             white-space: nowrap;
         }
 
@@ -249,7 +274,7 @@
             outline: none;
             font-size: 1em;
             padding: 4px 8px;
-            width: 60px;
+            width: 50px;
             text-align: center;
             background: var(--bg-light);
             border-radius: 4px;
@@ -258,11 +283,11 @@
         .search-todos {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 8px;
             background: white;
             border: 2px solid var(--border);
             border-radius: 8px;
-            padding: 8px 16px;
+            padding: 8px 12px;
             flex: 1;
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
         }
@@ -280,31 +305,33 @@
             color: #999;
         }
 
-        /* Botones optimizados */
+        /* Botones optimizados para móvil */
         .btn {
             border: none;
             border-radius: 6px;
-            padding: 8px 16px;
-            font-size: 0.9em;
+            padding: 10px 14px;
+            font-size: 0.85em;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.2s ease;
             display: inline-flex;
             align-items: center;
+            justify-content: center;
             gap: 6px;
             white-space: nowrap;
-            min-height: 36px;
+            min-height: 38px;
+            touch-action: manipulation;
+            text-decoration: none;
+        }
+
+        .btn:active {
+            transform: scale(0.98);
         }
 
         .btn-primary {
             background: linear-gradient(135deg, var(--primary), var(--secondary));
             color: white;
             box-shadow: 0 2px 4px rgba(79, 70, 229, 0.2);
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 8px rgba(79, 70, 229, 0.3);
         }
 
         .btn-success {
@@ -332,7 +359,7 @@
             box-shadow: 0 2px 4px rgba(220, 38, 38, 0.2);
         }
 
-        /* Tabla optimizada */
+        /* Tabla optimizada para móvil */
         .table-container {
             flex: 1 1 0;
             overflow: auto;
@@ -340,18 +367,19 @@
             border-radius: 8px;
             background: white;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            -webkit-overflow-scrolling: touch;
         }
 
         table {
             width: 100%;
-            min-width: 900px;
+            min-width: 1000px;
             border-collapse: collapse;
-            font-size: 0.85em;
+            font-size: 0.8em;
         }
 
         th,
         td {
-            padding: 8px 6px;
+            padding: 6px 4px;
             text-align: left;
             border-bottom: 1px solid var(--border);
             white-space: nowrap;
@@ -364,7 +392,7 @@
             position: sticky;
             top: 0;
             z-index: 10;
-            font-size: 0.8em;
+            font-size: 0.75em;
             text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
         }
 
@@ -376,18 +404,19 @@
             background: #e0f2fe !important;
         }
 
-        /* Botones de tabla */
+        /* Botones de tabla optimizados para móvil */
         .edit-btn,
         .delete-btn,
         .return-btn,
         .qr-btn {
             border: none;
-            padding: 4px 8px;
+            padding: 6px 8px;
             border-radius: 4px;
             cursor: pointer;
-            font-size: 0.75em;
+            font-size: 0.7em;
             margin: 1px;
             transition: all 0.2s;
+            touch-action: manipulation;
         }
 
         .edit-btn {
@@ -410,17 +439,23 @@
             color: white;
         }
 
-        /* Modales optimizados */
+        .edit-btn:active,
+        .delete-btn:active,
+        .return-btn:active,
+        .qr-btn:active {
+            transform: scale(0.95);
+        }
+
         .modal {
             display: none;
             position: fixed;
-            z-index: 1000;
+            z-index: 10000;
             left: 0;
             top: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(2px);
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(3px);
         }
 
         .modal-content {
@@ -428,37 +463,37 @@
             margin: 5% auto;
             padding: 0;
             border-radius: 12px;
-            width: 90%;
+            width: 95%;
             max-width: 500px;
-            max-height: 80vh;
+            max-height: 90vh;
             overflow-y: auto;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
-            animation: slideIn 0.3s ease;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            animation: modalSlideIn 0.3s ease;
         }
 
-        @keyframes slideIn {
+        @keyframes modalSlideIn {
             from {
                 opacity: 0;
-                transform: translateY(-30px);
+                transform: translateY(-50px) scale(0.9);
             }
-
             to {
                 opacity: 1;
-                transform: translateY(0);
+                transform: translateY(0) scale(1);
             }
         }
 
         .modal-header {
             background: linear-gradient(135deg, var(--primary-dark), var(--primary));
             color: white;
-            padding: 16px;
+            padding: 16px 20px;
             border-radius: 12px 12px 0 0;
             position: relative;
         }
 
         .modal-header h2 {
             margin: 0;
-            font-size: 1.2em;
+            font-size: 1.1em;
+            padding-right: 30px;
         }
 
         .close {
@@ -469,10 +504,14 @@
             color: white;
             cursor: pointer;
             opacity: 0.8;
+            padding: 4px;
+            touch-action: manipulation;
         }
 
-        .close:hover {
+        .close:hover,
+        .close:active {
             opacity: 1;
+            transform: scale(1.1);
         }
 
         .modal-body {
@@ -486,7 +525,7 @@
         .form-group label {
             display: block;
             font-weight: 600;
-            margin-bottom: 4px;
+            margin-bottom: 6px;
             color: var(--primary-dark);
             font-size: 0.9em;
         }
@@ -495,12 +534,15 @@
         .form-group select,
         .form-group textarea {
             width: 100%;
-            padding: 10px 12px;
-            border: 1px solid var(--border);
-            border-radius: 6px;
+            padding: 12px 14px;
+            border: 2px solid var(--border);
+            border-radius: 8px;
             font-size: 1em;
             background: var(--bg-light);
-            transition: border-color 0.2s, box-shadow 0.2s;
+            transition: all 0.2s;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
         }
 
         .form-group input:focus,
@@ -517,9 +559,9 @@
             justify-content: flex-end;
             gap: 12px;
             margin-top: 20px;
+            flex-wrap: wrap;
         }
 
-        /* Pantalla de bienvenida */
         .welcome-screen {
             position: fixed;
             top: 0;
@@ -531,6 +573,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            padding: 20px;
         }
 
         .welcome-card {
@@ -540,12 +583,12 @@
             padding: 32px;
             text-align: center;
             max-width: 400px;
-            width: 90%;
+            width: 100%;
         }
 
         .welcome-card h2 {
             color: var(--primary);
-            font-size: 1.5em;
+            font-size: 1.4em;
             margin-bottom: 16px;
         }
 
@@ -557,20 +600,16 @@
         }
 
         .welcome-form input {
-            padding: 12px 16px;
+            padding: 14px 16px;
             border: 2px solid var(--border);
             border-radius: 8px;
             font-size: 1em;
             transition: border-color 0.2s;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
         }
 
-        .welcome-form input:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
-        }
-
-        /* Loading */
         .loading-indicator {
             position: fixed;
             top: 50%;
@@ -596,38 +635,27 @@
         }
 
         @keyframes spin {
-            0% {
-                transform: rotate(0deg);
-            }
-
-            100% {
-                transform: rotate(360deg);
-            }
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
 
-        /* Alert */
         #autoAlert {
             display: none;
             position: fixed;
             left: 50%;
             top: 20px;
             transform: translateX(-50%);
-            z-index: 9999;
+            z-index: 10001;
             padding: 12px 20px;
             background: var(--primary);
             color: white;
             border-radius: 8px;
             box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
             font-weight: 500;
-            opacity: 0;
-            transition: opacity 0.3s;
+            max-width: 90vw;
+            text-align: center;
         }
 
-        #autoAlert[style*="display: block"] {
-            opacity: 1;
-        }
-
-        /* Footer */
         footer {
             flex: 0 0 auto;
             background: var(--primary-dark);
@@ -637,78 +665,6 @@
             font-size: 0.8em;
         }
 
-        /* Responsive */
-        @media (max-width: 768px) {
-            .header {
-                padding: 8px 12px;
-            }
-
-            .header h1 {
-                font-size: 1.2em;
-            }
-
-            .user-menu {
-                position: static;
-                text-align: center;
-                margin-top: 8px;
-            }
-
-            .stats {
-                gap: 6px;
-                padding: 6px 12px 0 12px;
-            }
-
-            .stat-card {
-                padding: 6px 12px;
-                min-width: 70px;
-            }
-
-            .main-controls {
-                margin: 6px 12px;
-                padding: 10px;
-            }
-
-            .controls-primary {
-                gap: 8px;
-            }
-
-            .controls-search {
-                flex-direction: column;
-                gap: 10px;
-            }
-
-            .search-estante {
-                min-width: auto;
-                width: 100%;
-            }
-
-            .btn {
-                padding: 6px 12px;
-                font-size: 0.85em;
-                min-height: 32px;
-            }
-
-            .table-container {
-                margin: 0 12px 6px 12px;
-            }
-
-            table {
-                min-width: 700px;
-                font-size: 0.8em;
-            }
-
-            th,
-            td {
-                padding: 6px 4px;
-            }
-
-            .modal-content {
-                width: 95%;
-                margin: 2% auto;
-            }
-        }
-
-        /* Utilidades */
         .hidden {
             display: none !important;
         }
@@ -716,6 +672,52 @@
         .disabled {
             opacity: 0.5;
             pointer-events: none;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header {
+                padding: 8px 12px;
+                min-height: 70px;
+            }
+
+            .header h1 {
+                font-size: 1.1em;
+                padding-right: 70px;
+            }
+
+            .controls-search {
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            .search-estante {
+                min-width: auto;
+                width: 100%;
+            }
+
+            .modal-content {
+                width: 98%;
+                margin: 2% auto;
+                max-height: 95vh;
+            }
+
+            .form-actions {
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            .form-actions .btn {
+                width: 100%;
+            }
+        }
+
+        /* Touch targets */
+        @media (pointer: coarse) {
+            .btn, .dropdown-item, .edit-btn, .delete-btn, .return-btn, .qr-btn {
+                min-height: 44px;
+                min-width: 44px;
+            }
         }
     </style>
 </head>
@@ -731,7 +733,7 @@
     <div id="autoAlert"></div>
 
     <!-- App principal -->
-    <div class="container" id="mainApp">
+    <div class="container" id="mainApp" style="display: none;">
         <header class="header">
             <div class="user-menu">
                 <div class="user-dropdown">
@@ -765,7 +767,6 @@
         </section>
 
         <nav class="main-controls">
-            <!-- Primera línea: Botones principales -->
             <div class="controls-primary">
                 <button class="btn btn-primary" onclick="openAddBookModal()">
                     ➕ Agregar Libro
@@ -773,26 +774,23 @@
                 <button class="btn btn-warning" onclick="document.getElementById('importFile').click()">
                     📁 Importar Excel
                 </button>
-                <input type="file" id="importFile" accept=".xlsx,.xls,.csv" style="display: none;"
-                    onchange="importData()">
+                <input type="file" id="importFile" accept=".xlsx,.xls,.csv" style="display: none;" onchange="importData()">
                 <button class="btn btn-success" onclick="exportData()">
                     💾 Exportar Excel
                 </button>
             </div>
 
-            <!-- Segunda línea: Búsquedas -->
             <div class="controls-search">
                 <div class="search-estante">
                     <label>Estante:</label>
                     <input type="number" id="searchEstante" placeholder="Nº" min="1">
-                    <button class="btn btn-secondary" onclick="searchByEstante()">🔍 Buscar</button>
+                    <button class="btn btn-secondary" onclick="searchByEstante()">🔍</button>
                 </div>
 
                 <div class="search-todos">
                     <span style="color: var(--primary); font-size: 1.1em;">🔍</span>
                     <input type="text" id="searchInput" placeholder="Buscar por título, autor, año, ISBN...">
-                    <button class="btn btn-secondary" onclick="clearSearch()" id="clearSearchBtn"
-                        style="display: none;">✖ Limpiar</button>
+                    <button class="btn btn-secondary" onclick="clearSearch()" id="clearSearchBtn" style="display: none;">✖</button>
                 </div>
             </div>
         </nav>
@@ -813,8 +811,8 @@
                         <th>Obs</th>
                         <th>Ej</th>
                         <th>Estado</th>
-                        <th>Datos de Préstamo</th>
-                        <th id="actionsHeader">Acciones</th>
+                        <th>Datos</th>
+                        <th>Acciones</th>
                     </tr>
                 </thead>
                 <tbody id="booksTableBody"></tbody>
@@ -827,26 +825,27 @@
     </div>
 
     <!-- Pantalla de bienvenida -->
-    <div id="welcomeScreen" class="welcome-screen">
+    <div id="welcomeScreen" class="welcome-screen" style="display: flex;">
         <div class="welcome-card">
             <h2>🏛️ Biblioteca de la familia Batlle</h2>
             <p style="color: #666; margin-bottom: 20px;">
                 Ingrese sus credenciales para acceder al sistema
             </p>
             <div class="welcome-form">
-                <input type="text" id="welcomeUser" placeholder="Usuario">
-                <input type="password" id="welcomePassword" placeholder="Contraseña">
+                <input type="text" id="welcomeUser" placeholder="Usuario" autocomplete="username">
+                <input type="password" id="welcomePassword" placeholder="Contraseña" autocomplete="current-password">
                 <button class="btn btn-primary" onclick="welcomeLogin()">Ingresar</button>
             </div>
         </div>
     </div>
 
+    <!-- MODALES - Todos los modales iguales pero QUE FUNCIONEN -->
     <!-- Modal libro -->
     <div id="bookModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
                 <h2 id="modalTitle">Agregar Nuevo Libro</h2>
-                <span class="close" onclick="closeModal()">&times;</span>
+                <span class="close" onclick="closeBookModal()">&times;</span>
             </div>
             <div class="modal-body">
                 <div class="form-group">
@@ -906,7 +905,7 @@
                 </div>
                 <div class="form-actions">
                     <button class="btn btn-primary" onclick="saveBook()">Guardar</button>
-                    <button class="btn btn-secondary" onclick="closeModal()">Cancelar</button>
+                    <button class="btn btn-secondary" onclick="closeBookModal()">Cancelar</button>
                 </div>
             </div>
         </div>
@@ -1056,7 +1055,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
 
     <script>
-        // Variables globales optimizadas
+        // Variables globales
         let books = [];
         let nextOrdinal = 1;
         let editingIndex = -1;
@@ -1065,11 +1064,9 @@
         let rolActual = null;
         let isSearchActive = false;
         let isDataLoaded = false;
-
-        // Variable que falta para préstamos y donaciones
         let currentActionBookIndex = -1;
 
-        // Optimización: Cache de elementos DOM
+        // Cache de elementos DOM
         const DOM = {
             welcomeScreen: null,
             mainApp: null,
@@ -1085,7 +1082,6 @@
             }
         };
 
-        // CONFIGURACIÓN SIMPLIFICADA
         const SERVER_CONFIG = {
             USE_JSONBIN: false,
             JSONBIN_URL: '',
@@ -1094,7 +1090,7 @@
             AUTO_SYNC: false
         };
 
-        // FUNCIONES DE AUTENTICACIÓN OPTIMIZADAS
+        // FUNCIONES DE AUTENTICACIÓN
         function hashPassword(password) {
             let hash = 0;
             for (let i = 0; i < password.length; i++) {
@@ -1140,11 +1136,16 @@
         function checkSession() {
             const session = localStorage.getItem('sessionBiblioteca');
             if (session) {
-                const sessionData = JSON.parse(session);
-                usuarioActual = sessionData.username;
-                rolActual = sessionData.role;
-                updateUserInterface();
-                return true;
+                try {
+                    const sessionData = JSON.parse(session);
+                    usuarioActual = sessionData.username;
+                    rolActual = sessionData.role;
+                    updateUserInterface();
+                    return true;
+                } catch (error) {
+                    localStorage.removeItem('sessionBiblioteca');
+                    return false;
+                }
             }
             return false;
         }
@@ -1190,13 +1191,13 @@
             content.classList.toggle('show');
         }
 
-        // FUNCIONES DE DATOS OPTIMIZADAS
+        // FUNCIONES DE DATOS
         function loadData() {
             showLoading();
             setTimeout(() => {
                 loadDataFromLocalStorage();
                 hideLoading();
-            }, 100);
+            }, 500);
         }
 
         function saveData() {
@@ -1211,6 +1212,9 @@
                     const data = JSON.parse(stored);
                     books = data.books || [];
                     nextOrdinal = data.nextOrdinal || (books.length ? Math.max(...books.map(b => b.ordinal || 0)) + 1 : 1);
+                } else {
+                    books = [];
+                    nextOrdinal = 1;
                 }
                 isDataLoaded = true;
                 updateStats();
@@ -1220,6 +1224,8 @@
                 console.error('Error cargando datos:', error);
                 books = [];
                 nextOrdinal = 1;
+                updateStats();
+                renderTable();
                 return false;
             }
         }
@@ -1235,16 +1241,21 @@
                 localStorage.setItem('bibliotecaBatlle', JSON.stringify(dataToSave));
             } catch (error) {
                 console.error('Error guardando:', error);
+                showAlert('Error guardando datos', 'error');
             }
         }
 
-        // UI OPTIMIZADA
+        // UI
         function showLoading() {
-            DOM.loadingIndicator.style.display = 'block';
+            if (DOM.loadingIndicator) {
+                DOM.loadingIndicator.style.display = 'block';
+            }
         }
 
         function hideLoading() {
-            DOM.loadingIndicator.style.display = 'none';
+            if (DOM.loadingIndicator) {
+                DOM.loadingIndicator.style.display = 'none';
+            }
         }
 
         function showAlert(message, type = 'info', duration = 3000) {
@@ -1255,16 +1266,18 @@
                 info: '#3b82f6'
             };
 
-            DOM.autoAlert.textContent = message;
-            DOM.autoAlert.style.backgroundColor = colors[type] || colors.info;
-            DOM.autoAlert.style.display = 'block';
+            if (DOM.autoAlert) {
+                DOM.autoAlert.textContent = message;
+                DOM.autoAlert.style.backgroundColor = colors[type] || colors.info;
+                DOM.autoAlert.style.display = 'block';
 
-            setTimeout(() => {
-                DOM.autoAlert.style.display = 'none';
-            }, duration);
+                setTimeout(() => {
+                    DOM.autoAlert.style.display = 'none';
+                }, duration);
+            }
         }
 
-        // CORREGIR ESTADÍSTICAS - Total debe ser suma de ejemplares
+        // ESTADÍSTICAS - CORREGIDAS
         function updateStats() {
             const total = books.reduce((sum, book) => sum + (parseInt(book.ejemplares) || 1), 0);
             let disponibles = 0;
@@ -1288,12 +1301,13 @@
             document.getElementById('donatedBooks').textContent = donados;
         }
 
-        // RENDERIZADO OPTIMIZADO DE TABLA
+        // RENDERIZADO DE TABLA
         function renderTable() {
             const booksToShow = isSearchActive ? filteredBooks : books;
             const tbody = DOM.booksTableBody;
             
-            // Usar fragment para mejor rendimiento
+            if (!tbody) return;
+            
             const fragment = document.createDocumentFragment();
             
             booksToShow.forEach((book, index) => {
@@ -1335,55 +1349,31 @@
             return '';
         }
 
-        // CORREGIR BOTONES DE ACCIÓN - Agregar QR en cada fila
         function getActionButtons(index, book) {
             let buttons = '';
             if (rolActual === 'admin') {
-                buttons += `<button class="edit-btn" onclick="editBook(${index})">✏️</button>`;
-                buttons += `<button class="delete-btn" onclick="deleteBook(${index})">🗑️</button>`;
+                buttons += `<button class="edit-btn" onclick="editBook(${index})" title="Editar">✏️</button>`;
+                buttons += `<button class="delete-btn" onclick="deleteBook(${index})" title="Eliminar">🗑️</button>`;
                 
                 if (book.accion !== 'Prestado' && book.accion !== 'Donado') {
-                    buttons += `<button class="btn" style="background: #f59e0b; color: white; font-size: 0.7em; padding: 2px 6px; margin: 1px;" onclick="openLoanModal(${index})">Prestar</button>`;
-                    buttons += `<button class="btn" style="background: #8b5cf6; color: white; font-size: 0.7em; padding: 2px 6px; margin: 1px;" onclick="openDonationModal(${index})">Donar</button>`;
+                    buttons += `<button class="btn" style="background: #f59e0b; color: white; font-size: 0.7em; padding: 2px 6px; margin: 1px;" onclick="openLoanModal(${index})" title="Prestar">📤</button>`;
+                    buttons += `<button class="btn" style="background: #8b5cf6; color: white; font-size: 0.7em; padding: 2px 6px; margin: 1px;" onclick="openDonationModal(${index})" title="Donar">🎁</button>`;
                 }
                 
                 if (book.accion === 'Prestado') {
-                    buttons += `<button class="return-btn" onclick="returnBook(${index})">↩️</button>`;
+                    buttons += `<button class="return-btn" onclick="returnBook(${index})" title="Devolver">↩️</button>`;
                 }
             }
             
             // QR disponible para todos los usuarios
-            buttons += `<button class="qr-btn" onclick="generateBookQR(${index})">📱</button>`;
+            buttons += `<button class="qr-btn" onclick="generateBookQR(${index})" title="QR">📱</button>`;
             
             return buttons;
         }
 
-        // FUNCIÓN QR PARA LIBROS INDIVIDUALES
-        function generateBookQR(index) {
-            const book = books[index];
-            if (!book) return;
-            
-            const qrData = {
-                biblioteca: 'Biblioteca Batlle',
-                ordinal: book.ordinal,
-                titulo: book.titulo,
-                autor: `${book.apellido}, ${book.nombre}`,
-                estante: book.estante,
-                año: book.año,
-                volumen: book.volumen || '',
-                tomo: book.tomo || '',
-                ejemplares: book.ejemplares || 1,
-                estado: book.accion || 'Disponible',
-                isbn: book.isbn || '',
-                fecha: new Date().toLocaleDateString('es-ES')
-            };
-            
-            showQR(JSON.stringify(qrData, null, 2), `QR - ${book.titulo}`);
-        }
-
-        // FUNCIONES DE LIBROS OPTIMIZADAS
+        // LIBROS
         function openAddBookModal() {
-            if (!checkPermission('edit')) return;
+            if (!checkPermission('admin')) return;
             editingIndex = -1;
             document.getElementById('modalTitle').textContent = 'Agregar Nuevo Libro';
             clearBookForm();
@@ -1391,7 +1381,7 @@
         }
 
         function editBook(index) {
-            if (!checkPermission('edit')) return;
+            if (!checkPermission('admin')) return;
             
             editingIndex = index;
             const book = books[index];
@@ -1416,6 +1406,82 @@
             document.getElementById('bookModal').style.display = 'block';
         }
 
+        // BÚSQUEDA OPTIMIZADA Y REACTIVA
+        function performSearch() {
+            const searchTerm = document.getElementById('searchInput').value.trim().toLowerCase();
+            
+            if (!searchTerm) {
+                clearSearch();
+                return;
+            }
+            
+            filteredBooks = books.filter(book => 
+                (book.titulo || '').toLowerCase().includes(searchTerm) ||
+                (book.apellido || '').toLowerCase().includes(searchTerm) ||
+                (book.nombre || '').toLowerCase().includes(searchTerm) ||
+                (book.año || '').toString().includes(searchTerm) ||
+                (book.isbn || '').toLowerCase().includes(searchTerm) ||
+                (book.estante || '').toString().includes(searchTerm) ||
+                (book.volumen || '').toLowerCase().includes(searchTerm) ||
+                (book.tomo || '').toLowerCase().includes(searchTerm) ||
+                (book.observaciones || '').toLowerCase().includes(searchTerm)
+            );
+            
+            isSearchActive = true;
+            document.getElementById('clearSearchBtn').style.display = 'inline-block';
+            renderTable();
+            
+            // Mostrar resultado de búsqueda
+            const resultMessage = filteredBooks.length === 0 
+                ? `No se encontraron resultados para "${searchTerm}"` 
+                : `${filteredBooks.length} libro(s) encontrado(s)`;
+            showAlert(resultMessage, filteredBooks.length === 0 ? 'warning' : 'info', 1500);
+        }
+
+        function clearSearch() {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('clearSearchBtn').style.display = 'none';
+            isSearchActive = false;
+            filteredBooks = [];
+            renderTable();
+        }
+
+        function searchByEstante() {
+            const estante = document.getElementById('searchEstante').value.trim();
+            if (!estante) {
+                showAlert('Ingrese un número de estante', 'warning');
+                return;
+            }
+            
+            // Limpiar búsqueda por texto si existe
+            document.getElementById('searchInput').value = '';
+            document.getElementById('clearSearchBtn').style.display = 'none';
+            
+            filteredBooks = books.filter(book => book.estante == estante);
+            isSearchActive = true;
+            renderTable();
+            
+            const resultMessage = filteredBooks.length === 0 
+                ? `No se encontraron libros en el estante ${estante}` 
+                : `${filteredBooks.length} libro(s) en estante ${estante}`;
+            showAlert(resultMessage, filteredBooks.length === 0 ? 'warning' : 'info');
+        }
+
+        // FUNCIÓN PARA REFRESCAR BÚSQUEDA AUTOMÁTICAMENTE
+        function refreshSearchIfActive() {
+            const searchTerm = document.getElementById('searchInput').value.trim();
+            const estanteTerm = document.getElementById('searchEstante').value.trim();
+            
+            if (searchTerm) {
+                // Si hay búsqueda por texto activa, refrescarla
+                performSearch();
+            } else if (estanteTerm && isSearchActive) {
+                // Si hay búsqueda por estante activa, refrescarla
+                searchByEstante();
+            }
+        }
+
+        // FUNCIONES DE LIBROS OPTIMIZADAS CON BÚSQUEDA REACTIVA
         function saveBook() {
             const estante = document.getElementById('modalEstante').value.trim();
             const apellido = document.getElementById('modalApellido').value.trim();
@@ -1441,282 +1507,44 @@
                 isbn: document.getElementById('modalISBN').value.trim(),
                 observaciones: document.getElementById('modalObservaciones').value.trim(),
                 accion: editingIndex === -1 ? 'Disponible' : books[editingIndex].accion,
-                loanData: editingIndex === -1 ? null : books[editingIndex].loanData,
-                donationData: editingIndex === -1 ? null : books[editingIndex].donationData
+                loanData: editingIndex === -1 ? null : (books[editingIndex].loanData || null),
+                donationData: editingIndex === -1 ? null : (books[editingIndex].donationData || null)
             };
 
             if (editingIndex === -1) {
                 books.push(bookData);
-                showAlert('✅ Libro agregado', 'success');
+                showAlert('✅ Libro agregado correctamente', 'success');
             } else {
                 books[editingIndex] = bookData;
-                showAlert('✅ Libro actualizado', 'success');
+                showAlert('✅ Libro actualizado correctamente', 'success');
             }
 
             saveData();
             updateStats();
-            renderTable();
-            closeModal();
+            
+            // ✅ REFRESCAR BÚSQUEDA AUTOMÁTICAMENTE
+            refreshSearchIfActive();
+            
+            closeBookModal();
         }
 
         function deleteBook(index) {
-            if (!checkPermission('delete')) return;
-            if (confirm('¿Eliminar este libro?')) {
+            if (!checkPermission('admin')) return;
+            
+            const book = books[index];
+            if (confirm(`¿Eliminar "${book.titulo}" de ${book.apellido}, ${book.nombre}?`)) {
                 books.splice(index, 1);
                 saveData();
                 updateStats();
-                renderTable();
-                showAlert('Libro eliminado', 'info');
+                
+                // ✅ REFRESCAR BÚSQUEDA AUTOMÁTICAMENTE
+                refreshSearchIfActive();
+                
+                showAlert('✅ Libro eliminado correctamente', 'success');
             }
         }
 
-        function clearBookForm() {
-            document.getElementById('modalEstante').value = '';
-            document.getElementById('modalApellido').value = '';
-            document.getElementById('modalNombre').value = '';
-            document.getElementById('modalTitulo').value = '';
-            document.getElementById('modalVolumen').value = '';
-            document.getElementById('modalTomo').value = '';
-            document.getElementById('modalAnio').value = '';
-            document.getElementById('modalEjemplares').value = '1';
-            document.getElementById('modalISBN').value = '';
-            document.getElementById('modalObservaciones').value = '';
-            document.querySelector('input[name="modalEncuadernado"][value="Sí"]').checked = true;
-        }
-
-        function closeModal() {
-            document.getElementById('bookModal').style.display = 'none';
-        }
-
-        // BÚSQUEDA OPTIMIZADA
-        function performSearch() {
-            const searchTerm = document.getElementById('searchInput').value.trim().toLowerCase();
-            
-            if (!searchTerm) {
-                clearSearch();
-                return;
-            }
-            
-            filteredBooks = books.filter(book => 
-                (book.titulo || '').toLowerCase().includes(searchTerm) ||
-                (book.apellido || '').toLowerCase().includes(searchTerm) ||
-                (book.nombre || '').toLowerCase().includes(searchTerm) ||
-                (book.año || '').toString().includes(searchTerm) ||
-                (book.isbn || '').toLowerCase().includes(searchTerm)
-            );
-            
-            isSearchActive = true;
-            document.getElementById('clearSearchBtn').style.display = 'inline-block';
-            renderTable();
-            showAlert(`${filteredBooks.length} libro(s) encontrado(s)`, 'info', 1500);
-        }
-
-        function clearSearch() {
-            document.getElementById('searchInput').value = '';
-            document.getElementById('clearSearchBtn').style.display = 'none';
-            isSearchActive = false;
-            renderTable();
-        }
-
-        function searchByEstante() {
-            const estante = document.getElementById('searchEstante').value.trim();
-            if (!estante) {
-                showAlert('Ingrese un número de estante', 'warning');
-                return;
-            }
-            
-            filteredBooks = books.filter(book => book.estante == estante);
-            isSearchActive = true;
-            renderTable();
-            showAlert(`${filteredBooks.length} libro(s) en estante ${estante}`, 'info');
-        }
-
-        // EXPORTACIÓN CORREGIDA - Mantener formato del programa
-        function exportData() {
-            if (!checkPermission('export')) return;
-            
-            if (!books.length) {
-                showAlert('No hay libros para exportar', 'warning');
-                return;
-            }
-
-            try {
-                const data = books.map(b => ({
-                    "Ordinal": b.ordinal || '',
-                    "Estante": b.estante || '',
-                    "Apellido": b.apellido || '',
-                    "Nombre": b.nombre || '',
-                    "Título": b.titulo || '',
-                    "Volumen": b.volumen || '',
-                    "Tomo": b.tomo || '',
-                    "Año": b.año || '',
-                    "Encuadernado": b.encuadernado || 'Sí',
-                    "Observaciones": b.observaciones || '',
-                    "Ejemplares": b.ejemplares || 1,
-                    "Estado": b.accion || 'Disponible',
-                    "ISBN": b.isbn || ''
-                }));
-
-                // Crear hoja con formato específico
-                const worksheet = XLSX.utils.json_to_sheet(data, {
-                    header: ["Ordinal", "Estante", "Apellido", "Nombre", "Título", "Volumen", "Tomo", "Año", "Encuadernado", "Observaciones", "Ejemplares", "Estado", "ISBN"]
-                });
-
-                // Ajustar ancho de columnas
-                const colWidths = [
-                    {wch: 8},   // Ordinal
-                    {wch: 8},   // Estante
-                    {wch: 15},  // Apellido
-                    {wch: 15},  // Nombre
-                    {wch: 30},  // Título
-                    {wch: 8},   // Volumen
-                    {wch: 8},   // Tomo
-                    {wch: 6},   // Año
-                    {wch: 12},  // Encuadernado
-                    {wch: 20},  // Observaciones
-                    {wch: 10},  // Ejemplares
-                    {wch: 12},  // Estado
-                    {wch: 15}   // ISBN
-                ];
-                worksheet['!cols'] = colWidths;
-
-                const workbook = XLSX.utils.book_new();
-                XLSX.utils.book_append_sheet(workbook, worksheet, "Biblioteca Batlle");
-
-                XLSX.writeFile(workbook, `biblioteca_batlle_${new Date().toISOString().split('T')[0]}.xlsx`);
-                showAlert(`✅ ${books.length} libros exportados correctamente`, 'success');
-            } catch (error) {
-                console.error('Error exportando:', error);
-                showAlert('Error al exportar', 'error');
-            }
-        }
-
-        // IMPORTACIÓN CORREGIDA
-        function importData() {
-            if (!checkPermission('import')) return;
-            
-            const fileInput = document.getElementById('importFile');
-            const file = fileInput.files[0];
-            
-            if (!file) {
-                showAlert('Seleccione un archivo', 'warning');
-                return;
-            }
-
-            showLoading();
-            
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                try {
-                    const data = new Uint8Array(e.target.result);
-                    const workbook = XLSX.read(data, { type: 'array' });
-                    const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
-                    const jsonData = XLSX.utils.sheet_to_json(firstSheet, { 
-                        header: 1,
-                        defval: ''
-                    });
-
-                    if (jsonData.length < 2) {
-                        hideLoading();
-                        showAlert('El archivo debe tener al menos encabezados y una fila de datos', 'warning');
-                        return;
-                    }
-
-                    // Obtener encabezados (primera fila)
-                    const headers = jsonData[0];
-                    console.log('Encabezados encontrados:', headers);
-
-                    // Mapear encabezados a índices
-                    const headerMap = {};
-                    headers.forEach((header, index) => {
-                        if (header) {
-                            const normalizedHeader = header.toString().toLowerCase().trim();
-                            headerMap[normalizedHeader] = index;
-                        }
-                    });
-
-                    console.log('Mapa de encabezados:', headerMap);
-
-                    books = [];
-                    nextOrdinal = 1;
-
-                    // Procesar filas de datos (saltear encabezados)
-                    for (let i = 1; i < jsonData.length; i++) {
-                        const row = jsonData[i];
-                        if (!row || row.length === 0 || !row.some(cell => cell)) continue;
-
-                        const book = {
-                            ordinal: nextOrdinal++,
-                            estante: getValueFromRow(row, headerMap, ['estante', 'est']) || '',
-                            apellido: getValueFromRow(row, headerMap, ['apellido', 'autor', 'apellidos']) || '',
-                            nombre: getValueFromRow(row, headerMap, ['nombre', 'nombres']) || '',
-                            titulo: getValueFromRow(row, headerMap, ['titulo', 'título', 'title']) || '',
-                            volumen: getValueFromRow(row, headerMap, ['volumen', 'vol', 'volume']) || '',
-                            tomo: getValueFromRow(row, headerMap, ['tomo', 'tome']) || '',
-                            año: getValueFromRow(row, headerMap, ['año', 'ano', 'year', 'fecha']) || '',
-                            encuadernado: getValueFromRow(row, headerMap, ['encuadernado', 'enc']) || 'Sí',
-                            observaciones: getValueFromRow(row, headerMap, ['observaciones', 'obs', 'notas']) || '',
-                            ejemplares: parseInt(getValueFromRow(row, headerMap, ['ejemplares', 'ej', 'cantidad'])) || 1,
-                            accion: getValueFromRow(row, headerMap, ['estado', 'accion', 'status']) || 'Disponible',
-                            isbn: getValueFromRow(row, headerMap, ['isbn', 'codigo']) || ''
-                        };
-
-                        // Solo agregar si tiene datos mínimos
-                        if (book.titulo || book.apellido || book.nombre) {
-                            books.push(book);
-                        }
-                    }
-
-                    hideLoading();
-
-                    if (books.length === 0) {
-                        showAlert('No se encontraron libros válidos en el archivo', 'warning');
-                        return;
-                    }
-
-                    saveData();
-                    updateStats();
-                    renderTable();
-                    showAlert(`✅ ${books.length} libros importados correctamente`, 'success');
-
-                    // Limpiar input
-                    fileInput.value = '';
-
-                } catch (error) {
-                    hideLoading();
-                    console.error('Error importando:', error);
-                    showAlert('Error al procesar el archivo. Verifique el formato.', 'error');
-                }
-            };
-
-            reader.onerror = function() {
-                hideLoading();
-                showAlert('Error al leer el archivo', 'error');
-            };
-
-            reader.readAsArrayBuffer(file);
-        }
-
-        function getValueFromRow(row, headerMap, possibleHeaders) {
-            for (const header of possibleHeaders) {
-                const index = headerMap[header];
-                if (index !== undefined && row[index] !== undefined) {
-                    return row[index].toString().trim();
-                }
-            }
-            return '';
-        }
-
-        // FUNCIONES DE PRÉSTAMOS Y DONACIONES
-        function openLoanModal(index) {
-            if (!checkPermission('edit')) return;
-            currentActionBookIndex = index;
-            document.getElementById('loanDate').value = new Date().toISOString().split('T')[0];
-            document.getElementById('loanName').value = '';
-            document.getElementById('loanLastName').value = '';
-            document.getElementById('loanModal').style.display = 'block';
-        }
-
+        // FUNCIONES DE PRÉSTAMOS Y DONACIONES CON BÚSQUEDA REACTIVA
         function saveLoan() {
             const date = document.getElementById('loanDate').value;
             const name = document.getElementById('loanName').value.trim();
@@ -1736,37 +1564,12 @@
 
             saveData();
             updateStats();
-            renderTable();
+            
+            // ✅ REFRESCAR BÚSQUEDA AUTOMÁTICAMENTE
+            refreshSearchIfActive();
+            
             closeLoanModal();
-            showAlert('Préstamo registrado correctamente', 'success');
-        }
-
-        function closeLoanModal() {
-            document.getElementById('loanModal').style.display = 'none';
-            currentActionBookIndex = -1;
-        }
-
-        function openDonationModal(index) {
-            if (!checkPermission('edit')) return;
-            currentActionBookIndex = index;
-            document.getElementById('donationDate').value = new Date().toISOString().split('T')[0];
-            document.getElementById('donationType').value = 'persona';
-            toggleDonationFields();
-            document.getElementById('donationModal').style.display = 'block';
-        }
-
-        function toggleDonationFields() {
-            const type = document.getElementById('donationType').value;
-            const personFields = document.getElementById('personFields');
-            const institutionFields = document.getElementById('institutionFields');
-
-            if (type === 'persona') {
-                personFields.classList.remove('hidden');
-                institutionFields.classList.add('hidden');
-            } else {
-                personFields.classList.add('hidden');
-                institutionFields.classList.remove('hidden');
-            }
+            showAlert('✅ Préstamo registrado correctamente', 'success');
         }
 
         function saveDonation() {
@@ -1809,9 +1612,316 @@
 
             saveData();
             updateStats();
-            renderTable();
+            
+            // ✅ REFRESCAR BÚSQUEDA AUTOMÁTICAMENTE
+            refreshSearchIfActive();
+            
             closeDonationModal();
-            showAlert('Donación registrada correctamente', 'success');
+            showAlert('✅ Donación registrada correctamente', 'success');
+        }
+
+        function returnBook(index) {
+            if (!checkPermission('edit')) return;
+            
+            const book = books[index];
+            if (confirm(`¿Confirmar devolución de "${book.titulo}"?`)) {
+                books[index].accion = 'Disponible';
+                books[index].loanData = null;
+                
+                saveData();
+                updateStats();
+                
+                // ✅ REFRESCAR BÚSQUEDA AUTOMÁTICAMENTE
+                refreshSearchIfActive();
+                
+                showAlert('✅ Libro devuelto correctamente', 'success');
+            }
+        }
+
+        // IMPORTACIÓN CON BÚSQUEDA REACTIVA
+        function importData() {
+            if (!checkPermission('admin')) return;
+            
+            const fileInput = document.getElementById('importFile');
+            const file = fileInput.files[0];
+            
+            if (!file) {
+                showAlert('Seleccione un archivo', 'warning');
+                return;
+            }
+
+            showLoading();
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = new Uint8Array(e.target.result);
+                    const workbook = XLSX.read(data, { type: 'array' });
+                    const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+                    const jsonData = XLSX.utils.sheet_to_json(firstSheet, { 
+                        header: 1,
+                        defval: ''
+                    });
+
+                    if (jsonData.length < 2) {
+                        hideLoading();
+                        showAlert('El archivo debe tener encabezados y datos', 'warning');
+                        return;
+                    }
+
+                    const headers = jsonData[0];
+                    const headerMap = {};
+                    headers.forEach((header, index) => {
+                        if (header) {
+                            headerMap[header.toString().toLowerCase().trim()] = index;
+                        }
+                    });
+
+                    const oldBooksCount = books.length;
+                    books = [];
+                    nextOrdinal = 1;
+
+                    for (let i = 1; i < jsonData.length; i++) {
+                        const row = jsonData[i];
+                        if (!row || !row.some(cell => cell)) continue;
+
+                        const book = {
+                            ordinal: nextOrdinal++,
+                            estante: getValueFromRow(row, headerMap, ['estante', 'est']) || '',
+                            apellido: getValueFromRow(row, headerMap, ['apellido', 'autor']) || '',
+                            nombre: getValueFromRow(row, headerMap, ['nombre', 'nombres']) || '',
+                            titulo: getValueFromRow(row, headerMap, ['titulo', 'título', 'title']) || '',
+                            volumen: getValueFromRow(row, headerMap, ['volumen', 'vol']) || '',
+                            tomo: getValueFromRow(row, headerMap, ['tomo']) || '',
+                            año: getValueFromRow(row, headerMap, ['año', 'ano', 'year']) || '',
+                            encuadernado: getValueFromRow(row, headerMap, ['encuadernado']) || 'Sí',
+                            observaciones: getValueFromRow(row, headerMap, ['observaciones', 'obs']) || '',
+                            ejemplares: parseInt(getValueFromRow(row, headerMap, ['ejemplares', 'cantidad'])) || 1,
+                            accion: 'Disponible',
+                            isbn: getValueFromRow(row, headerMap, ['isbn']) || ''
+                        };
+
+                        if (book.titulo || book.apellido || book.nombre) {
+                            books.push(book);
+                        }
+                    }
+
+                    hideLoading();
+                    saveData();
+                    updateStats();
+                    
+                    // ✅ REFRESCAR BÚSQUEDA AUTOMÁTICAMENTE
+                    refreshSearchIfActive();
+                    
+                    showAlert(`✅ ${books.length} libros importados correctamente (${books.length - oldBooksCount} nuevos)`, 'success');
+                    fileInput.value = '';
+
+                } catch (error) {
+                    hideLoading();
+                    console.error('Error importando:', error);
+                    showAlert('❌ Error al procesar archivo. Verifique el formato.', 'error');
+                }
+            };
+
+            reader.readAsArrayBuffer(file);
+        }
+
+        // EVENT LISTENERS MEJORADOS CON BÚSQUEDA INSTANTÁNEA
+        function setupEventListeners() {
+            // Búsqueda INSTANTÁNEA (sin debounce para mejor UX)
+            const searchInput = document.getElementById('searchInput');
+            if (searchInput) {
+                searchInput.addEventListener('input', performSearch);
+                
+                // Enter para foco en tabla
+                searchInput.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        const firstRow = document.querySelector('#booksTableBody tr');
+                        if (firstRow) {
+                            firstRow.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        }
+                    }
+                });
+            }
+
+            // Búsqueda por estante mejorada
+            const searchEstante = document.getElementById('searchEstante');
+            if (searchEstante) {
+                // Búsqueda automática al escribir números
+                searchEstante.addEventListener('input', () => {
+                    const estante = searchEstante.value.trim();
+                    if (estante && /^\d+$/.test(estante)) {
+                        searchByEstante();
+                    }
+                });
+                
+                searchEstante.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        searchByEstante();
+                    }
+                });
+            }
+
+            // Login con Enter
+            const welcomeUser = document.getElementById('welcomeUser');
+            const welcomePassword = document.getElementById('welcomePassword');
+            
+            if (welcomeUser) {
+                welcomeUser.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter') {
+                        welcomePassword?.focus();
+                    }
+                });
+            }
+
+            if (welcomePassword) {
+                welcomePassword.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter') {
+                        welcomeLogin();
+                    }
+                });
+            }
+
+            // Guardar con Enter en modales
+            const modalInputs = document.querySelectorAll('#bookModal input:not([type="radio"]), #bookModal select');
+            modalInputs.forEach(input => {
+                input.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' && e.target.tagName !== 'TEXTAREA') {
+                        e.preventDefault();
+                        saveBook();
+                    }
+                });
+            });
+
+            // Cerrar dropdowns al hacer click fuera
+            document.addEventListener('click', (e) => {
+                const dropdown = document.querySelector('.user-dropdown');
+                if (dropdown && !dropdown.contains(e.target)) {
+                    dropdown.classList.remove('active');
+                    const content = document.getElementById('userDropdownContent');
+                    if (content) content.classList.remove('show');
+                }
+            });
+
+            // Cerrar modales con ESC
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') {
+                    document.querySelectorAll('.modal').forEach(modal => {
+                        modal.style.display = 'none';
+                    });
+                }
+            });
+
+            // Atajo de teclado para búsqueda (Ctrl/Cmd + F)
+            document.addEventListener('keydown', (e) => {
+                if ((e.ctrlKey || e.metaKey) && e.key === 'f') {
+                    e.preventDefault();
+                    const searchInput = document.getElementById('searchInput');
+                    if (searchInput) {
+                        searchInput.focus();
+                        searchInput.select();
+                    }
+                }
+            });
+        }
+
+        // INICIALIZACIÓN DE LA APLICACIÓN
+        function initializeApp() {
+            // Inicializar cache DOM
+            DOM.init();
+            
+            // Usuarios por defecto
+            let users = JSON.parse(localStorage.getItem('usuariosBiblioteca') || '[]');
+            if (!users.length) {
+                users = [
+                    { username: 'Leandro', password: hashPassword('1208'), role: 'admin', created: new Date().toISOString() },
+                    { username: 'Lector', password: hashPassword('lector'), role: 'lector', created: new Date().toISOString() }
+                ];
+                localStorage.setItem('usuariosBiblioteca', JSON.stringify(users));
+            }
+
+            // Verificar sesión existente
+            if (!checkSession()) {
+                if (DOM.welcomeScreen) DOM.welcomeScreen.style.display = 'flex';
+                if (DOM.mainApp) DOM.mainApp.style.display = 'none';
+            } else {
+                // Si hay sesión, mostrar aplicación
+                if (DOM.welcomeScreen) DOM.welcomeScreen.style.display = 'none';
+                if (DOM.mainApp) DOM.mainApp.style.display = 'flex';
+                
+                // Cargar datos y configurar
+                loadData();
+            }
+            
+            // Configurar event listeners
+            setupEventListeners();
+            
+            // Actualizar año en footer
+            const footerYear = document.getElementById('anioFooter');
+            if (footerYear) {
+                footerYear.textContent = new Date().getFullYear();
+            }
+        }
+
+        // FUNCIONES FALTANTES PARA MODALES Y OPERACIONES
+
+        function clearBookForm() {
+            document.getElementById('modalEstante').value = '';
+            document.getElementById('modalApellido').value = '';
+            document.getElementById('modalNombre').value = '';
+            document.getElementById('modalTitulo').value = '';
+            document.getElementById('modalVolumen').value = '';
+            document.getElementById('modalTomo').value = '';
+            document.getElementById('modalAnio').value = '';
+            document.getElementById('modalEjemplares').value = '1';
+            document.getElementById('modalISBN').value = '';
+            document.getElementById('modalObservaciones').value = '';
+            document.querySelector('input[name="modalEncuadernado"][value="Sí"]').checked = true;
+        }
+
+        function closeBookModal() {
+            document.getElementById('bookModal').style.display = 'none';
+        }
+
+        // FUNCIONES DE PRÉSTAMOS
+        function openLoanModal(index) {
+            if (!checkPermission('admin')) return;
+            currentActionBookIndex = index;
+            document.getElementById('loanDate').value = new Date().toISOString().split('T')[0];
+            document.getElementById('loanName').value = '';
+            document.getElementById('loanLastName').value = '';
+            document.getElementById('loanModal').style.display = 'block';
+        }
+
+        function closeLoanModal() {
+            document.getElementById('loanModal').style.display = 'none';
+            currentActionBookIndex = -1;
+        }
+
+        // FUNCIONES DE DONACIONES
+        function openDonationModal(index) {
+            if (!checkPermission('admin')) return;
+            currentActionBookIndex = index;
+            document.getElementById('donationDate').value = new Date().toISOString().split('T')[0];
+            document.getElementById('donationType').value = 'persona';
+            toggleDonationFields();
+            document.getElementById('donationModal').style.display = 'block';
+        }
+
+        function toggleDonationFields() {
+            const type = document.getElementById('donationType').value;
+            const personFields = document.getElementById('personFields');
+            const institutionFields = document.getElementById('institutionFields');
+
+            if (type === 'persona') {
+                personFields.classList.remove('hidden');
+                institutionFields.classList.add('hidden');
+            } else {
+                personFields.classList.add('hidden');
+                institutionFields.classList.remove('hidden');
+            }
         }
 
         function closeDonationModal() {
@@ -1819,23 +1929,89 @@
             currentActionBookIndex = -1;
         }
 
-        function returnBook(index) {
-            if (!checkPermission('edit')) return;
+        // FUNCIÓN QR PARA LIBROS INDIVIDUALES
+        function generateBookQR(index) {
+            const book = books[index];
+            if (!book) return;
             
-            if (confirm('¿Confirmar devolución del libro?')) {
-                books[index].accion = 'Disponible';
-                books[index].loanData = null;
-                
-                saveData();
-                updateStats();
-                renderTable();
-                showAlert('Libro devuelto correctamente', 'success');
+            const qrData = {
+                biblioteca: 'Biblioteca Batlle',
+                ordinal: book.ordinal,
+                titulo: book.titulo,
+                autor: `${book.apellido}, ${book.nombre}`,
+                estante: book.estante,
+                año: book.año,
+                volumen: book.volumen || '',
+                tomo: book.tomo || '',
+                ejemplares: book.ejemplares || 1,
+                estado: book.accion || 'Disponible',
+                isbn: book.isbn || '',
+                fecha: new Date().toLocaleDateString('es-ES')
+            };
+            
+            showQR(JSON.stringify(qrData, null, 2), `QR - ${book.titulo}`);
+        }
+
+        // EXPORTACIÓN DE DATOS
+        function exportData() {
+            if (!checkPermission('admin')) return;
+            
+            if (!books.length) {
+                showAlert('No hay libros para exportar', 'warning');
+                return;
+            }
+
+            try {
+                const data = books.map(b => ({
+                    "Ordinal": b.ordinal || '',
+                    "Estante": b.estante || '',
+                    "Apellido": b.apellido || '',
+                    "Nombre": b.nombre || '',
+                    "Título": b.titulo || '',
+                    "Volumen": b.volumen || '',
+                    "Tomo": b.tomo || '',
+                    "Año": b.año || '',
+                    "Encuadernado": b.encuadernado || 'Sí',
+                    "Observaciones": b.observaciones || '',
+                    "Ejemplares": b.ejemplares || 1,
+                    "Estado": b.accion || 'Disponible',
+                    "ISBN": b.isbn || ''
+                }));
+
+                const worksheet = XLSX.utils.json_to_sheet(data, {
+                    header: ["Ordinal", "Estante", "Apellido", "Nombre", "Título", "Volumen", "Tomo", "Año", "Encuadernado", "Observaciones", "Ejemplares", "Estado", "ISBN"]
+                });
+
+                // Ajustar ancho de columnas
+                const colWidths = [
+                    {wch: 8}, {wch: 8}, {wch: 15}, {wch: 15}, {wch: 30}, {wch: 8}, 
+                    {wch: 8}, {wch: 6}, {wch: 12}, {wch: 20}, {wch: 10}, {wch: 12}, {wch: 15}
+                ];
+                worksheet['!cols'] = colWidths;
+
+                const workbook = XLSX.utils.book_new();
+                XLSX.utils.book_append_sheet(workbook, worksheet, "Biblioteca Batlle");
+
+                XLSX.writeFile(workbook, `biblioteca_batlle_${new Date().toISOString().split('T')[0]}.xlsx`);
+                showAlert(`✅ ${books.length} libros exportados correctamente`, 'success');
+            } catch (error) {
+                console.error('Error exportando:', error);
+                showAlert('❌ Error al exportar', 'error');
             }
         }
 
-        // FUNCIONES RESTAURADAS DEL MENÚ DE ADMINISTRADOR
+        // FUNCIÓN AUXILIAR PARA IMPORTACIÓN
+        function getValueFromRow(row, headerMap, possibleHeaders) {
+            for (const header of possibleHeaders) {
+                const index = headerMap[header];
+                if (index !== undefined && row[index] !== undefined) {
+                    return row[index].toString().trim();
+                }
+            }
+            return '';
+        }
 
-        // Gestión de usuarios
+        // FUNCIONES DE GESTIÓN DE USUARIOS
         function openUserModal() {
             if (!checkPermission('admin')) return;
             
@@ -1916,7 +2092,7 @@
                 users.splice(index, 1);
                 localStorage.setItem('usuariosBiblioteca', JSON.stringify(users));
                 showAlert('Usuario eliminado', 'info');
-                openManageUsersModal(); // Recargar lista
+                openManageUsersModal();
             }
         }
 
@@ -1924,7 +2100,7 @@
             document.getElementById('manageUsersModal').style.display = 'none';
         }
 
-        // Exportaciones especiales
+        // EXPORTACIONES ESPECIALES
         function exportarPrestamos() {
             if (!checkPermission('admin')) return;
             exportByType('Prestado', 'prestamos');
@@ -1967,11 +2143,11 @@
                 showAlert(`✅ ${filteredBooks.length} libros ${tipo.toLowerCase()}s exportados`, 'success');
             } catch (error) {
                 console.error('Error exportando:', error);
-                showAlert('Error al exportar', 'error');
+                showAlert('❌ Error al exportar', 'error');
             }
         }
 
-        // Generación de códigos QR
+        // GENERACIÓN DE CÓDIGOS QR
         function generarQREstantes() {
             if (!checkPermission('admin')) return;
             
@@ -2039,7 +2215,7 @@
             window.currentQRData = null;
         }
 
-        // Configuración del servidor
+        // CONFIGURACIÓN DEL SERVIDOR
         function setupServer() {
             if (!checkPermission('admin')) return;
             
@@ -2124,7 +2300,7 @@
             }
         }
 
-        // Actualizar checkPermission para incluir 'admin'
+        // FUNCIÓN DE PERMISOS CORREGIDA
         function checkPermission(action) {
             if (action === 'admin' && rolActual !== 'admin') {
                 showAlert('Solo los administradores pueden realizar esta acción', 'warning');
@@ -2137,104 +2313,10 @@
                 'lector': ['view', 'search', 'export']
             };
             
-            if (allowedActions[rolActual]?.includes(action)) return true;
+            if (allowedActions[rolActual]?.includes(action) || action === 'export') return true;
             
             showAlert('No tiene permisos para esta acción', 'warning');
             return false;
-        }
-
-        // EVENT LISTENERS OPTIMIZADOS
-        function setupEventListeners() {
-            // Búsqueda con debounce
-            let searchTimeout;
-            document.getElementById('searchInput').addEventListener('input', () => {
-                clearTimeout(searchTimeout);
-                searchTimeout = setTimeout(performSearch, 500);
-            });
-
-            // Enter en búsquedas
-            document.getElementById('searchEstante').addEventListener('keydown', (e) => {
-                if (e.key === 'Enter') {
-                    e.preventDefault();
-                    searchByEstante();
-                }
-            });
-
-            // Login con Enter
-            document.getElementById('welcomeUser').addEventListener('keydown', (e) => {
-                if (e.key === 'Enter') {
-                    document.getElementById('welcomePassword').focus();
-                }
-            });
-
-            document.getElementById('welcomePassword').addEventListener('keydown', (e) => {
-                if (e.key === 'Enter') {
-                    welcomeLogin();
-                }
-            });
-
-            // Guardar con Enter en modales
-            const modalInputs = document.querySelectorAll('#bookModal input, #bookModal textarea');
-            modalInputs.forEach(input => {
-                input.addEventListener('keydown', (e) => {
-                    if (e.key === 'Enter' && e.target.tagName !== 'TEXTAREA') {
-                        e.preventDefault();
-                        saveBook();
-                    }
-                });
-            });
-
-            // Cerrar dropdowns al hacer click fuera
-            document.addEventListener('click', (e) => {
-                const dropdown = document.querySelector('.user-dropdown');
-                if (dropdown && !dropdown.contains(e.target)) {
-                    dropdown.classList.remove('active');
-                    document.getElementById('userDropdownContent').classList.remove('show');
-                }
-            });
-
-            // Cerrar modales con ESC
-            document.addEventListener('keydown', (e) => {
-                if (e.key === 'Escape') {
-                    document.querySelectorAll('.modal').forEach(modal => {
-                        modal.style.display = 'none';
-                    });
-                }
-            });
-        }
-
-        // INICIALIZACIÓN DE LA APLICACIÓN
-        function initializeApp() {
-            // Inicializar cache DOM
-            DOM.init();
-            
-            // Usuarios por defecto
-            let users = JSON.parse(localStorage.getItem('usuariosBiblioteca') || '[]');
-            if (!users.length) {
-                users = [
-                    { username: 'Leandro', password: hashPassword('1208'), role: 'admin', created: new Date().toISOString() },
-                    { username: 'Lector', password: hashPassword('lector'), role: 'lector', created: new Date().toISOString() }
-                ];
-                localStorage.setItem('usuariosBiblioteca', JSON.stringify(users));
-            }
-
-            // Verificar sesión existente
-            if (!checkSession()) {
-                DOM.welcomeScreen.style.display = 'flex';
-                DOM.mainApp.style.display = 'none';
-                return;
-            }
-
-            // Si hay sesión, mostrar aplicación
-            DOM.welcomeScreen.style.display = 'none';
-            DOM.mainApp.style.display = 'flex';
-            
-            // Cargar datos y configurar
-            loadData();
-            setupEventListeners();
-            
-            // Actualizar año en footer
-            document.getElementById('anioFooter').textContent = new Date().getFullYear();
         }
 
         // Inicializar cuando el DOM esté listo

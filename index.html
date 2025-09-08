@@ -1406,7 +1406,134 @@
             document.getElementById('bookModal').style.display = 'block';
         }
 
-        // BÚSQUEDA OPTIMIZADA Y REACTIVA
+        // --- UTILIDAD PARA NORMALIZAR TEXTO (sin tildes, mayúsculas ni signos) ---
+function normalizarTexto(texto) {
+    return (texto || "")
+        .toString()
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "") // Elimina tildes
+        .replace(/[^\w\s]/g, "")         // Elimina signos
+        .replace(/\s+/g, " ")            // Espacios únicos
+        .trim();
+}
+
+// --- FUNCIÓN DE SIMILITUD BÁSICA (Levenshtein) ---
+function similitud(a, b) {
+    if (!a || !b) return 0;
+    if (a === b) return 1;
+    const alen = a.length, blen = b.length;
+    if (alen === 0 || blen === 0) return 0;
+    let matrix = [];
+    for (let i = 0; i <= alen; i++) matrix[i] = [i];
+    for (let j = 0; j <= blen; j++) matrix[0][j] = j;
+    for (let i = 1; i <= alen; i++) {
+        for (let j = 1; j <= blen; j++) {
+            matrix[i][j] = Math.min(
+                matrix[i - 1][j] + 1, // borrado
+                matrix[i][j - 1] + 1, // inserción
+                matrix[i - 1][j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1) // sustitución
+            );
+        }
+    }
+    // Similaridad normalizada
+    const dist = matrix[alen][blen];
+    return 1 - dist / Math.max(alen, blen);
+}
+
+// --- BÚSQUEDA OPTIMIZADA POR COINCIDENCIA Y SIMILITUD ---
+let searchTimeout = null;
+let searchCache = new Map();
+let lastSearch = "";
+
+function buscarLibros() {
+    const input = document.getElementById('searchInput');
+    if (!input) return;
+    const termino = normalizarTexto(input.value);
+
+    if (!termino) {
+        limpiarBusqueda();
+        return;
+    }
+    if (termino === lastSearch && searchCache.has(termino)) {
+        mostrarResultados(searchCache.get(termino));
+        return;
+    }
+
+    // Filtrado eficiente: incluye coincidencia exacta y por similitud (>0.7)
+    const resultados = books.filter(libro => {
+        const campos = [
+            libro.titulo, libro.apellido, libro.nombre, libro.año,
+            libro.isbn, libro.estante, libro.volumen, libro.tomo, libro.observaciones
+        ];
+        // Coincidencia exacta sin tildes
+        const camposNormalizados = campos.map(normalizarTexto).join(" ");
+        if (camposNormalizados.includes(termino)) return true;
+        // Coincidencia por similitud en cada campo
+        return campos.some(campo => similitud(normalizarTexto(campo), termino) > 0.7);
+    });
+
+    // Cachea hasta 50 búsquedas
+    if (searchCache.size > 50) searchCache.clear();
+    searchCache.set(termino, resultados);
+    lastSearch = termino;
+    mostrarResultados(resultados);
+}
+
+function buscarConDebounce() {
+    clearTimeout(searchTimeout);
+    searchTimeout = setTimeout(buscarLibros, 250);
+}
+
+function limpiarBusqueda() {
+    lastSearch = "";
+    searchCache.clear();
+    mostrarResultados(books);
+}
+
+function mostrarResultados(resultados) {
+    const tbody = document.getElementById('booksTableBody');
+    if (!tbody) return;
+    tbody.innerHTML = "";
+    const fragment = document.createDocumentFragment();
+    const max = Math.min(resultados.length, 200);
+    for (let i = 0; i < max; i++) {
+        const libro = resultados[i];
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td>${libro.ordinal || ""}</td>
+            <td>${libro.estante || ""}</td>
+            <td>${libro.apellido || ""}</td>
+            <td>${libro.nombre || ""}</td>
+            <td>${libro.titulo || ""}</td>
+            <td>${libro.volumen || ""}</td>
+            <td>${libro.tomo || ""}</td>
+            <td>${libro.año || ""}</td>
+            <td>${libro.encuadernado || ""}</td>
+            <td>${libro.observaciones || ""}</td>
+            <td>${libro.ejemplares || 1}</td>
+            <td>${libro.accion || "Disponible"}</td>
+            <td>${getLoanInfo(libro)}</td>
+            <td>${getActionButtons(books.indexOf(libro), libro)}</td>
+        `;
+        fragment.appendChild(tr);
+    }
+    tbody.appendChild(fragment);
+    // Opcional: mostrar mensaje si no hay resultados
+    // document.getElementById('resultCount').textContent =
+    //     resultados.length ? `${resultados.length} resultados` : "Sin resultados";
+}
+
+// --- EVENTOS ---
+document.addEventListener('DOMContentLoaded', () => {
+    const input = document.getElementById('searchInput');
+    if (input) {
+        input.addEventListener('input', buscarConDebounce);
+    }
+    mostrarResultados(books);
+});
+
+        // BÚSQUEDA OPTIMIZADA
         function performSearch() {
             const searchTerm = document.getElementById('searchInput').value.trim().toLowerCase();
             
@@ -1725,6 +1852,71 @@
 
             reader.readAsArrayBuffer(file);
         }
+
+        // CARGA DE EXCEL OPTIMIZADA Y RESPETA EL ORDEN ORIGINAL
+function importarExcelOptimizado(event) {
+    const input = event.target;
+    if (!input.files || !input.files[0]) return;
+
+    const file = input.files[0];
+    const reader = new FileReader();
+
+    mostrarLoading(true);
+
+    reader.onload = function(e) {
+        setTimeout(() => {
+            try {
+                const data = new Uint8Array(e.target.result);
+                const workbook = XLSX.read(data, { type: 'array' });
+                const sheet = workbook.Sheets[workbook.SheetNames[0]];
+                // Usar header:1 para obtener filas en orden exacto
+                const rows = XLSX.utils.sheet_to_json(sheet, { header: 1, defval: "" });
+
+                if (rows.length < 2) throw new Error("Archivo vacío o sin encabezados");
+
+                const headers = rows[0];
+                const librosNuevos = [];
+
+                for (let i = 1; i < rows.length; i++) {
+                    const row = rows[i];
+                    // Mapeo por posición para mantener el orden
+                    const libro = {
+                        titulo: row[headers.indexOf("Título")] || row[headers.indexOf("Titulo")] || "",
+                        apellido: row[headers.indexOf("Apellido")] || "",
+                        nombre: row[headers.indexOf("Nombre")] || "",
+                        año: row[headers.indexOf("Año")] || row[headers.indexOf("Ano")] || "",
+                        estante: row[headers.indexOf("Estante")] || "",
+                        isbn: row[headers.indexOf("ISBN")] || "",
+                        volumen: row[headers.indexOf("Volumen")] || "",
+                        tomo: row[headers.indexOf("Tomo")] || "",
+                        observaciones: row[headers.indexOf("Observaciones")] || "",
+                        accion: row[headers.indexOf("Estado")] || "Disponible"
+                    };
+                    librosNuevos.push(libro);
+                }
+
+                // No invertir el array, se respeta el orden original
+                books = librosNuevos;
+                nextOrdinal = books.length ? Math.max(...books.map(b => b.ordinal || 0)) + 1 : 1;
+
+                hideLoading();
+                saveData();
+                updateStats();
+                
+                // ✅ REFRESCAR BÚSQUEDA AUTOMÁTICAMENTE
+                refreshSearchIfActive();
+                
+                showAlert(`✅ ${books.length} libros importados correctamente`, 'success');
+                input.value = "";
+            } catch (err) {
+                hideLoading();
+                showAlert("Error al procesar el archivo Excel", 3000);
+            }
+        }, 10); // Pequeño delay para UX
+    };
+
+    reader.readAsArrayBuffer(file);
+}
 
         // EVENT LISTENERS MEJORADOS CON BÚSQUEDA INSTANTÁNEA
         function setupEventListeners() {
@@ -2325,3 +2517,4 @@
 </body>
 
 </html>
+

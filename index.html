@@ -482,20 +482,20 @@
         }
 
         /* Columnas específicas con tamaños mínimos */
-        td:nth-child(1) { width: 30px; white-space: nowrap; } /* Ordinal */
-        td:nth-child(2) { width: 40px; white-space: nowrap; } /* Estante */
-        td:nth-child(3) { width: 55px; } /* Apellido */
-        td:nth-child(4) { width: 55px; } /* Nombre */
-        td:nth-child(5) { width: 95px; } /* Título */
-        td:nth-child(6) { width: 35px; white-space: nowrap; } /* Volumen */
-        td:nth-child(7) { width: 30px; white-space: nowrap; } /* Tomo */
-        td:nth-child(8) { width: 35px; white-space: nowrap; } /* Año */
-        td:nth-child(9) { width: 50px; white-space: nowrap; } /* Encuadernado */
-        td:nth-child(10) { width: 70px; } /* Observaciones */
-        td:nth-child(11) { width: 40px; white-space: nowrap; } /* Ejemplares */
-        td:nth-child(12) { width: 55px; } /* Estado */
-        td:nth-child(13) { width: 65px; } /* ISBN */
-        td:nth-child(14) { width: 75px; } /* Acciones */
+        td:nth-child(1) { width: 75px; } /* Acciones */
+        td:nth-child(2) { width: 30px; white-space: nowrap; } /* Ordinal */
+        td:nth-child(3) { width: 40px; white-space: nowrap; } /* Estante */
+        td:nth-child(4) { width: 55px; } /* Apellido */
+        td:nth-child(5) { width: 55px; } /* Nombre */
+        td:nth-child(6) { width: 95px; } /* Título */
+        td:nth-child(7) { width: 35px; white-space: nowrap; } /* Volumen */
+        td:nth-child(8) { width: 30px; white-space: nowrap; } /* Tomo */
+        td:nth-child(9) { width: 35px; white-space: nowrap; } /* Año */
+        td:nth-child(10) { width: 50px; white-space: nowrap; } /* Encuadernado */
+        td:nth-child(11) { width: 70px; } /* Observaciones */
+        td:nth-child(12) { width: 40px; white-space: nowrap; } /* Ejemplares */
+        td:nth-child(13) { width: 55px; } /* Estado */
+        td:nth-child(14) { width: 65px; } /* ISBN */
 
         /* Tooltip para textos largos */
         td[title] {
@@ -1095,6 +1095,7 @@
                         <table id="booksTable">
                             <thead>
                                 <tr>
+                                    <th>Acciones</th>
                                     <th>Ordinal</th>
                                     <th>Estante</th>
                                     <th>Apellido</th>
@@ -1108,7 +1109,6 @@
                                     <th>Ejemplares</th>
                                     <th>Estado</th>
                                     <th>ISBN</th>
-                                    <th>Acciones</th>
                                 </tr>
                             </thead>
                             <tbody id="booksTableBody"></tbody>
@@ -1769,6 +1769,11 @@
             closeBookModal();
             // Limpiar filtros y volver al inicio
             clearFilters();
+            // Scroll al inicio de la tabla
+            const tableContainer = document.querySelector('.table-container');
+            if (tableContainer) {
+                tableContainer.scrollTop = 0;
+            }
             loadDashboard();
         });
 
@@ -1847,6 +1852,11 @@
                 await saveToStorage();
                 // Limpiar filtros y volver al inicio
                 clearFilters();
+                // Scroll al inicio de la tabla
+                const tableContainer = document.querySelector('.table-container');
+                if (tableContainer) {
+                    tableContainer.scrollTop = 0;
+                }
                 loadDashboard();
             }
         }
@@ -2048,7 +2058,7 @@
             
             bookList.forEach(book => {
                 const tr = document.createElement('tr');
-                tr.innerHTML = `<td title="${book.ordinal || ''}">${book.ordinal || ''}</td><td title="${book.estante || ''}">${book.estante || ''}</td><td title="${book.apellido || ''}">${book.apellido || ''}</td><td title="${book.nombre || ''}">${book.nombre || ''}</td><td title="${book.titulo || ''}">${book.titulo || ''}</td><td title="${book.volumen || ''}">${book.volumen || ''}</td><td title="${book.tomo || ''}">${book.tomo || ''}</td><td title="${book.anio || ''}">${book.anio || ''}</td><td title="${book.encuadernado || ''}">${book.encuadernado || ''}</td><td title="${book.observaciones || ''}">${book.observaciones || ''}</td><td title="${book.ejemplares || ''}">${book.ejemplares || ''}</td><td><span class="badge-${book.estado}">${book.estado || ''}</span></td><td title="${book.isbn || ''}">${book.isbn || ''}</td><td class="action-btns"><button class="btn btn-sm btn-warning" onclick="editBook('${book.id}')">✏️</button><button class="btn btn-sm btn-danger" onclick="deleteBook('${book.id}')">🗑️</button></td>`;
+                tr.innerHTML = `<td class="action-btns"><button class="btn btn-sm btn-warning" onclick="editBook('${book.id}')">✏️</button><button class="btn btn-sm btn-danger" onclick="deleteBook('${book.id}')">🗑️</button></td><td title="${book.ordinal || ''}">${book.ordinal || ''}</td><td title="${book.estante || ''}">${book.estante || ''}</td><td title="${book.apellido || ''}">${book.apellido || ''}</td><td title="${book.nombre || ''}">${book.nombre || ''}</td><td title="${book.titulo || ''}">${book.titulo || ''}</td><td title="${book.volumen || ''}">${book.volumen || ''}</td><td title="${book.tomo || ''}">${book.tomo || ''}</td><td title="${book.anio || ''}">${book.anio || ''}</td><td title="${book.encuadernado || ''}">${book.encuadernado || ''}</td><td title="${book.observaciones || ''}">${book.observaciones || ''}</td><td title="${book.ejemplares || ''}">${book.ejemplares || ''}</td><td><span class="badge-${book.estado}">${book.estado || ''}</span></td><td title="${book.isbn || ''}">${book.isbn || ''}</td>`;
                 fragment.appendChild(tr);
             });
             
@@ -2208,6 +2218,11 @@
                     await saveToStorage();
                     // Limpiar filtros y volver al inicio después de importar
                     clearFilters();
+                    // Scroll al inicio de la tabla
+                    const tableContainer = document.querySelector('.table-container');
+                    if (tableContainer) {
+                        tableContainer.scrollTop = 0;
+                    }
                     loadDashboard();
 
                     let message = `✅ ¡Importación exitosa!\n\n`;

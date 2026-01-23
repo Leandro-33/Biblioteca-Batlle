@@ -1767,7 +1767,8 @@
 
             await saveToStorage();
             closeBookModal();
-            applyFilters();
+            // Limpiar filtros y volver al inicio
+            clearFilters();
             loadDashboard();
         });
 
@@ -1844,7 +1845,8 @@
             if (confirm('¿Está seguro de eliminar este libro?')) {
                 books = books.filter(b => b.id !== id);
                 await saveToStorage();
-                applyFilters();
+                // Limpiar filtros y volver al inicio
+                clearFilters();
                 loadDashboard();
             }
         }
@@ -2204,7 +2206,8 @@
                     }
 
                     await saveToStorage();
-                    applyFilters();
+                    // Limpiar filtros y volver al inicio después de importar
+                    clearFilters();
                     loadDashboard();
 
                     let message = `✅ ¡Importación exitosa!\n\n`;

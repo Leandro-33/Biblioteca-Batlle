@@ -222,29 +222,33 @@
 
         .content {
             flex: 1;
-            padding: 35px;
+            padding: 0;
             overflow-y: auto;
-            background: rgba(255,255,255,0.05);
+            background: #faf6f0;
         }
 
         .panel {
-            background: white;
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            background: #faf6f0;
+            padding: 0;
+            border-radius: 0;
+            box-shadow: none;
             display: none;
             animation: fadeIn 0.5s;
+            height: 100%;
+            flex-direction: column;
         }
 
         .panel.active {
-            display: block;
+            display: flex;
         }
 
         .panel h2 {
             color: #667eea;
-            margin-bottom: 20px;
+            margin: 0;
+            padding: 20px 30px 10px 30px;
             font-size: 20px;
             font-weight: 700;
+            background: #faf6f0;
         }
 
         /* FORMULARIOS */
@@ -365,27 +369,54 @@
         .btn-group {
             display: flex;
             gap: 10px;
-            margin-top: 20px;
+            padding: 15px 30px 10px 30px;
+            flex-wrap: wrap;
+            background: #faf6f0;
         }
 
         /* TABLA */
         .table-container {
             background: white;
-            padding: 20px;
-            border-radius: 15px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            padding: 0 30px 30px 30px;
+            border-radius: 0;
+            box-shadow: none;
             overflow-x: auto;
-            margin-top: 20px;
+            margin-top: 0;
+            max-height: calc(100% - 100px);
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .table-container::-webkit-scrollbar {
+            height: 8px;
+        }
+
+        .table-container::-webkit-scrollbar-track {
+            background: #f0f0f0;
+            border-radius: 10px;
+        }
+
+        .table-container::-webkit-scrollbar-thumb {
+            background: #667eea;
+            border-radius: 10px;
+            transition: background 0.3s;
+        }
+
+        .table-container::-webkit-scrollbar-thumb:hover {
+            background: #764ba2;
         }
 
         .search-bar {
-            margin-bottom: 15px;
+            margin-bottom: 10px;
             display: flex;
             gap: 8px;
             flex-wrap: wrap;
-            background: #f8f9fa;
-            padding: 15px;
-            border-radius: 10px;
+            background: transparent;
+            padding: 10px 0;
+            border-radius: 0;
+            border-bottom: 1px solid #e0e0e0;
+            align-items: center;
         }
 
         .search-bar input {
@@ -397,66 +428,74 @@
             width: 100%;
             border-collapse: collapse;
             background: white;
-            font-size: 11px;
+            font-size: 12px;
+            flex: 1;
         }
 
         th, td {
-            padding: 8px 6px;
+            padding: 10px 8px;
             text-align: left;
             border-bottom: 1px solid #e0e0e0;
-            white-space: nowrap;
-            max-width: 150px;
-            overflow: hidden;
-            text-overflow: ellipsis;
+            white-space: normal;
+            word-wrap: break-word;
         }
 
         th {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #d4936e 0%, #c67c5c 100%);
             color: white;
             font-weight: 600;
             position: sticky;
             top: 0;
             z-index: 10;
-            font-size: 11px;
+            font-size: 12px;
             text-transform: uppercase;
             letter-spacing: 0.3px;
+            min-width: 100px;
+            cursor: default;
+        }
+
+        th:nth-child(1), th:nth-child(2), th:nth-child(6), th:nth-child(7), th:nth-child(8), th:nth-child(9), th:nth-child(11) {
+            white-space: nowrap;
         }
 
         tbody tr:hover {
-            background: #f8f9fa;
+            background: #f5ede5;
+            box-shadow: inset 0 0 10px rgba(212, 147, 110, 0.1);
         }
 
         tbody tr {
-            transition: background 0.2s;
+            transition: all 0.2s;
         }
 
         .action-btns {
             display: flex;
             gap: 4px;
             justify-content: flex-start;
+            flex-wrap: wrap;
             min-width: 140px;
         }
 
         .btn-sm {
-            padding: 4px 8px;
+            padding: 5px 10px;
             font-size: 11px;
             white-space: nowrap;
         }
 
-        /* Columnas específicas */
-        td:nth-child(1) { max-width: 50px; } /* Ordinal */
-        td:nth-child(2) { max-width: 60px; } /* Estante */
-        td:nth-child(3) { max-width: 100px; } /* Apellido */
-        td:nth-child(4) { max-width: 100px; } /* Nombre */
-        td:nth-child(5) { max-width: 200px; } /* Título */
-        td:nth-child(6) { max-width: 60px; } /* Volumen */
-        td:nth-child(7) { max-width: 60px; } /* Tomo */
-        td:nth-child(8) { max-width: 60px; } /* Año */
-        td:nth-child(9) { max-width: 90px; } /* Encuadernado */
-        td:nth-child(10) { max-width: 150px; } /* Observaciones */
-        td:nth-child(11) { max-width: 70px; } /* Ejemplares */
-        td:nth-child(12) { max-width: 80px; } /* Estado */
-        td:nth-child(13) { max-width: 100px; } /* ISBN */
+        /* Columnas específicas con tamaños mínimos */
+        td:nth-child(1) { width: auto; white-space: nowrap; } /* Ordinal */
+        td:nth-child(2) { width: auto; white-space: nowrap; } /* Estante */
+        td:nth-child(3) { min-width: 80px; } /* Apellido */
+        td:nth-child(4) { min-width: 80px; } /* Nombre */
+        td:nth-child(5) { min-width: 120px; } /* Título */
+        td:nth-child(6) { width: auto; white-space: nowrap; } /* Volumen */
+        td:nth-child(7) { width: auto; white-space: nowrap; } /* Tomo */
+        td:nth-child(8) { width: auto; white-space: nowrap; } /* Año */
+        td:nth-child(9) { width: auto; white-space: nowrap; } /* Encuadernado */
+        td:nth-child(10) { min-width: 80px; } /* Observaciones */
+        td:nth-child(11) { width: auto; white-space: nowrap; } /* Ejemplares */
+        td:nth-child(12) { min-width: 70px; } /* Estado */
+        td:nth-child(13) { min-width: 70px; } /* ISBN */
+        td:nth-child(14) { min-width: 120px; } /* Acciones */
 
         /* Tooltip para textos largos */
         td[title] {
@@ -466,6 +505,56 @@
         .btn-sm {
             padding: 5px 10px;
             font-size: 12px;
+        }
+
+        /* Mejoras de responsividad para pantallas pequeñas */
+        @media (max-width: 1200px) {
+            .table-container {
+                padding: 15px;
+            }
+            
+            th, td {
+                padding: 8px 5px;
+                font-size: 11px;
+            }
+            
+            .search-bar {
+                gap: 5px;
+            }
+            
+            .btn-sm {
+                padding: 4px 8px;
+                font-size: 10px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .content {
+                padding: 15px;
+            }
+            
+            .table-container {
+                padding: 10px;
+                max-height: 60vh;
+            }
+            
+            .search-bar {
+                flex-direction: column;
+            }
+            
+            .search-bar input {
+                min-width: 100%;
+            }
+            
+            th, td {
+                padding: 6px 4px;
+                font-size: 10px;
+            }
+            
+            /* Ocultar columnas menos importantes en móvil */
+            td:nth-child(9), th:nth-child(9) { display: none; } /* Encuadernado */
+            td:nth-child(10), th:nth-child(10) { display: none; } /* Observaciones */
+            td:nth-child(13), th:nth-child(13) { display: none; } /* ISBN */
         }
 
         /* MODAL */
@@ -724,12 +813,162 @@
             white-space: nowrap;
         }
 
+        /* PANEL DE ESTANTE */
+        .estante-panel {
+            position: fixed;
+            right: -400px;
+            top: 70px;
+            width: 400px;
+            height: calc(100vh - 70px);
+            background: white;
+            box-shadow: -5px 0 20px rgba(0,0,0,0.2);
+            transition: right 0.3s ease;
+            z-index: 900;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .estante-panel.active {
+            right: 0;
+        }
+
+        .estante-panel-header {
+            padding: 20px;
+            border-bottom: 2px solid #e0e0e0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .estante-panel-header h3 {
+            margin: 0 0 15px 0;
+            font-size: 18px;
+        }
+
+        .estante-search-input {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 13px;
+            color: #333;
+        }
+
+        .estante-panel-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 15px;
+        }
+
+        .estante-book-item {
+            background: #f8f9fa;
+            padding: 12px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .estante-book-item:hover {
+            background: #e8eaf6;
+            transform: translateX(5px);
+            border-left-color: #764ba2;
+        }
+
+        .estante-book-item h4 {
+            margin: 0 0 5px 0;
+            color: #333;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .estante-book-item p {
+            margin: 2px 0;
+            color: #666;
+            font-size: 11px;
+        }
+
+        .estante-book-actions {
+            display: flex;
+            gap: 5px;
+            margin-top: 8px;
+        }
+
+        .estante-panel-close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            width: 30px;
+            height: 30px;
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            border-radius: 50%;
+            transition: all 0.2s;
+        }
+
+        .estante-panel-close:hover {
+            background: rgba(255,255,255,0.4);
+        }
+
+        .estante-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 15px;
+            font-size: 12px;
+        }
+
+        .estante-stat {
+            background: white;
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid #e0e0e0;
+            text-align: center;
+        }
+
+        .estante-stat-number {
+            font-size: 18px;
+            font-weight: 700;
+            color: #667eea;
+        }
+
+        .estante-stat-label {
+            color: #666;
+            font-size: 11px;
+            margin-top: 3px;
+        }
+
+        .estante-empty {
+            text-align: center;
+            padding: 30px 20px;
+            color: #999;
+        }
+
+        .estante-empty p {
+            margin: 0;
+            font-size: 13px;
+        }
+
+        @media (max-width: 1024px) {
+            .estante-panel {
+                width: 350px;
+                right: -350px;
+            }
+        }
+
         @media (max-width: 768px) {
             .main-content {
                 flex-direction: column;
             }
             .sidebar {
                 width: 100%;
+            }
+            .estante-panel {
+                width: 100%;
+                right: -100%;
             }
         }
     </style>
@@ -738,7 +977,8 @@
     <!-- LOGIN -->
     <div class="login-container" id="loginContainer">
         <div class="login-box">
-            <h2>📚 Sistema de Biblioteca</h2>
+            <h2>📚 Sistema de Biblioteca de Batlle</h2>
+           
             <form id="loginForm">
                 <div class="form-group">
                     <label>Usuario</label>
@@ -762,6 +1002,7 @@
                 <div class="sync-indicator">
                     <div class="sync-dot"></div>
                     <span>Sincronizado</span>
+                    <span id="lastSyncTime" style="font-size: 11px; color: #666; margin-left: 10px;"></span>
                 </div>
                 <div class="user-menu-trigger" onclick="toggleUserMenu()">
                     <span>👤</span>
@@ -848,12 +1089,6 @@
                         <div class="search-bar">
                             <input type="text" id="searchInput" placeholder="🔍 Buscar por título, autor, ISBN, estante...">
                             <input type="text" id="filterEstante" placeholder="📚 Filtrar por estante (ej: A1, B2...)" style="min-width: 200px;">
-                            <select id="filterEstado">
-                                <option value="">📋 Todos los estados</option>
-                                <option value="disponible">✅ Disponible</option>
-                                <option value="prestado">📤 Prestado</option>
-                                <option value="donado">🎁 Donado</option>
-                            </select>
                             <button class="btn btn-sm btn-warning" onclick="clearFilters()" style="white-space: nowrap;">🔄 Limpiar</button>
                         </div>
 
@@ -1013,7 +1248,31 @@
                 <div class="panel" id="panel-libros-repetidos"><h2>Libros Repetidos</h2></div>
                 <div class="panel" id="panel-reiniciar-balance"><h2>Reiniciar Balance</h2></div>
                 <div class="panel" id="panel-informe-faltante"><h2>Informe de Faltantes</h2></div>
+                <div class="panel" id="panel-mi-perfil"><h2>Mi Perfil</h2></div>
+                <div class="panel" id="panel-configuracion"><h2>Configuración</h2></div>
             </div>
+        </div>
+    </div>
+
+    <!-- PANEL DE ESTANTE (LADO DERECHO) -->
+    <div class="estante-panel" id="estantePanel">
+        <div class="estante-panel-header">
+            <button class="estante-panel-close" onclick="closeEstantePanel()">×</button>
+            <h3 id="estantePanelTitle">Estante: --</h3>
+            <input type="text" class="estante-search-input" id="estantePanelSearch" placeholder="🔍 Buscar en estante...">
+        </div>
+        <div class="estante-panel-content">
+            <div class="estante-stats">
+                <div class="estante-stat">
+                    <div class="estante-stat-number" id="estanteTotalBooks">0</div>
+                    <div class="estante-stat-label">Total</div>
+                </div>
+                <div class="estante-stat">
+                    <div class="estante-stat-number" id="estanteAvailableBooks">0</div>
+                    <div class="estante-stat-label">Disponibles</div>
+                </div>
+            </div>
+            <div id="estantePanelBooks"></div>
         </div>
     </div>
 
@@ -1120,7 +1379,6 @@
             panel: 'libros',
             searchTerm: '',
             filterEstante: '',
-            filterEstado: '',
             scrollPosition: 0
         };
         
@@ -1159,28 +1417,66 @@
             }
         };
 
+        // Guardar datos de sesión
+        function saveSessionData() {
+            if (currentUser) {
+                try {
+                    sessionStorage.setItem('biblioteca-session', JSON.stringify({
+                        user: currentUser,
+                        timestamp: new Date().toISOString()
+                    }));
+                } catch (e) {
+                    console.warn('Error al guardar sesión:', e);
+                }
+            }
+        }
+
         // INICIALIZACIÓN
         async function init() {
+            console.log('🚀 Iniciando aplicación...');
             await loadFromStorage();
+            
+            // Verificar si hay sesión activa guardada
+            const savedSession = sessionStorage.getItem('biblioteca-session');
+            if (savedSession) {
+                try {
+                    const sessionData = JSON.parse(savedSession);
+                    currentUser = sessionData.user;
+                    document.getElementById('loginContainer').style.display = 'none';
+                    document.getElementById('appContainer').style.display = 'block';
+                    document.getElementById('currentUser').textContent = currentUser.username;
+                    setupSearchListeners();
+                    restoreLastState();
+                    console.log('✅ Sesión restaurada para:', currentUser.username);
+                } catch (e) {
+                    console.warn('Sesión corrupta, requiere nuevo login');
+                    sessionStorage.removeItem('biblioteca-session');
+                }
+            }
+            
             if (!users.length) {
                 users = [
                     { username: 'admin', password: 'admin123', role: 'admin', lastActivity: new Date().toISOString(), active: true }
                 ];
                 await saveToStorage();
+                console.log('✅ Usuario admin creado:', users);
+            } else {
+                console.log('✅ Usuarios cargados:', users);
             }
             
             // Auto-guardado cada 30 segundos
             setInterval(async () => {
                 if (currentUser && books.length > 0) {
-                    await saveLastState();
-                    console.log('💾 Auto-guardado realizado');
+                    await saveToStorage();
+                    console.log('💾 Auto-guardado realizado -', new Date().toLocaleTimeString());
                 }
             }, 30000);
 
             // Guardar estado al cambiar de pestaña o cerrar
-            window.addEventListener('beforeunload', () => {
+            window.addEventListener('beforeunload', async () => {
                 if (currentUser) {
-                    saveLastState();
+                    await saveLastState();
+                    await saveToStorage();
                 }
             });
 
@@ -1197,6 +1493,13 @@
                     }, 500);
                 });
             }
+            
+            // Guardar sesión cada 10 segundos mientras esté activa
+            setInterval(() => {
+                if (currentUser) {
+                    saveSessionData();
+                }
+            }, 10000);
         }
 
         // STORAGE (Sincronización en nube o local)
@@ -1213,7 +1516,6 @@
                         panel: 'libros',
                         searchTerm: '',
                         filterEstante: '',
-                        filterEstado: '',
                         scrollPosition: 0
                     };
                     console.log('✅ Datos cargados:', {
@@ -1231,7 +1533,16 @@
             try {
                 const data = { books, users, balanceData, estantes, lastState };
                 await storage.set('biblioteca-data', JSON.stringify(data));
-                console.log('✓ Datos sincronizados');
+                
+                // Actualizar timestamp de sincronización
+                const now = new Date();
+                const timeString = now.toLocaleTimeString('es-ES');
+                const syncEl = document.getElementById('lastSyncTime');
+                if (syncEl) {
+                    syncEl.textContent = `(${timeString})`;
+                }
+                
+                console.log('✓ Datos sincronizados -', timeString);
             } catch (e) {
                 console.warn('Error al guardar:', e);
             }
@@ -1240,8 +1551,10 @@
         // LOGIN
         document.getElementById('loginForm').addEventListener('submit', async (e) => {
             e.preventDefault();
+            console.log('🔑 Intentando login...');
             const username = document.getElementById('loginUsername').value;
             const password = document.getElementById('loginPassword').value;
+            console.log('Usuario:', username, 'Usuarios disponibles:', users);
             
             const user = users.find(u => u.username === username && u.password === password);
             
@@ -1249,6 +1562,10 @@
                 currentUser = user;
                 user.lastActivity = new Date().toISOString();
                 await saveToStorage();
+                
+                // Guardar sesión en sessionStorage para persistencia
+                saveSessionData();
+                
                 document.getElementById('loginContainer').style.display = 'none';
                 document.getElementById('appContainer').style.display = 'block';
                 document.getElementById('currentUser').textContent = user.username;
@@ -1258,6 +1575,8 @@
                 
                 // Restaurar último estado
                 restoreLastState();
+                
+                console.log('✅ Sesión iniciada para:', user.username);
             } else {
                 document.getElementById('loginError').textContent = 'Usuario o contraseña incorrectos';
             }
@@ -1279,12 +1598,9 @@
                     if (lastState.filterEstante) {
                         document.getElementById('filterEstante').value = lastState.filterEstante;
                     }
-                    if (lastState.filterEstado) {
-                        document.getElementById('filterEstado').value = lastState.filterEstado;
-                    }
                     
                     // Aplicar filtros si existen
-                    if (lastState.searchTerm || lastState.filterEstante || lastState.filterEstado) {
+                    if (lastState.searchTerm || lastState.filterEstante) {
                         applyFilters();
                     }
                     
@@ -1301,10 +1617,13 @@
 
         function logout() {
             currentUser = null;
+            // Limpiar sesión
+            sessionStorage.removeItem('biblioteca-session');
             document.getElementById('loginContainer').style.display = 'flex';
             document.getElementById('appContainer').style.display = 'none';
             document.getElementById('loginForm').reset();
             document.getElementById('loginError').textContent = '';
+            console.log('🚪 Sesión cerrada');
         }
 
         // MENÚ DESPLEGABLE USUARIO
@@ -1390,6 +1709,12 @@
         function closeBookModal() {
             document.getElementById('bookModal').classList.remove('show');
             document.getElementById('bookForm').reset();
+            
+            // Actualizar panel de estante si está abierto
+            const currentEstante = document.getElementById('filterEstante').value;
+            if (currentEstante && document.getElementById('estantePanel').classList.contains('active')) {
+                updateEstantePanelBooks(currentEstante);
+            }
         }
 
         function toggleYearInput() {
@@ -1444,9 +1769,6 @@
             closeBookModal();
             loadBooks();
             loadDashboard();
-            
-            // Mostrar mensaje de éxito
-            alert('✅ Libro guardado exitosamente');
         });
 
         function loadBooks() {
@@ -1547,25 +1869,25 @@
 
         function filterByEstante() {
             const estante = document.getElementById('filterEstante').value;
-            const filtered = estante ? books.filter(b => b.estante === estante) : books;
-            displayBooks(filtered);
-        }
-
-        function filterByEstado() {
-            const estado = document.getElementById('filterEstado').value;
-            const filtered = estado ? books.filter(b => b.estado === estado) : books;
-            displayBooks(filtered);
+            if (estante) {
+                // Abrir panel de estante
+                openEstantePanel(estante);
+                // También filtrar la tabla
+                const filtered = books.filter(b => b.estante === estante);
+                displayBooks(filtered);
+            } else {
+                closeEstantePanel();
+                displayBooks(books);
+            }
         }
 
         function applyFilters() {
             const search = document.getElementById('searchInput').value.toLowerCase();
             const estante = document.getElementById('filterEstante').value;
-            const estado = document.getElementById('filterEstado').value;
             
             // Guardar estado de filtros
             lastState.searchTerm = search;
             lastState.filterEstante = estante;
-            lastState.filterEstado = estado;
             saveLastState();
             
             // Filtrar libros
@@ -1581,10 +1903,7 @@
                 // Filtro de estante
                 const matchesEstante = !estante || b.estante === estante;
                 
-                // Filtro de estado
-                const matchesEstado = !estado || b.estado === estado;
-                
-                return matchesSearch && matchesEstante && matchesEstado;
+                return matchesSearch && matchesEstante;
             });
             
             displayBooks(filtered);
@@ -1593,10 +1912,8 @@
         function clearFilters() {
             document.getElementById('searchInput').value = '';
             document.getElementById('filterEstante').value = '';
-            document.getElementById('filterEstado').value = '';
             lastState.searchTerm = '';
             lastState.filterEstante = '';
-            lastState.filterEstado = '';
             saveLastState();
             displayBooks(books);
         }
@@ -1613,16 +1930,110 @@
                 });
             }
             
-            // Event listener para filtro de estante
+            // Event listener para filtro de estante - Ahora con input en lugar de change
             const filterEstante = document.getElementById('filterEstante');
             if (filterEstante) {
-                filterEstante.addEventListener('change', applyFilters);
+                filterEstante.addEventListener('input', () => {
+                    clearTimeout(filterTimeout);
+                    filterTimeout = setTimeout(() => {
+                        applyFilters();
+                    }, 150); // Debounce más rápido para estantes
+                });
             }
             
-            // Event listener para filtro de estado
-            const filterEstado = document.getElementById('filterEstado');
-            if (filterEstado) {
-                filterEstado.addEventListener('change', applyFilters);
+            // Event listener para búsqueda dentro del panel de estante
+            const estantePanelSearch = document.getElementById('estantePanelSearch');
+            if (estantePanelSearch) {
+                estantePanelSearch.addEventListener('input', (e) => {
+                    const searchTerm = e.target.value.toLowerCase();
+                    const currentEstante = document.getElementById('filterEstante').value;
+                    updateEstantePanelBooks(currentEstante, searchTerm);
+                });
+            }
+        }
+
+        // PANEL DE ESTANTE
+        let currentEstantePanel = null;
+
+        function openEstantePanel(estante) {
+            currentEstantePanel = estante;
+            const panel = document.getElementById('estantePanel');
+            document.getElementById('estantePanelTitle').textContent = `📚 Estante: ${estante}`;
+            document.getElementById('estantePanelSearch').value = '';
+            panel.classList.add('active');
+            updateEstantePanelBooks(estante, '');
+        }
+
+        function closeEstantePanel() {
+            const panel = document.getElementById('estantePanel');
+            panel.classList.remove('active');
+            currentEstantePanel = null;
+            document.getElementById('filterEstante').value = '';
+        }
+
+        function updateEstantePanelBooks(estante, searchTerm = '') {
+            const booksContainer = document.getElementById('estantePanelBooks');
+            const estanteBooksFilter = books.filter(b => b.estante === estante);
+            
+            // Filtrar por término de búsqueda
+            let filteredBooks = estanteBooksFilter;
+            if (searchTerm) {
+                filteredBooks = estanteBooksFilter.filter(b =>
+                    (b.titulo && b.titulo.toLowerCase().includes(searchTerm)) ||
+                    (b.apellido && b.apellido.toLowerCase().includes(searchTerm)) ||
+                    (b.nombre && b.nombre.toLowerCase().includes(searchTerm)) ||
+                    (b.isbn && b.isbn.toLowerCase().includes(searchTerm))
+                );
+            }
+
+            // Actualizar estadísticas
+            const disponibles = estanteBooksFilter.filter(b => b.estado === 'disponible').length;
+            document.getElementById('estanteTotalBooks').textContent = estanteBooksFilter.length;
+            document.getElementById('estanteAvailableBooks').textContent = disponibles;
+
+            // Renderizar libros
+            if (filteredBooks.length === 0) {
+                booksContainer.innerHTML = `
+                    <div class="estante-empty">
+                        <p>${searchTerm ? '❌ No se encontraron libros' : '📭 Sin libros en este estante'}</p>
+                    </div>
+                `;
+            } else {
+                booksContainer.innerHTML = filteredBooks.map(book => `
+                    <div class="estante-book-item">
+                        <h4>${book.titulo}</h4>
+                        <p><strong>Autor:</strong> ${book.apellido}, ${book.nombre}</p>
+                        <p><strong>Ord:</strong> ${book.ordinal} | <strong>Año:</strong> ${book.anio} | <span class="badge-${book.estado}">${book.estado}</span></p>
+                        ${book.isbn ? `<p><strong>ISBN:</strong> ${book.isbn}</p>` : ''}
+                        ${book.observaciones ? `<p><strong>Obs:</strong> ${book.observaciones}</p>` : ''}
+                        <div class="estante-book-actions">
+                            <button class="btn btn-sm btn-warning" onclick="editBookFromPanel('${book.id}')">✏️ Editar</button>
+                            <button class="btn btn-sm btn-danger" onclick="deleteBookFromPanel('${book.id}')">🗑️ Eliminar</button>
+                        </div>
+                    </div>
+                `).join('');
+            }
+        }
+
+        function editBookFromPanel(id) {
+            editBook(id);
+            // El modal se abrirá y el panel permanecerá visible
+        }
+
+        async function deleteBookFromPanel(id) {
+            if (confirm('¿Está seguro de eliminar este libro?')) {
+                books = books.filter(b => b.id !== id);
+                await saveToStorage();
+                
+                // Actualizar el panel
+                const currentEstante = document.getElementById('filterEstante').value;
+                if (currentEstante) {
+                    updateEstantePanelBooks(currentEstante);
+                    const filtered = books.filter(b => b.estante === currentEstante);
+                    displayBooks(filtered);
+                }
+                
+                loadDashboard();
             }
         }
 
@@ -2203,5 +2614,3 @@
     </script>
 </body>
 </html>
-
-

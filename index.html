@@ -425,7 +425,7 @@
         }
 
         table {
-            width: 100%;
+            width: auto;
             border-collapse: collapse;
             background: white;
             font-size: 12px;
@@ -433,7 +433,7 @@
         }
 
         th, td {
-            padding: 10px 8px;
+            padding: 3px 4px;
             text-align: left;
             border-bottom: 1px solid #e0e0e0;
             white-space: normal;
@@ -482,20 +482,20 @@
         }
 
         /* Columnas específicas con tamaños mínimos */
-        td:nth-child(1) { width: auto; white-space: nowrap; } /* Ordinal */
-        td:nth-child(2) { width: auto; white-space: nowrap; } /* Estante */
-        td:nth-child(3) { min-width: 80px; } /* Apellido */
-        td:nth-child(4) { min-width: 80px; } /* Nombre */
-        td:nth-child(5) { min-width: 120px; } /* Título */
-        td:nth-child(6) { width: auto; white-space: nowrap; } /* Volumen */
-        td:nth-child(7) { width: auto; white-space: nowrap; } /* Tomo */
-        td:nth-child(8) { width: auto; white-space: nowrap; } /* Año */
-        td:nth-child(9) { width: auto; white-space: nowrap; } /* Encuadernado */
-        td:nth-child(10) { min-width: 80px; } /* Observaciones */
-        td:nth-child(11) { width: auto; white-space: nowrap; } /* Ejemplares */
-        td:nth-child(12) { min-width: 70px; } /* Estado */
-        td:nth-child(13) { min-width: 70px; } /* ISBN */
-        td:nth-child(14) { min-width: 120px; } /* Acciones */
+        td:nth-child(1) { width: 30px; white-space: nowrap; } /* Ordinal */
+        td:nth-child(2) { width: 40px; white-space: nowrap; } /* Estante */
+        td:nth-child(3) { width: 55px; } /* Apellido */
+        td:nth-child(4) { width: 55px; } /* Nombre */
+        td:nth-child(5) { width: 95px; } /* Título */
+        td:nth-child(6) { width: 35px; white-space: nowrap; } /* Volumen */
+        td:nth-child(7) { width: 30px; white-space: nowrap; } /* Tomo */
+        td:nth-child(8) { width: 35px; white-space: nowrap; } /* Año */
+        td:nth-child(9) { width: 50px; white-space: nowrap; } /* Encuadernado */
+        td:nth-child(10) { width: 70px; } /* Observaciones */
+        td:nth-child(11) { width: 40px; white-space: nowrap; } /* Ejemplares */
+        td:nth-child(12) { width: 55px; } /* Estado */
+        td:nth-child(13) { width: 65px; } /* ISBN */
+        td:nth-child(14) { width: 75px; } /* Acciones */
 
         /* Tooltip para textos largos */
         td[title] {
@@ -1767,7 +1767,7 @@
 
             await saveToStorage();
             closeBookModal();
-            loadBooks();
+            applyFilters();
             loadDashboard();
         });
 
@@ -1844,7 +1844,7 @@
             if (confirm('¿Está seguro de eliminar este libro?')) {
                 books = books.filter(b => b.id !== id);
                 await saveToStorage();
-                loadBooks();
+                applyFilters();
                 loadDashboard();
             }
         }
@@ -1890,7 +1890,7 @@
             lastState.filterEstante = estante;
             saveLastState();
             
-            // Filtrar libros
+            // Filtrar libros de forma optimizada
             let filtered = books.filter(b => {
                 // Filtro de búsqueda
                 const matchesSearch = !search || 
@@ -1906,7 +1906,10 @@
                 return matchesSearch && matchesEstante;
             });
             
-            displayBooks(filtered);
+            // Usar requestAnimationFrame para no bloquear UI
+            requestAnimationFrame(() => {
+                displayBooks(filtered);
+            });
         }
 
         function clearFilters() {
@@ -1926,7 +1929,7 @@
                     clearTimeout(searchTimeout);
                     searchTimeout = setTimeout(() => {
                         applyFilters();
-                    }, 300); // Debounce de 300ms
+                    }, 400); // Debounce de 400ms para mejor rendimiento
                 });
             }
             
@@ -2039,27 +2042,16 @@
 
         function displayBooks(bookList) {
             const tbody = document.getElementById('booksTableBody');
-            tbody.innerHTML = bookList.map(book => `
-                <tr>
-                    <td title="${book.ordinal || ''}">${book.ordinal || ''}</td>
-                    <td title="${book.estante || ''}">${book.estante || ''}</td>
-                    <td title="${book.apellido || ''}">${book.apellido || ''}</td>
-                    <td title="${book.nombre || ''}">${book.nombre || ''}</td>
-                    <td title="${book.titulo || ''}">${book.titulo || ''}</td>
-                    <td title="${book.volumen || ''}">${book.volumen || ''}</td>
-                    <td title="${book.tomo || ''}">${book.tomo || ''}</td>
-                    <td title="${book.anio || ''}">${book.anio || ''}</td>
-                    <td title="${book.encuadernado || ''}">${book.encuadernado || ''}</td>
-                    <td title="${book.observaciones || ''}">${book.observaciones || ''}</td>
-                    <td title="${book.ejemplares || ''}">${book.ejemplares || ''}</td>
-                    <td><span class="badge-${book.estado}">${book.estado || ''}</span></td>
-                    <td title="${book.isbn || ''}">${book.isbn || ''}</td>
-                    <td class="action-btns">
-                        <button class="btn btn-sm btn-warning" onclick="editBook('${book.id}')">✏️</button>
-                        <button class="btn btn-sm btn-danger" onclick="deleteBook('${book.id}')">🗑️</button>
-                    </td>
-                </tr>
-            `).join('');
+            const fragment = document.createDocumentFragment();
+            
+            bookList.forEach(book => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `<td title="${book.ordinal || ''}">${book.ordinal || ''}</td><td title="${book.estante || ''}">${book.estante || ''}</td><td title="${book.apellido || ''}">${book.apellido || ''}</td><td title="${book.nombre || ''}">${book.nombre || ''}</td><td title="${book.titulo || ''}">${book.titulo || ''}</td><td title="${book.volumen || ''}">${book.volumen || ''}</td><td title="${book.tomo || ''}">${book.tomo || ''}</td><td title="${book.anio || ''}">${book.anio || ''}</td><td title="${book.encuadernado || ''}">${book.encuadernado || ''}</td><td title="${book.observaciones || ''}">${book.observaciones || ''}</td><td title="${book.ejemplares || ''}">${book.ejemplares || ''}</td><td><span class="badge-${book.estado}">${book.estado || ''}</span></td><td title="${book.isbn || ''}">${book.isbn || ''}</td><td class="action-btns"><button class="btn btn-sm btn-warning" onclick="editBook('${book.id}')">✏️</button><button class="btn btn-sm btn-danger" onclick="deleteBook('${book.id}')">🗑️</button></td>`;
+                fragment.appendChild(tr);
+            });
+            
+            tbody.innerHTML = '';
+            tbody.appendChild(fragment);
         }
 
         // EXPORTAR EXCEL
@@ -2212,7 +2204,8 @@
                     }
 
                     await saveToStorage();
-                    loadBooks();
+                    applyFilters();
+                    loadDashboard();
 
                     let message = `✅ ¡Importación exitosa!\n\n`;
                     message += `📚 ${importCount} libros importados\n`;

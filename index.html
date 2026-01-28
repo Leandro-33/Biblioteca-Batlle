@@ -1866,9 +1866,24 @@
             }
 
             await saveToStorage();
-            closeBookModal();
-            // Mantener la búsqueda y actualizar resultados
+            
+            // Limpiar caché para forzar nueva búsqueda
+            clearSearchCache();
+            
+            // Cerrar modal
+            const bookModal = document.getElementById('bookModal');
+            bookModal.classList.remove('show');
+            document.getElementById('bookForm').reset();
+            
+            // Actualizar panel de estante si está abierto
+            const currentEstante = document.getElementById('filterEstante').value;
+            if (currentEstante && document.getElementById('estantePanel').classList.contains('active')) {
+                updateEstantePanelBooks(currentEstante);
+            }
+            
+            // Aplicar filtros para mostrar cambios inmediatamente
             applyFilters();
+            
             // Actualizar dashboard sin bloquear
             requestAnimationFrame(() => {
                 loadDashboard();
@@ -2007,14 +2022,36 @@
                 
                 // Filtro de búsqueda - busca en múltiples campos
                 if (search) {
-                    // Verificar campos principales primero (más probable)
-                    if (b.titulo?.toLowerCase().includes(search)) return true;
-                    if (b.ordinal?.toString().includes(search)) return true;
-                    if (b.isbn?.toLowerCase().includes(search)) return true;
-                    if (b.apellido?.toLowerCase().includes(search)) return true;
-                    if (b.nombre?.toLowerCase().includes(search)) return true;
-                    if (b.estante?.toLowerCase().includes(search)) return true;
-                    return false;
+                    // Dividir búsqueda en palabras para búsqueda más flexible
+                    const searchWords = search.split(/\s+/).filter(w => w.length > 0);
+                    
+                    // Crear campos para búsqueda general
+                    const fullAuthor = `${b.apellido || ''} ${b.nombre || ''}`.toLowerCase();
+                    const titulo = b.titulo?.toLowerCase() || '';
+                    const ordinal = b.ordinal?.toString() || '';
+                    const isbn = b.isbn?.toLowerCase() || '';
+                    const estanteField = b.estante?.toLowerCase() || '';
+                    const volumen = b.volumen?.toLowerCase() || '';
+                    const tomo = b.tomo?.toString() || '';
+                    const anio = b.anio?.toString() || '';
+                    
+                    // Para cada palabra de búsqueda, verificar si existe en algún campo
+                    for (let word of searchWords) {
+                        const found = 
+                            titulo.includes(word) ||
+                            fullAuthor.includes(word) ||
+                            ordinal.includes(word) ||
+                            isbn.includes(word) ||
+                            estanteField.includes(word) ||
+                            volumen.includes(word) ||
+                            tomo.includes(word) ||
+                            anio.includes(word);
+                        
+                        if (!found) {
+                            return false; // Si alguna palabra no se encuentra, excluir el libro
+                        }
+                    }
+                    return true;
                 }
                 
                 return true;
@@ -2048,9 +2085,10 @@
             if (searchInput) {
                 searchInput.addEventListener('input', () => {
                     clearTimeout(searchTimeout);
+                    // Debounce más rápido para mejor respuesta en tiempo real
                     searchTimeout = setTimeout(() => {
                         applyFilters();
-                    }, 200); // Debounce de 200ms para mejor responsividad
+                    }, 100);
                 });
             }
             
@@ -2059,9 +2097,10 @@
             if (filterEstante) {
                 filterEstante.addEventListener('input', () => {
                     clearTimeout(filterTimeout);
+                    // Debounce más rápido para estantes
                     filterTimeout = setTimeout(() => {
                         applyFilters();
-                    }, 150); // Debounce más rápido para estantes
+                    }, 100);
                 });
             }
             

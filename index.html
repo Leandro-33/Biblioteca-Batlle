@@ -1652,6 +1652,7 @@
                 this.balanceBooks = [];
                 this.darkMode = false;
                 this.searchTimeout = null;
+                this.searchCache = new Map();
                 this.socket = null;
                 this.serverUrl = window.location.protocol === 'file:' ? 'http://localhost:3000' : window.location.origin;
                 
@@ -1714,6 +1715,7 @@
                     this.books.push(data.book);
                     this.saveBooks();
                     this.updateStats();
+                    this.searchCache = new Map(); // Clear search cache
                     this.renderBooks();
                 });
 
@@ -1723,6 +1725,7 @@
                     if (index !== -1) {
                         this.books[index] = { ...this.books[index], ...data.book };
                         this.saveBooks();
+                        this.searchCache = new Map(); // Clear search cache
                         this.updateStats();
                         this.renderBooks();
                     }
@@ -1733,6 +1736,7 @@
                     this.books = this.books.filter(b => b.id !== data.id);
                     this.saveBooks();
                     this.updateStats();
+                    this.searchCache = new Map(); // Clear search cache
                     this.renderBooks();
                 });
 
@@ -1740,6 +1744,7 @@
                     if (!Array.isArray(data?.books) || data.books.length === 0) return;
                     this.books = [...this.books, ...data.books];
                     this.saveBooks();
+                    this.searchCache = new Map(); // Clear search cache
                     this.updateStats();
                     this.renderBooks();
                 });
@@ -1943,6 +1948,7 @@
                 if (this.socket && this.socket.connected) {
                     this.socket.emit(this.editingBookId ? 'editBook' : 'addBook', { book: bookData });
                 }
+                this.searchCache = new Map(); // Clear search cache
                 this.renderBooks();
                 this.updateStats();
                 this.closeModal('bookModal');
@@ -1958,6 +1964,7 @@
                     if (this.socket && this.socket.connected) {
                         this.socket.emit('deleteBook', { id });
                     }
+                    this.searchCache = new Map(); // Clear search cache
                     this.renderBooks();
                     this.updateStats();
                     this.showAlert('✅ Libro eliminado', 'success');
@@ -1966,21 +1973,33 @@
 
             renderBooks() {
                 const bookList = document.getElementById('bookList');
-                const books = this.filteredBooks.length > 0 ? this.filteredBooks : this.books;
+                const hasSearch = document.getElementById('searchInput').value.trim() || document.getElementById('shelfFilter').value.trim();
+                const books = hasSearch ? this.filteredBooks : this.books;
                 
                 bookList.innerHTML = '';
 
                 if (books.length === 0) {
-                    bookList.innerHTML = `
-                        <div class="empty-state">
-                            <div class="empty-state-icon">📚</div>
-                            <div class="empty-state-title">${this.filteredBooks.length > 0 ? 'Libro no encontrado' : 'No hay libros'}</div>
-                            <div class="empty-state-text">${this.filteredBooks.length > 0 ? 'Intenta con otros términos de búsqueda' : 'Agrega el primer libro haciendo clic en "Nuevo Libro"'}</div>
-                        </div>
-                    `;
+                    if (hasSearch && this.filteredBooks.length === 0) {
+                        bookList.innerHTML = `
+                            <div class="empty-state">
+                                <div class="empty-state-icon">🔍</div>
+                                <div class="empty-state-title">Sin resultados</div>
+                                <div class="empty-state-text">No se encontraron libros que coincidan con tu búsqueda</div>
+                            </div>
+                        `;
+                    } else {
+                        bookList.innerHTML = `
+                            <div class="empty-state">
+                                <div class="empty-state-icon">📚</div>
+                                <div class="empty-state-title">No hay libros</div>
+                                <div class="empty-state-text">Agrega el primer libro haciendo clic en "Nuevo Libro"</div>
+                            </div>
+                        `;
+                    }
                     return;
                 }
 
+                const fragment = document.createDocumentFragment();
                 books.forEach((book) => {
                     const card = document.createElement('div');
                     card.className = 'book-card' + (book.loadedFromExcel ? ' imported-row' : '');
@@ -2032,8 +2051,9 @@
                         </div>
                     `;
                     card.onclick = () => card.classList.toggle('expanded');
-                    bookList.appendChild(card);
+                    fragment.appendChild(card);
                 });
+                bookList.appendChild(fragment);
             }
 
             editBookById(id) {
@@ -2068,27 +2088,68 @@
                 clearTimeout(this.searchTimeout);
                 this.searchTimeout = setTimeout(() => {
                     this.searchBooks();
-                }, 300);
+                }, 500);
             }
 
             searchBooks() {
-                const term = this.normalizeText(document.getElementById('searchInput').value.toLowerCase());
-                const shelf = this.normalizeText(document.getElementById('shelfFilter').value.toLowerCase());
+                const query = document.getElementById('searchInput').value.trim();
+                const shelf = document.getElementById('shelfFilter').value.trim();
+
+                if (!query && !shelf) {
+                    this.filteredBooks = [];
+                    this.renderBooks();
+                    return;
+                }
+
+                // Cache for performance
+                if (!this.searchCache) this.searchCache = new Map();
+
+                const cacheKey = `${query}|${shelf}`;
+                if (this.searchCache.has(cacheKey)) {
+                    this.filteredBooks = this.searchCache.get(cacheKey);
+                    this.renderBooks();
+                    return;
+                }
+
+                const queryWords = query.toLowerCase().split(/\s+/).filter(w => w.length > 0);
+                const normalizedShelf = this.normalizeText(shelf.toLowerCase());
 
                 this.filteredBooks = this.books.filter(b => {
-                    const shelfValue = this.normalizeText((b.shelf || '').toLowerCase());
-                    const matchesSearch = !term || 
-                        this.normalizeText((b.title || '').toLowerCase()).includes(term) ||
-                        this.normalizeText((b.authorLast || '').toLowerCase()).includes(term) ||
-                        this.normalizeText((b.authorFirst || '').toLowerCase()).includes(term) ||
-                        this.normalizeText((b.tomo || '').toLowerCase()).includes(term) ||
-                        this.normalizeText((b.volumen || '').toLowerCase()).includes(term) ||
-                        this.normalizeText((b.isbn || '').toLowerCase()).includes(term);
+                    // Exact shelf match if specified
+                    if (normalizedShelf && this.normalizeText((b.shelf || '').toLowerCase()) !== normalizedShelf) {
+                        return false;
+                    }
 
-                    const matchesShelf = !shelf || shelfValue.includes(shelf);
+                    if (!queryWords.length) return true;
 
-                    return matchesSearch && matchesShelf;
+                    // Search in all fields
+                    const searchableText = [
+                        b.title || '',
+                        b.authorLast || '',
+                        b.authorFirst || '',
+                        `${b.authorLast || ''} ${b.authorFirst || ''}`,
+                        `${b.authorFirst || ''} ${b.authorLast || ''}`,
+                        b.tomo || '',
+                        b.volumen || '',
+                        b.isbn || '',
+                        b.observations || ''
+                    ].join(' ').toLowerCase();
+
+                    const normalizedSearchable = this.normalizeText(searchableText);
+
+                    // Check if all query words are present
+                    return queryWords.every(word => 
+                        normalizedSearchable.includes(this.normalizeText(word))
+                    );
                 });
+
+                // Cache result
+                this.searchCache.set(cacheKey, [...this.filteredBooks]);
+                if (this.searchCache.size > 50) {
+                    // Limit cache size
+                    const firstKey = this.searchCache.keys().next().value;
+                    this.searchCache.delete(firstKey);
+                }
 
                 this.renderBooks();
             }

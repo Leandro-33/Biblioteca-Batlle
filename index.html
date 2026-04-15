@@ -1,0 +1,3345 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no">
+    <title>📚 Biblioteca Batlle - Sistema de Gestión</title>
+    <link href="https://fonts.googleapis.com/css?family=Poppins:400,500,600,700&display=swap" rel="stylesheet">
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+
+    <style>
+        :root {
+            --primary: #0EA5E9;
+            --primary-dark: #0284C7;
+            --secondary: #06B6D4;
+            --success: #10B981;
+            --warning: #F59E0B;
+            --danger: #EF4444;
+            --dark: #1F2937;
+            --gray: #6B7280;
+            --gray-light: #F3F4F6;
+            --border: #E5E7EB;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+            font-family: 'Poppins', sans-serif;
+            background: var(--gray-light);
+            overflow: hidden;
+        }
+
+        /* ===== LOGIN ===== */
+        .login-screen {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(135deg, #0E7490 0%, #06B6D4 100%);
+            padding: 20px;
+        }
+
+        .login-container {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 420px;
+            animation: slideUp 0.5s ease;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(40px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+        .login-header .logo {
+            font-size: 3em;
+            margin-bottom: 12px;
+        }
+
+        .login-header h1 {
+            font-size: 28px;
+            color: white;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .login-header p {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--dark);
+            font-size: 14px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s;
+            font-family: inherit;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #EF4444 0%, #DC2626 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 15px;
+            transition: all 0.3s;
+            margin-top: 10px;
+        }
+
+        .btn-login:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(99, 102, 241, 0.3);
+        }
+
+        .btn-login:active {
+            transform: scale(0.98);
+        }
+
+        .login-error {
+            color: var(--danger);
+            text-align: center;
+            font-size: 13px;
+            margin-top: 10px;
+            min-height: 18px;
+        }
+
+        /* ===== APP ===== */
+        .app {
+            display: none;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* ===== HEADER ===== */
+        .header {
+            background: white;
+            padding: 16px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+            z-index: 100;
+            flex-shrink: 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .menu-toggle {
+            background: var(--gray-light);
+            border: none;
+            color: var(--primary);
+            font-size: 20px;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 10px;
+            transition: all 0.3s;
+            min-width: 44px;
+            min-height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .menu-toggle:hover {
+            background: var(--border);
+        }
+
+        .header-title h1 {
+            font-size: 18px;
+            color: var(--dark);
+            font-weight: 700;
+            margin: 0;
+            margin-bottom: 2px;
+        }
+
+        .header-title p {
+            font-size: 14px;
+            color: var(--primary);
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .user-button {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 16px;
+            background: var(--gray-light);
+            border: none;
+            color: var(--dark);
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 13px;
+            min-height: 44px;
+            transition: all 0.3s;
+        }
+
+        .user-button:hover {
+            background: var(--border);
+        }
+
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 14px;
+        }
+
+        .user-dropdown {
+            position: fixed;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            width: 100%;
+            max-width: 300px;
+            background: white;
+            box-shadow: -4px 0 20px rgba(0, 0, 0, 0.12);
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+        }
+
+        .user-dropdown.show {
+            transform: translateX(0);
+        }
+
+        .dropdown-header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 20px;
+        }
+
+        .dropdown-header .user-name {
+            font-weight: 700;
+            font-size: 16px;
+            margin-bottom: 4px;
+        }
+
+        .dropdown-header .user-role {
+            font-size: 12px;
+            opacity: 0.9;
+        }
+
+        .dropdown-item {
+            padding: 14px 20px;
+            border-bottom: 1px solid var(--border);
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 14px;
+            min-height: 44px;
+        }
+
+        .dropdown-item:hover {
+            background: var(--gray-light);
+        }
+
+        .dropdown-item.danger {
+            color: var(--danger);
+        }
+
+        /* ===== SIDEBAR ===== */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 80px;
+            bottom: 0;
+            width: 280px;
+            background: white;
+            box-shadow: 4px 0 20px rgba(0, 0, 0, 0.1);
+            z-index: 99;
+            display: flex;
+            flex-direction: column;
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
+        }
+
+        .sidebar.open {
+            transform: translateX(0);
+        }
+
+        .sidebar-header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        .sidebar-header .logo {
+            font-size: 2em;
+            margin-bottom: 8px;
+        }
+
+        .sidebar-header h2 {
+            margin: 0;
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        .sidebar-stats {
+            padding: 20px 16px 16px 16px;
+            background: var(--gray-light);
+            border-bottom: 1px solid var(--border);
+            flex-shrink: 0;
+        }
+
+        .stats-box {
+            background: white;
+            border-radius: 12px;
+            padding: 14px;
+            border-left: 4px solid var(--primary);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            font-size: 13px;
+            padding: 6px 0;
+        }
+
+        .stat-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .stat-label {
+            color: var(--gray);
+            font-weight: 600;
+        }
+
+        .stat-value {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: 14px;
+        }
+
+        .stat-row.available .stat-value {
+            background: linear-gradient(135deg, var(--success) 0%, #059669 100%);
+        }
+
+        .stat-row.loaned .stat-value {
+            background: linear-gradient(135deg, var(--warning) 0%, #D97706 100%);
+        }
+
+        .stat-row.donated .stat-value {
+            background: linear-gradient(135deg, #06B6D4 0%, #0891B2 100%);
+        }
+
+        .sidebar-menu {
+            flex: 1;
+            padding: 8px 0;
+            list-style: none;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .menu-item {
+            padding: 0;
+            margin: 0;
+        }
+
+        .menu-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            color: var(--dark);
+            text-decoration: none;
+            cursor: pointer;
+            border-left: 4px solid transparent;
+            font-size: 14px;
+            font-weight: 500;
+            min-height: 44px;
+            transition: all 0.3s;
+        }
+
+        .menu-link:hover {
+            background: var(--gray-light);
+            border-left-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .menu-link.active {
+            background: #f0f4ff;
+            border-left-color: var(--primary);
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .menu-icon {
+            font-size: 18px;
+            width: 24px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        .sidebar-footer {
+            padding: 14px 16px;
+            border-top: 1px solid var(--border);
+            background: var(--gray-light);
+            font-size: 11px;
+            color: var(--gray);
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        .sidebar-overlay {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            display: none;
+            z-index: 98;
+        }
+
+        .sidebar-overlay.show {
+            display: block;
+        }
+
+        /* ===== MAIN ===== */
+        .main-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .content-area {
+            flex: 1;
+            background: var(--gray-light);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .content-header {
+            padding: 16px 20px;
+            background: white;
+            border-bottom: 1px solid var(--border);
+            flex-shrink: 0;
+        }
+
+        .content-header h2 {
+            margin: 0;
+            color: var(--dark);
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .content-body {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px 20px;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        /* ===== CONTROLES ===== */
+        .controls-panel {
+            background: white;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            border: 1px solid var(--border);
+        }
+
+        .controls-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .controls-row.balance-actions {
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+        }
+
+        .controls-row.balance-actions .btn {
+            padding: 10px 12px;
+            font-size: 12px;
+        }
+
+        .controls-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .btn {
+            padding: 11px 14px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.3s;
+            min-height: 42px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            white-space: nowrap;
+            font-family: inherit;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn:active {
+            transform: scale(0.96);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            box-shadow: 0 4px 12px rgba(14, 165, 233, 0.25);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, var(--success) 0%, #059669 100%);
+            color: white;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25);
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, var(--warning) 0%, #D97706 100%);
+            color: white;
+            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.25);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, var(--danger) 0%, #DC2626 100%);
+            color: white;
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.25);
+        }
+
+        .btn-info {
+            background: linear-gradient(135deg, #06B6D4 0%, #0891B2 100%);
+            color: white;
+            box-shadow: 0 4px 12px rgba(6, 182, 212, 0.25);
+        }
+
+        .search-container {
+            width: 100%;
+        }
+
+        .search-container input {
+            width: 100%;
+            padding: 11px 14px;
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            font-size: 13px;
+            font-family: inherit;
+            transition: all 0.3s;
+        }
+
+        .search-container input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+        }
+
+        .search-shelf {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .search-shelf input {
+            flex: 1;
+            padding: 11px 14px;
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            font-size: 13px;
+            font-family: inherit;
+        }
+
+        .search-shelf input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+        }
+
+        .search-shelf .shelf-filter {
+            flex: 0 0 150px;
+        }
+
+        .file-input-wrapper {
+            position: relative;
+            overflow: hidden;
+            width: 100%;
+            display: block;
+        }
+
+        .file-input-wrapper input[type=file] {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .file-input-label {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 11px 14px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 13px;
+            min-height: 42px;
+            white-space: nowrap;
+            gap: 6px;
+            transition: all 0.3s;
+            font-family: inherit;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .file-input-label:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+        }
+
+        .file-input-label:active {
+            transform: translateY(0);
+        }
+
+        .dark-mode {
+            background: #0f172a;
+            color: #e2e8f0;
+        }
+
+        .dark-mode .header,
+        .dark-mode .sidebar,
+        .dark-mode .content-header,
+        .dark-mode .controls-panel,
+        .dark-mode .book-card,
+        .dark-mode .modal-content,
+        .dark-mode .activity-popup,
+        .dark-mode .user-dropdown,
+        .dark-mode .stats-box,
+        .dark-mode .sidebar-footer,
+        .dark-mode .empty-state {
+            background: #111827;
+            color: #e2e8f0;
+            border-color: #374151;
+            box-shadow: 0 2px 10px rgba(15, 23, 42, 0.6);
+        }
+
+        .dark-mode .header {
+            box-shadow: 0 2px 20px rgba(15, 23, 42, 0.8);
+        }
+
+        .dark-mode .sidebar-menu .menu-link,
+        .dark-mode .sidebar-footer,
+        .dark-mode .book-card-title,
+        .dark-mode .book-card-author,
+        .dark-mode .book-detail,
+        .dark-mode .dropdown-item,
+        .dark-mode .empty-state-title,
+        .dark-mode .empty-state-text,
+        .dark-mode .stat-label,
+        .dark-mode .stat-value {
+            color: #e2e8f0;
+        }
+
+        .dark-mode .search-container input,
+        .dark-mode .search-shelf input,
+        .dark-mode .form-group input,
+        .dark-mode .form-group select,
+        .dark-mode .form-group textarea,
+        .dark-mode .file-input-label,
+        .dark-mode .book-card-actions .btn,
+        .dark-mode .user-button,
+        .dark-mode .search-shelf button,
+        .dark-mode .controls-row .btn {
+            background: #1f2937;
+            border-color: #374151;
+            color: #e2e8f0;
+        }
+
+        .dark-mode .btn-primary,
+        .dark-mode .btn-success,
+        .dark-mode .btn-danger,
+        .dark-mode .btn-warning,
+        .dark-mode .btn-info {
+            box-shadow: none;
+            color: #f8fafc;
+        }
+
+        .dark-mode .btn-primary {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+        }
+
+        .dark-mode .btn-success {
+            background: linear-gradient(135deg, var(--success) 0%, #059669 100%);
+        }
+
+        .dark-mode .btn-danger {
+            background: linear-gradient(135deg, var(--danger) 0%, #DC2626 100%);
+        }
+
+        .dark-mode .btn-warning {
+            background: linear-gradient(135deg, var(--warning) 0%, #D97706 100%);
+        }
+
+        .dark-mode .btn-info {
+            background: linear-gradient(135deg, #06B6D4 0%, #0891B2 100%);
+        }
+
+        .dark-mode .book-card:hover,
+        .dark-mode .card,
+        .dark-mode .stats-box,
+        .dark-mode .controls-panel,
+        .dark-mode .sidebar,
+        .dark-mode .content-header,
+        .dark-mode .modal-content,
+        .dark-mode .activity-popup,
+        .dark-mode .user-dropdown,
+        .dark-mode .sidebar-footer,
+        .dark-mode .empty-state {
+            box-shadow: 0 2px 14px rgba(15, 23, 42, 0.6);
+        }
+
+        .dropdown-header,
+        .activity-header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+        }
+
+        .dark-mode .sidebar-menu .menu-link:hover {
+            background: #1f2937;
+            border-left-color: #0EA5E9;
+            color: #7DD3FC;
+        }
+
+        .dark-mode .sidebar-menu .menu-link.active {
+            background: #1f2937;
+            border-left-color: #0EA5E9;
+            color: #7DD3FC;
+            font-weight: 600;
+        }
+
+        .dark-mode .sidebar-footer {
+            background: #111827;
+            color: #9ca3af;
+            border-top-color: #374151;
+        }
+
+        .dark-mode .header-title h1,
+        .dark-mode .header-title p,
+        .dark-mode .content-header h2,
+        .dark-mode .form-group label,
+        .dark-mode .modal-header h2,
+        .dark-mode .dropdown-item,
+        .dark-mode .empty-state-icon {
+            color: #e2e8f0;
+        }
+
+        .dark-mode .alert {
+            background: #1f2937;
+            color: #e2e8f0;
+            border-left-color: #0EA5E9;
+        }
+
+        .dark-mode .alert.success {
+            background: #052E16;
+            color: #D1FAE5;
+            border-left-color: #10B981;
+        }
+
+        .dark-mode .alert.error {
+            background: #7F1D1D;
+            color: #FEE2E2;
+            border-left-color: #EF4444;
+        }
+
+        .dark-mode .alert.warning {
+            background: #78350F;
+            color: #FEF3C7;
+            border-left-color: #F59E0B;
+        }
+
+        .dark-mode .file-input-wrapper input[type=file] {
+            opacity: 0;
+        }
+
+        /* ===== LIBRO LISTA ===== */
+        .book-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .book-card {
+            background: white;
+            padding: 14px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            border-left: 4px solid var(--primary);
+            cursor: pointer;
+            transition: all 0.3s;
+            min-height: 44px;
+            animation: slideInNew 0.3s ease;
+        }
+
+        @keyframes slideInNew {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .book-card:hover {
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .book-card.imported-row {
+            border-left-color: #10B981;
+            background: #ECFDF5;
+        }
+
+        .imported-badge {
+            display: inline-block;
+            margin-top: 6px;
+            margin-bottom: 8px;
+            padding: 4px 10px;
+            border-radius: 999px;
+            background: rgba(16, 185, 129, 0.12);
+            color: #047857;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .book-card:active {
+            transform: scale(0.98);
+        }
+
+        .book-card.expanded {
+            background: #f0f4ff;
+            border-left-color: var(--secondary);
+        }
+
+        .book-card-title {
+            font-weight: 700;
+            color: var(--dark);
+            font-size: 14px;
+            margin-bottom: 4px;
+        }
+
+        .book-card-author {
+            color: var(--gray);
+            font-size: 12px;
+            margin-bottom: 2px;
+        }
+
+        .book-card-details {
+            display: none;
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid var(--border);
+        }
+
+        .book-card.expanded .book-card-details {
+            display: block;
+        }
+
+        .book-detail {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            margin-bottom: 6px;
+            color: var(--dark);
+        }
+
+        .book-detail-label {
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .book-status-badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 600;
+            background: #D1FAE5;
+            color: #065F46;
+        }
+
+        .book-status-badge.prestado {
+            background: #FEF3C7;
+            color: #92400E;
+        }
+
+        .book-status-badge.donado {
+            background: #DBEAFE;
+            color: #0C4A6E;
+        }
+
+        .book-card-actions {
+            display: none;
+            margin-top: 10px;
+            display: flex;
+            gap: 6px;
+        }
+
+        .book-card.expanded .book-card-actions {
+            display: flex;
+        }
+
+        .btn-action {
+            flex: 1;
+            padding: 8px;
+            font-size: 11px;
+            min-height: auto;
+        }
+
+        /* ===== MODAL ===== */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: flex-end;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            background: white;
+            width: 100%;
+            max-height: 90vh;
+            border-radius: 20px 20px 0 0;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            animation: slideUpModal 0.3s ease;
+        }
+
+        @keyframes slideUpModal {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+        }
+
+        .modal-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            background: white;
+            z-index: 10;
+        }
+
+        .modal-header h2 {
+            margin: 0;
+            font-size: 18px;
+            color: var(--dark);
+            font-weight: 700;
+            flex: 1;
+        }
+
+        .close-btn {
+            background: var(--gray-light);
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            color: var(--gray);
+            padding: 8px;
+            border-radius: 10px;
+            min-width: 44px;
+            min-height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+
+        .close-btn:hover {
+            background: var(--border);
+        }
+
+        .modal-body {
+            padding: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--dark);
+            font-size: 13px;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            font-size: 14px;
+            font-family: inherit;
+            transition: all 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .form-actions .btn {
+            flex: 1;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            align-items: flex-end;
+        }
+
+        .form-row .form-group {
+            flex: 1;
+            min-width: 160px;
+        }
+
+        /* ===== ALERTAS ===== */
+        .alert {
+            padding: 12px 16px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            font-size: 13px;
+            display: none;
+            animation: slideDown 0.3s ease;
+            border-left: 4px solid;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .alert.show {
+            display: block;
+        }
+
+        .alert.success {
+            background: #D1FAE5;
+            color: #065F46;
+            border-left-color: #10B981;
+        }
+
+        .alert.error {
+            background: #FEE2E2;
+            color: #7F1D1D;
+            border-left-color: #EF4444;
+        }
+
+        .alert.warning {
+            background: #FEF3C7;
+            color: #92400E;
+            border-left-color: #F59E0B;
+        }
+
+        /* ===== ACTIVITY ===== */
+        .activity-popup {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            width: 100%;
+            max-height: 70vh;
+            background: white;
+            border-radius: 20px 20px 0 0;
+            display: none;
+            z-index: 500;
+            flex-direction: column;
+            animation: slideUpModal 0.3s ease;
+            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.12);
+        }
+
+        .activity-popup.show {
+            display: flex;
+        }
+
+        .activity-header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 16px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-radius: 20px 20px 0 0;
+            flex-shrink: 0;
+            min-height: 44px;
+        }
+
+        .activity-header h3 {
+            margin: 0;
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        .activity-close {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 8px;
+            min-width: 44px;
+            min-height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+
+        .activity-close:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .activity-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .activity-item {
+            background: var(--gray-light);
+            padding: 12px;
+            margin-bottom: 8px;
+            border-radius: 10px;
+            border-left: 4px solid var(--primary);
+            font-size: 13px;
+            animation: slideInNew 0.3s ease;
+        }
+
+        .activity-item.add {
+            border-left-color: var(--success);
+        }
+
+        .activity-item.delete {
+            border-left-color: var(--danger);
+        }
+
+        .activity-action {
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 2px;
+        }
+
+        .activity-time {
+            font-size: 11px;
+            color: var(--gray);
+        }
+
+        /* ===== VACIO ===== */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--gray);
+        }
+
+        .empty-state-icon {
+            font-size: 4em;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+
+        .empty-state-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 8px;
+        }
+
+        .empty-state-text {
+            font-size: 13px;
+            color: var(--gray);
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .controls-row {
+                grid-template-columns: 1fr;
+            }
+
+            .search-shelf {
+                flex-direction: column;
+            }
+
+            .search-shelf input {
+                width: 100%;
+            }
+
+            th, td {
+                padding: 10px 8px;
+                font-size: 12px;
+            }
+        }
+
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- ===== LOGIN ===== -->
+    <div id="loginScreen" class="login-screen">
+        <div class="login-container">
+            <div class="login-header">
+                <div class="logo">📚</div>
+                <h1>Biblioteca Batlle</h1>
+                <p>Sistema de Gestión</p>
+            </div>
+            <form id="loginForm" onsubmit="app.login(event)">
+                <div class="form-group">
+                    <label>Usuario</label>
+                    <input type="text" id="username" placeholder="Ingresa tu usuario" required autofocus>
+                </div>
+                <div class="form-group">
+                    <label>Contraseña</label>
+                    <input type="password" id="password" placeholder="Ingresa tu contraseña" required>
+                </div>
+                <button type="submit" class="btn-login">Iniciar Sesión</button>
+                <div id="loginError" class="login-error"></div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ===== APP ===== -->
+    <div id="app" class="app">
+        <!-- OVERLAY SIDEBAR -->
+        <div id="sidebarOverlay" class="sidebar-overlay" onclick="app.closeSidebar()"></div>
+
+        <!-- SIDEBAR -->
+        <div id="sidebar" class="sidebar">
+            <div class="sidebar-stats">
+                <div class="stats-box">
+                    <div class="stat-row total">
+                        <span class="stat-label">Total</span>
+                        <span class="stat-value" id="menuTotalBooks">0</span>
+                    </div>
+                    <div class="stat-row active">
+                        <span class="stat-label">En línea</span>
+                        <span class="stat-value" id="menuActiveUsers">0</span>
+                    </div>
+                    <div class="stat-row available">
+                        <span class="stat-label">Disponibles</span>
+                        <span class="stat-value" id="menuAvailableBooks">0</span>
+                    </div>
+                    <div class="stat-row loaned">
+                        <span class="stat-label">Prestados</span>
+                        <span class="stat-value" id="menuLoanedBooks">0</span>
+                    </div>
+                    <div class="stat-row donated">
+                        <span class="stat-label">Donados</span>
+                        <span class="stat-value" id="menuDonatedBooks">0</span>
+                    </div>
+                </div>
+            </div>
+
+            <ul class="sidebar-menu">
+                <li class="menu-item">
+                    <a class="menu-link active" onclick="app.showSection(event, 'books')">
+                        <span class="menu-icon">📚</span>
+                        <span>Libros</span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a class="menu-link" onclick="app.showSection(event, 'shelves')">
+                        <span class="menu-icon">🗂️</span>
+                        <span>Estantes</span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a class="menu-link" onclick="app.showSection(event, 'balance')">
+                        <span class="menu-icon">⚖️</span>
+                        <span>Balance</span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a class="menu-link" onclick="app.showSection(event, 'users')">
+                        <span class="menu-icon">👥</span>
+                        <span>Usuarios</span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a class="menu-link" onclick="app.showSection(event, 'settings')">
+                        <span class="menu-icon">⚙️</span>
+                        <span>Configuración</span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a class="menu-link" onclick="app.toggleActivity()">
+                        <span class="menu-icon">📡</span>
+                        <span>Actividad</span>
+                    </a>
+                </li>
+            </ul>
+
+            <div class="sidebar-footer">
+                <p>Biblioteca Batlle v6.1</p>
+            </div>
+        </div>
+
+        <!-- HEADER -->
+        <header class="header">
+            <div class="header-left">
+                <button class="menu-toggle" onclick="app.toggleSidebar()">☰</button>
+                <div class="header-title">
+                    <h1>Biblioteca Dr. Jorge Batlle</h1>
+                    <p id="headerSubtitle">📚 Libros</p>
+                </div>
+            </div>
+            <div>
+                <button class="user-button" onclick="app.toggleUserMenu()">
+                    <div class="user-avatar" id="userAvatar">A</div>
+                    <span id="userName">Admin</span>
+                </button>
+                <div id="userDropdown" class="user-dropdown">
+                    <div class="dropdown-header">
+                        <div class="user-name" id="dropdownUsername">Admin</div>
+                        <div class="user-role" id="dropdownRole">Administrador</div>
+                    </div>
+                    <div class="dropdown-item" onclick="app.showUserProfile()">👤 Mi Perfil</div>
+                    <div class="dropdown-item danger" onclick="app.logout()">🚪 Salir</div>
+                </div>
+            </div>
+        </header>
+
+        <!-- MAIN -->
+        <div class="main-container">
+            <div class="content-area">
+                <div class="content-header">
+                    <h2 id="sectionTitle">Gestión de Libros</h2>
+                </div>
+
+                <div class="content-body">
+                    <div id="alertContainer"></div>
+
+                    <!-- SECCIÓN: LIBROS -->
+                    <div id="booksSection" class="section-content">
+                        <div class="controls-panel">
+                            <div class="controls-row">
+                                <button class="btn btn-primary" onclick="app.openAddBookModal()">➕ Nuevo Libro</button>
+                                <button class="btn btn-success" onclick="app.exportToExcel()">📥 Exportar</button>
+                                <div class="file-input-wrapper">
+                                    <label for="excelFile" class="file-input-label">📤 Importar</label>
+                                    <input type="file" id="excelFile" accept=".xlsx,.xls,.csv" onchange="app.importFromExcel(event)">
+                                </div>
+                            </div>
+
+                            <div class="search-shelf">
+                                <input type="text" id="searchInput" placeholder="🔍 Buscar libro..." onkeyup="app.debounceSearch()">
+                                <input type="text" id="shelfFilter" class="shelf-filter" placeholder="Estante" onkeyup="app.debounceSearch()">
+                            </div>
+                        </div>
+
+                        <div class="book-list" id="bookList">
+                            <div class="empty-state">
+                                <div class="empty-state-icon">📚</div>
+                                <div class="empty-state-title">No hay libros</div>
+                                <div class="empty-state-text">Agrega el primer libro haciendo clic en "Nuevo Libro"</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- SECCIÓN: ESTANTES -->
+                    <div id="shelvesSection" class="section-content hidden">
+                        <div class="controls-panel">
+                            <div class="controls-row">
+                                <button class="btn btn-warning" onclick="app.generatePDFReportGeneral()">📄 Reporte General</button>
+                                <button class="btn btn-info" onclick="app.generatePDFReportByShelf()">📄 Reporte por Estante</button>
+                            </div>
+                            <div class="search-shelf">
+                                <input type="text" id="shelfInput" placeholder="Número de estante" oninput="app.searchShelf()" onkeydown="if(event.key === 'Enter'){ event.preventDefault(); app.searchShelf(); }">
+                                <button class="btn btn-primary" onclick="app.searchShelf()" style="flex: 0 0 auto;">🔍</button>
+                            </div>
+                        </div>
+                        <div id="shelfResults"></div>
+                    </div>
+
+                    <!-- SECCIÓN: BALANCE -->
+                    <div id="balanceSection" class="section-content hidden">
+                        <div class="controls-panel">
+                            <div class="controls-row balance-actions">
+                                <button class="btn btn-info" onclick="app.showBalanceState()">📊 Estado</button>
+                                <button class="btn btn-warning" onclick="app.generateBalancePDF()">📄 Informe</button>
+                                <button class="btn btn-success" onclick="app.finishBalance()">✅ Finalizar</button>
+                                <button class="btn btn-danger" onclick="app.resetBalance()">🔄 Resetear</button>
+                            </div>
+                            <div class="search-shelf">
+                                <input type="text" id="balanceShelfInput" placeholder="Estante" style="flex: 0 0 100px; max-width: 100px;" onkeydown="if(event.key === 'Enter'){ event.preventDefault(); app.startBalance(); }">
+                                <input type="text" id="balanceSearchInput" placeholder="Buscar título, autor o tomo..." style="flex: 1;" disabled oninput="app.filterBalanceBooks()" onkeydown="if(event.key === 'Enter'){ event.preventDefault(); app.filterBalanceBooks(); }">
+                                <button class="btn btn-primary" onclick="app.startBalance()" style="flex: 0 0 auto;">⚖️ Iniciar</button>
+                            </div>
+                        </div>
+                        <div id="balanceResults"></div>
+                    </div>
+
+                    <!-- SECCIÓN: USUARIOS -->
+                    <div id="usersSection" class="section-content hidden">
+                        <div class="controls-panel">
+                            <div class="controls-row">
+<button id="newUserButton" class="btn btn-primary" onclick="app.openAddUserModal()" style="grid-column: 1;">➕ Nuevo Usuario</button>
+                            </div>
+                        </div>
+                        <div id="usersList"></div>
+                    </div>
+
+                    <div id="settingsSection" class="section-content hidden">
+                        <div class="controls-panel">
+                            <div class="form-group">
+                                <label>Modo oscuro</label>
+                                <div style="display: flex; align-items: center; gap: 12px;">
+                                    <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                                        <input type="checkbox" id="darkModeToggle" onchange="app.toggleDarkMode()">
+                                        <span>Activar modo oscuro</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ACTIVITY POPUP -->
+    <div id="activityPopup" class="activity-popup">
+        <div class="activity-header">
+            <h3>📡 Actividad en Vivo</h3>
+            <button class="activity-close" onclick="app.toggleActivity()">×</button>
+        </div>
+        <div class="activity-list" id="activityList">
+            <div style="text-align: center; color: var(--gray); padding: 20px;">Esperando actividad...</div>
+        </div>
+    </div>
+
+    <!-- MODAL LIBRO -->
+    <div id="bookModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="bookModalTitle">Nuevo Libro</h2>
+                <button class="close-btn" onclick="app.closeModal('bookModal')">×</button>
+            </div>
+            <div class="modal-body">
+                <form id="bookForm" onsubmit="app.saveBook(event)">
+                    <div class="form-group">
+                        <label>Estante *</label>
+                        <input type="text" id="bookShelf" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Título *</label>
+                        <input type="text" id="bookTitle" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Apellido Autor *</label>
+                        <input type="text" id="bookAuthorLast" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Nombre Autor *</label>
+                        <input type="text" id="bookAuthorFirst" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Año</label>
+                        <div style="display: flex; gap: 8px; align-items: center;">
+                            <input type="number" id="bookYear" style="flex: 1;">
+                            <select id="bookYearOption" onchange="app.updateYearInputState()" style="width: 120px; font-size: 12px; padding: 10px;">
+                                <option value="">Especificar</option>
+                                <option value="no-especifica">No especifica</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Tomo</label>
+                            <input type="text" id="bookTomo">
+                        </div>
+                        <div class="form-group">
+                            <label>Volumen</label>
+                            <input type="text" id="bookVolumen">
+                        </div>
+                        <div class="form-group">
+                            <label>Ejemplares</label>
+                            <input type="number" id="bookExemplares" min="1" value="1">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>ISBN</label>
+                            <input type="text" id="bookISBN">
+                        </div>
+                        <div class="form-group">
+                            <label>Estado</label>
+                            <select id="bookStatus">
+                                <option value="Disponible">Disponible</option>
+                                <option value="Prestado">Prestado</option>
+                                <option value="Donado">Donado</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Encuadernado</label>
+                            <select id="bookEncuadernado">
+                                <option value="No">No</option>
+                                <option value="Si">Sí</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Observaciones</label>
+                        <textarea id="bookObservations" style="resize: vertical; min-height: 80px;"></textarea>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="btn" style="background: var(--gray-light); color: var(--dark);" onclick="app.closeModal('bookModal')">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">Guardar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL USUARIO -->
+    <div id="userModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="userModalTitle">Nuevo Usuario</h2>
+                <button class="close-btn" onclick="app.closeModal('userModal')">×</button>
+            </div>
+            <div class="modal-body">
+                <form id="userForm" onsubmit="app.saveUser(event)">
+                    <div class="form-group">
+                        <label>Usuario *</label>
+                        <input type="text" id="newUsername" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Contraseña <span id="passwordLabelText">*</span></label>
+                        <input type="password" id="newPassword" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Rol</label>
+                        <select id="newRole">
+                            <option value="Lector">Lector</option>
+                            <option value="Editor">Editor</option>
+                            <option value="Administrador">Administrador</option>
+                        </select>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="btn" style="background: var(--gray-light); color: var(--dark);" onclick="app.closeModal('userModal')">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">Guardar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        class App {
+            constructor() {
+                this.currentUser = null;
+                this.users = [];
+                this.books = [];
+                this.filteredBooks = [];
+                this.activityLog = [];
+                this.editingBookId = null;
+                this.balanceBooks = [];
+                this.darkMode = false;
+                this.searchTimeout = null;
+                this.socket = null;
+                this.serverUrl = window.location.protocol === 'file:' ? 'http://localhost:3000' : window.location.origin;
+                
+                this.loadUsers();
+                this.initSocket();
+                this.loadBooks();
+                this.loadBalanceSessions();
+                this.loadSettings();
+
+                this.balanceSearchQuery = '';
+                this.currentBalanceSessionId = null;
+
+                const yearOption = document.getElementById('bookYearOption');
+                if (yearOption) {
+                    yearOption.addEventListener('change', () => this.updateYearInputState());
+                }
+            }
+
+            updateYearInputState() {
+                const yearOption = document.getElementById('bookYearOption');
+                const yearInput = document.getElementById('bookYear');
+                if (!yearOption || !yearInput) return;
+
+                if (yearOption.value === 'no-especifica') {
+                    yearInput.value = '';
+                    yearInput.disabled = true;
+                    yearInput.style.opacity = '0.6';
+                } else {
+                    yearInput.disabled = false;
+                    yearInput.style.opacity = '';
+                }
+            }
+
+            initSocket() {
+                if (!window.io) return;
+                this.socket = io(this.serverUrl, { transports: ['websocket', 'polling'] });
+
+                this.socket.on('connect', () => {
+                    console.log('Socket conectado:', this.socket.id);
+                    if (this.currentUser) {
+                        this.socket.emit('userJoined', {
+                            userID: this.socket.id,
+                            username: this.currentUser.username,
+                            role: this.currentUser.role,
+                            joinedAt: new Date().toISOString()
+                        });
+                    }
+                });
+
+                this.socket.on('initialBooks', (books) => {
+                    this.books = Array.isArray(books) ? books : [];
+                    this.filteredBooks = [];
+                    this.saveBooks();
+                    this.updateStats();
+                    this.renderBooks();
+                });
+
+                this.socket.on('bookAdded', (data) => {
+                    if (!data?.book) return;
+                    this.books.push(data.book);
+                    this.saveBooks();
+                    this.updateStats();
+                    this.renderBooks();
+                });
+
+                this.socket.on('bookUpdated', (data) => {
+                    if (!data?.book) return;
+                    const index = this.books.findIndex(b => b.id === data.book.id);
+                    if (index !== -1) {
+                        this.books[index] = { ...this.books[index], ...data.book };
+                        this.saveBooks();
+                        this.updateStats();
+                        this.renderBooks();
+                    }
+                });
+
+                this.socket.on('bookDeleted', (data) => {
+                    if (!data?.id) return;
+                    this.books = this.books.filter(b => b.id !== data.id);
+                    this.saveBooks();
+                    this.updateStats();
+                    this.renderBooks();
+                });
+
+                this.socket.on('booksBulkAdded', (data) => {
+                    if (!Array.isArray(data?.books) || data.books.length === 0) return;
+                    this.books = [...this.books, ...data.books];
+                    this.saveBooks();
+                    this.updateStats();
+                    this.renderBooks();
+                });
+
+                this.socket.on('activeUsers', (data) => {
+                    const count = data && typeof data === 'object' ? Object.keys(data).length : 0;
+                    this.updateActiveUsersCount(count);
+                });
+
+                this.socket.on('disconnect', () => {
+                    console.warn('Socket desconectado');
+                    this.updateActiveUsersCount(0);
+                });
+            }
+
+            calculateStats() {
+                const total = this.books.reduce((sum, b) => sum + (parseInt(b.ejemplares) || 1), 0);
+                const donated = this.books.filter(b => b.status === 'Donado').reduce((sum, b) => sum + (parseInt(b.ejemplares) || 1), 0);
+                const loaned = this.books.filter(b => b.status === 'Prestado').reduce((sum, b) => sum + (parseInt(b.ejemplares) || 1), 0);
+                const available = total - (donated + loaned);
+
+                return { total, available, loaned, donated };
+            }
+
+            updateActiveUsersCount(count) {
+                document.getElementById('menuActiveUsers').textContent = count;
+            }
+
+            updateStats() {
+                const stats = this.calculateStats();
+                document.getElementById('menuTotalBooks').textContent = stats.total;
+                document.getElementById('menuAvailableBooks').textContent = stats.available;
+                document.getElementById('menuLoanedBooks').textContent = stats.loaned;
+                document.getElementById('menuDonatedBooks').textContent = stats.donated;
+            }
+
+            login(event) {
+                event.preventDefault();
+                const username = document.getElementById('username').value.trim();
+                const password = document.getElementById('password').value;
+
+                if (!username || !password) {
+                    document.getElementById('loginError').textContent = '❌ Completa todos los campos';
+                    return;
+                }
+
+                const user = this.users.find(u => u.username === username && u.password === password);
+
+                if (user) {
+                    this.currentUser = user;
+                    document.getElementById('loginScreen').style.display = 'none';
+                    document.getElementById('app').style.display = 'flex';
+                    
+                    document.getElementById('userAvatar').textContent = username.charAt(0).toUpperCase();
+                    document.getElementById('userName').textContent = username;
+                    document.getElementById('dropdownUsername').textContent = username;
+                    document.getElementById('dropdownRole').textContent = user.role;
+
+                    this.showAlert('✅ Bienvenido ' + username, 'success');
+                    if (this.socket && this.socket.connected) {
+                        this.socket.emit('userJoined', {
+                            userID: this.socket.id,
+                            username: username,
+                            role: user.role,
+                            joinedAt: new Date().toISOString()
+                        });
+                    }
+                    this.addActivity('login', `${username} inició sesión`);
+                    this.renderBooks();
+                    this.renderUsers();
+                    this.updateUserManagementAccess();
+                    this.updateStats();
+                } else {
+                    document.getElementById('loginError').textContent = '❌ Usuario o contraseña incorrectos';
+                }
+            }
+
+            logout() {
+                if (this.socket && this.socket.connected) {
+                    this.socket.emit('userLeft', { userID: this.socket.id });
+                }
+                this.addActivity('logout', `${this.currentUser.username} cerró sesión`);
+                this.currentUser = null;
+                document.getElementById('loginScreen').style.display = 'flex';
+                document.getElementById('app').style.display = 'none';
+                document.getElementById('username').value = '';
+                document.getElementById('password').value = '';
+                document.getElementById('loginError').textContent = '';
+                this.closeUserMenu();
+            }
+
+            toggleSidebar() {
+                document.getElementById('sidebar').classList.toggle('open');
+                document.getElementById('sidebarOverlay').classList.toggle('show');
+            }
+
+            closeSidebar() {
+                document.getElementById('sidebar').classList.remove('open');
+                document.getElementById('sidebarOverlay').classList.remove('show');
+            }
+
+            toggleUserMenu() {
+                document.getElementById('userDropdown').classList.toggle('show');
+            }
+
+            closeUserMenu() {
+                document.getElementById('userDropdown').classList.remove('show');
+            }
+
+            showSection(event, section) {
+                document.querySelectorAll('.section-content').forEach(el => el.classList.add('hidden'));
+                document.querySelectorAll('.menu-link').forEach(el => el.classList.remove('active'));
+
+                const sectionEl = document.getElementById(section + 'Section');
+                if (sectionEl) sectionEl.classList.remove('hidden');
+
+                const titles = {
+                    'books': '📚 Libros',
+                    'shelves': '🗂️ Estantes',
+                    'balance': '⚖️ Balance',
+                    'users': '👥 Usuarios',
+                    'settings': '⚙️ Configuración'
+                };
+
+                document.getElementById('headerSubtitle').textContent = titles[section] || section;
+                const sectionTitles = {
+                    'books': 'Gestión de Libros',
+                    'shelves': 'Consulta de Estantes',
+                    'balance': 'Balance de Inventario',
+                    'users': 'Gestión de Usuarios',
+                    'settings': 'Configuración'
+                };
+
+                document.getElementById('sectionTitle').textContent = sectionTitles[section] || section;
+
+                event?.target?.closest('.menu-link')?.classList.add('active');
+                this.closeSidebar();
+            }
+
+            toggleActivity() {
+                document.getElementById('activityPopup').classList.toggle('show');
+                this.closeSidebar();
+            }
+
+            // ===== LIBROS =====
+            openAddBookModal() {
+                this.editingBookId = null;
+                document.getElementById('bookModalTitle').textContent = '➕ Nuevo Libro';
+                document.getElementById('bookForm').reset();
+                const ejemplaresInput = document.getElementById('bookExemplares');
+                if (ejemplaresInput) ejemplaresInput.value = '1';
+                const yearOption = document.getElementById('bookYearOption');
+                if (yearOption) yearOption.value = '';
+                const observationsInput = document.getElementById('bookObservations');
+                if (observationsInput) observationsInput.value = '';
+                const encuadernado = document.getElementById('bookEncuadernado');
+                if (encuadernado) encuadernado.value = 'No';
+                this.updateYearInputState();
+                document.getElementById('bookModal').classList.add('show');
+            }
+
+            saveBook(event) {
+                event.preventDefault();
+
+                const bookData = {
+                    id: this.editingBookId || 'book_' + Date.now(),
+                    title: document.getElementById('bookTitle').value.trim(),
+                    authorLast: document.getElementById('bookAuthorLast').value.trim(),
+                    authorFirst: document.getElementById('bookAuthorFirst').value.trim(),
+                    shelf: document.getElementById('bookShelf').value.trim(),
+                    year: document.getElementById('bookYearOption').value === 'no-especifica' ? 'No especifica' : document.getElementById('bookYear').value.trim(),
+                    tomo: document.getElementById('bookTomo').value.trim(),
+                    volumen: document.getElementById('bookVolumen').value.trim(),
+                    isbn: document.getElementById('bookISBN').value.trim(),
+                    ejemplares: parseInt(document.getElementById('bookExemplares').value) || 1,
+                    status: document.getElementById('bookStatus').value,
+                    observations: document.getElementById('bookObservations').value.trim(),
+                    encuadernado: document.getElementById('bookEncuadernado').value,
+                    createdBy: this.currentUser.username,
+                    createdAt: new Date().toISOString()
+                };
+
+                // Validar campos obligatorios
+                if (!bookData.title || !bookData.authorLast || !bookData.authorFirst || !bookData.shelf) {
+                    this.showAlert('❌ Completa todos los campos obligatorios', 'error');
+                    return;
+                }
+
+                if (this.editingBookId) {
+                    const index = this.books.findIndex(b => b.id === this.editingBookId);
+                    if (index !== -1) {
+                        this.books[index] = { ...this.books[index], ...bookData };
+                        this.addActivity('edit', `Editó "${bookData.title}"`);
+                    }
+                } else {
+                    this.books.push(bookData);
+                    this.addActivity('add', `Agregó "${bookData.title}"`);
+                }
+
+                this.saveBooks();
+                if (this.socket && this.socket.connected) {
+                    this.socket.emit(this.editingBookId ? 'editBook' : 'addBook', { book: bookData });
+                }
+                this.renderBooks();
+                this.updateStats();
+                this.closeModal('bookModal');
+                this.showAlert('✅ Guardado correctamente', 'success');
+            }
+
+            deleteBook(id) {
+                if (confirm('¿Estás seguro de eliminar este libro?')) {
+                    const book = this.books.find(b => b.id === id);
+                    this.books = this.books.filter(b => b.id !== id);
+                    this.addActivity('delete', `Eliminó "${book.title}"`);
+                    this.saveBooks();
+                    if (this.socket && this.socket.connected) {
+                        this.socket.emit('deleteBook', { id });
+                    }
+                    this.renderBooks();
+                    this.updateStats();
+                    this.showAlert('✅ Libro eliminado', 'success');
+                }
+            }
+
+            renderBooks() {
+                const bookList = document.getElementById('bookList');
+                const books = this.filteredBooks.length > 0 ? this.filteredBooks : this.books;
+                
+                bookList.innerHTML = '';
+
+                if (books.length === 0) {
+                    bookList.innerHTML = `
+                        <div class="empty-state">
+                            <div class="empty-state-icon">📚</div>
+                            <div class="empty-state-title">${this.filteredBooks.length > 0 ? 'Libro no encontrado' : 'No hay libros'}</div>
+                            <div class="empty-state-text">${this.filteredBooks.length > 0 ? 'Intenta con otros términos de búsqueda' : 'Agrega el primer libro haciendo clic en "Nuevo Libro"'}</div>
+                        </div>
+                    `;
+                    return;
+                }
+
+                books.forEach((book) => {
+                    const card = document.createElement('div');
+                    card.className = 'book-card' + (book.loadedFromExcel ? ' imported-row' : '');
+                    card.innerHTML = `
+                        <div class="book-card-title">${book.title}</div>
+                        <div class="book-card-author">${book.authorLast}, ${book.authorFirst}</div>
+                        ${book.loadedFromExcel ? '<div class="imported-badge">Importado</div>' : ''}
+                        <div class="book-card-details">
+                            <div class="book-detail">
+                                <span class="book-detail-label">Estante:</span>
+                                <span>${book.shelf}</span>
+                            </div>
+                            <div class="book-detail">
+                                <span class="book-detail-label">Año:</span>
+                                <span>${book.year || '-'}</span>
+                            </div>
+                            ${book.tomo ? `<div class="book-detail">
+                                <span class="book-detail-label">Tomo:</span>
+                                <span>${book.tomo}</span>
+                            </div>` : ''}
+                            ${book.volumen ? `<div class="book-detail">
+                                <span class="book-detail-label">Volumen:</span>
+                                <span>${book.volumen}</span>
+                            </div>` : ''}
+                            ${book.isbn ? `<div class="book-detail">
+                                <span class="book-detail-label">ISBN:</span>
+                                <span>${book.isbn}</span>
+                            </div>` : ''}
+                            <div class="book-detail">
+                                <span class="book-detail-label">Ejemplares:</span>
+                                <span>${book.ejemplares || 1}</span>
+                            </div>
+                            <div class="book-detail">
+                                <span class="book-detail-label">Estado:</span>
+                                <span class="book-status-badge ${book.status === 'Disponible' ? '' : book.status === 'Prestado' ? 'prestado' : 'donado'}">${book.status}</span>
+                            </div>
+                            ${book.encuadernado ? `<div class="book-detail">
+                                <span class="book-detail-label">Encuadernado:</span>
+                                <span>${book.encuadernado}</span>
+                            </div>` : ''}
+                            ${book.observations ? `<div class="book-detail">
+                                <span class="book-detail-label">Observaciones:</span>
+                                <span>${book.observations}</span>
+                            </div>` : ''}
+                            <div class="book-card-actions">
+                                <button class="btn btn-primary btn-action" onclick="event.stopPropagation(); app.editBookById('${book.id}')">✏️ Editar</button>
+                                <button class="btn btn-danger btn-action" onclick="event.stopPropagation(); app.deleteBook('${book.id}')">🗑️ Borrar</button>
+                            </div>
+                        </div>
+                    `;
+                    card.onclick = () => card.classList.toggle('expanded');
+                    bookList.appendChild(card);
+                });
+            }
+
+            editBookById(id) {
+                const book = this.books.find(b => b.id === id);
+                if (book) {
+                    this.editingBookId = id;
+                    document.getElementById('bookModalTitle').textContent = '✏️ Editar Libro';
+                    document.getElementById('bookTitle').value = book.title;
+                    document.getElementById('bookAuthorLast').value = book.authorLast;
+                    document.getElementById('bookAuthorFirst').value = book.authorFirst;
+                    document.getElementById('bookShelf').value = book.shelf;
+                    if (book.year === 'No especifica') {
+                        document.getElementById('bookYear').value = '';
+                        document.getElementById('bookYearOption').value = 'no-especifica';
+                    } else {
+                        document.getElementById('bookYear').value = book.year;
+                        document.getElementById('bookYearOption').value = '';
+                    }
+                    this.updateYearInputState();
+                    document.getElementById('bookTomo').value = book.tomo || '';
+                    document.getElementById('bookVolumen').value = book.volumen || '';
+                    document.getElementById('bookISBN').value = book.isbn || '';
+                    document.getElementById('bookExemplares').value = book.ejemplares || 1;
+                    document.getElementById('bookStatus').value = book.status;
+                    document.getElementById('bookObservations').value = book.observations || '';
+                    document.getElementById('bookEncuadernado').value = book.encuadernado || 'No';
+                    document.getElementById('bookModal').classList.add('show');
+                }
+            }
+
+            debounceSearch() {
+                clearTimeout(this.searchTimeout);
+                this.searchTimeout = setTimeout(() => {
+                    this.searchBooks();
+                }, 300);
+            }
+
+            searchBooks() {
+                const term = this.normalizeText(document.getElementById('searchInput').value.toLowerCase());
+                const shelf = this.normalizeText(document.getElementById('shelfFilter').value.toLowerCase());
+
+                this.filteredBooks = this.books.filter(b => {
+                    const shelfValue = this.normalizeText((b.shelf || '').toLowerCase());
+                    const matchesSearch = !term || 
+                        this.normalizeText((b.title || '').toLowerCase()).includes(term) ||
+                        this.normalizeText((b.authorLast || '').toLowerCase()).includes(term) ||
+                        this.normalizeText((b.authorFirst || '').toLowerCase()).includes(term) ||
+                        this.normalizeText((b.tomo || '').toLowerCase()).includes(term) ||
+                        this.normalizeText((b.volumen || '').toLowerCase()).includes(term) ||
+                        this.normalizeText((b.isbn || '').toLowerCase()).includes(term);
+
+                    const matchesShelf = !shelf || shelfValue.includes(shelf);
+
+                    return matchesSearch && matchesShelf;
+                });
+
+                this.renderBooks();
+            }
+
+            normalizeText(text) {
+                return text.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/\s+/g, '');
+            }
+
+            exportToExcel() {
+                if (this.books.length === 0) {
+                    this.showAlert('⚠️ No hay libros para exportar', 'warning');
+                    return;
+                }
+
+                // Deshabilitar botón durante exportación
+                const exportBtn = document.querySelector('.btn-success');
+                const originalText = exportBtn.textContent;
+                exportBtn.textContent = '⏳ Exportando...';
+                exportBtn.disabled = true;
+                exportBtn.style.opacity = '0.6';
+
+                const data = this.books.map(book => ({
+                    'Estante': book.shelf,
+                    'Apellido': book.authorLast,
+                    'Nombre': book.authorFirst,
+                    'Título': book.title,
+                    'Año': book.year || '',
+                    'Tomo': book.tomo || '',
+                    'Volumen': book.volumen || '',
+                    'ISBN': book.isbn || '',
+                    'Ejemplares': book.ejemplares || 1,
+                    'Estado': book.status,
+                    'Observaciones': book.observations || '',
+                    'Encuadernado': book.encuadernado || ''
+                }));
+
+                try {
+                    const worksheet = XLSX.utils.json_to_sheet(data, { header: ['Estante', 'Apellido', 'Nombre', 'Título', 'Año', 'Tomo', 'Volumen', 'ISBN', 'Ejemplares', 'Estado', 'Observaciones', 'Encuadernado'] });
+                    const workbook = XLSX.utils.book_new();
+                    XLSX.utils.book_append_sheet(workbook, worksheet, 'Libros');
+
+                    const fileName = `Biblioteca_Dr_Jorge_Batlle_${new Date().toISOString().split('T')[0]}.xlsx`;
+                    XLSX.writeFile(workbook, fileName, { bookType: 'xlsx' });
+
+                    this.showAlert('✅ Exportado correctamente', 'success');
+                    this.addActivity('export', `Exportó ${this.books.length} libros`);
+                } catch (error) {
+                    this.showAlert('❌ Error al exportar', 'error');
+                    console.error(error);
+                } finally {
+                    // Restaurar botón
+                    exportBtn.textContent = originalText;
+                    exportBtn.disabled = false;
+                    exportBtn.style.opacity = '';
+                }
+            }
+
+            generatePDFReportByShelf() {
+                const shelfInput = document.getElementById('shelfInput').value.trim();
+                if (!shelfInput) {
+                    this.showAlert('⚠️ Ingresa un número de estante para generar el reporte', 'warning');
+                    return;
+                }
+
+                const shelfBooks = this.books.filter(book => book.shelf === shelfInput);
+                if (shelfBooks.length === 0) {
+                    this.showAlert('⚠️ No hay libros en este estante', 'warning');
+                    return;
+                }
+
+                this.generateShelfPDF(shelfBooks, shelfInput);
+            }
+
+            generatePDFReportGeneral() {
+                if (this.books.length === 0) {
+                    this.showAlert('⚠️ No hay libros para generar el reporte', 'warning');
+                    return;
+                }
+
+                // Deshabilitar botón durante generación
+                const reportBtn = document.querySelector('.btn-warning');
+                const originalText = reportBtn.textContent;
+                reportBtn.textContent = '⏳ Generando...';
+                reportBtn.disabled = true;
+                reportBtn.style.opacity = '0.6';
+
+                try {
+                    const { jsPDF } = window.jspdf;
+                    const doc = new jsPDF('p', 'mm', 'a4');
+                    
+                    // Configuración de márgenes reducidos para maximizar espacio
+                    const marginLeft = 15;
+                    const marginRight = 15;
+                    const marginTop = 25;
+                    const marginBottom = 15;
+                    const pageWidth = doc.internal.pageSize.getWidth();
+                    const pageHeight = doc.internal.pageSize.getHeight();
+                    const contentWidth = pageWidth - marginLeft - marginRight;
+                    
+                    // Título
+                    doc.setFontSize(20);
+                    doc.setFont('helvetica', 'bold');
+                    doc.text('Biblioteca Dr. Jorge Batlle', pageWidth / 2, marginTop, { align: 'center' });
+                    
+                    doc.setFontSize(12);
+                    doc.setFont('helvetica', 'normal');
+                    doc.text('Reporte General de Estantes', pageWidth / 2, marginTop + 8, { align: 'center' });
+                    
+                    // Fecha
+                    doc.setFontSize(9);
+                    doc.text(`Generado el: ${new Date().toLocaleDateString('es-ES')}`, pageWidth / 2, marginTop + 16, { align: 'center' });
+                    
+                    // Ordenar libros por estante y luego alfabéticamente por autor
+                    const sortedBooks = [...this.books].sort((a, b) => {
+                        // Primero por estante
+                        if (a.shelf !== b.shelf) {
+                            return a.shelf.localeCompare(b.shelf);
+                        }
+                        // Luego por autor
+                        const authorA = `${a.authorLast} ${a.authorFirst}`.toLowerCase();
+                        const authorB = `${b.authorLast} ${b.authorFirst}`.toLowerCase();
+                        return authorA.localeCompare(authorB);
+                    });
+                    
+                    // Preparar datos para la tabla con estante incluido
+                    const tableData = sortedBooks.map(book => [
+                        book.shelf,
+                        book.authorLast,
+                        book.authorFirst,
+                        book.title,
+                        book.year || '-'
+                    ]);
+                    
+                    // Generar tabla optimizada para A4
+                    doc.autoTable({
+                        head: [['Estante', 'Apellido', 'Nombre', 'Título', 'Año']],
+                        body: tableData,
+                        startY: marginTop + 25,
+                        margin: { left: marginLeft, right: marginRight },
+                        styles: {
+                            fontSize: 8,
+                            cellPadding: 2,
+                        },
+                        headStyles: {
+                            fillColor: [99, 102, 241], // Color primario
+                            textColor: 255,
+                            fontStyle: 'bold',
+                            fontSize: 9,
+                        },
+                        alternateRowStyles: {
+                            fillColor: [248, 250, 252], // Color gris claro
+                        },
+                        columnStyles: {
+                            0: { cellWidth: contentWidth * 0.12 }, // Estante
+                            1: { cellWidth: contentWidth * 0.23 }, // Apellido
+                            2: { cellWidth: contentWidth * 0.23 }, // Nombre
+                            3: { cellWidth: contentWidth * 0.32 }, // Título
+                            4: { cellWidth: contentWidth * 0.10 }, // Año
+                        },
+                        didDrawPage: function(data) {
+                            // Pie de página se agregará después de generar la tabla
+                        }
+                    });
+                    
+                    // Agregar numeración de páginas después de generar la tabla
+                    const totalPages = doc.internal.getNumberOfPages();
+                    for (let i = 1; i <= totalPages; i++) {
+                        doc.setPage(i);
+                        doc.setFontSize(7);
+                        doc.text(`Página ${i} de ${totalPages}`, pageWidth / 2, pageHeight - 8, { align: 'center' });
+                    }
+                    
+                    // Guardar PDF
+                    const fileName = `Reporte_General_Biblioteca_${new Date().toISOString().split('T')[0]}.pdf`;
+                    doc.save(fileName);
+                    
+                    this.showAlert('✅ Reporte general PDF generado correctamente', 'success');
+                    this.addActivity('report', `Generó reporte general PDF con ${this.books.length} libros`);
+                    
+                } catch (error) {
+                    this.showAlert('❌ Error al generar el reporte PDF', 'error');
+                    console.error(error);
+                } finally {
+                    // Restaurar botón
+                    reportBtn.textContent = originalText;
+                    reportBtn.disabled = false;
+                    reportBtn.style.opacity = '';
+                }
+            }
+
+            generateShelfPDF(books, shelfNumber) {
+                // Deshabilitar botón durante generación
+                const reportBtn = document.querySelector('.btn-info');
+                const originalText = reportBtn.textContent;
+                reportBtn.textContent = '⏳ Generando...';
+                reportBtn.disabled = true;
+                reportBtn.style.opacity = '0.6';
+
+                try {
+                    const { jsPDF } = window.jspdf;
+                    const doc = new jsPDF('p', 'mm', 'a4');
+                    
+                    // Configuración de márgenes reducidos para maximizar espacio
+                    const marginLeft = 15;
+                    const marginRight = 15;
+                    const marginTop = 25;
+                    const marginBottom = 15;
+                    const pageWidth = doc.internal.pageSize.getWidth();
+                    const pageHeight = doc.internal.pageSize.getHeight();
+                    const contentWidth = pageWidth - marginLeft - marginRight;
+                    
+                    // Título
+                    doc.setFontSize(20);
+                    doc.setFont('helvetica', 'bold');
+                    doc.text('Biblioteca Dr. Jorge Batlle', pageWidth / 2, marginTop, { align: 'center' });
+                    
+                    // Identificación del estante centrada
+                    doc.setFontSize(16);
+                    doc.setFont('helvetica', 'bold');
+                    doc.text(`Estante ${shelfNumber}`, pageWidth / 2, marginTop + 12, { align: 'center' });
+                    
+                    // Fecha
+                    doc.setFontSize(9);
+                    doc.setFont('helvetica', 'normal');
+                    doc.text(`Generado el: ${new Date().toLocaleDateString('es-ES')}`, pageWidth / 2, marginTop + 22, { align: 'center' });
+                    
+                    // Ordenar libros alfabéticamente por apellido del autor
+                    const sortedBooks = [...books].sort((a, b) => {
+                        const authorA = `${a.authorLast} ${a.authorFirst}`.toLowerCase();
+                        const authorB = `${b.authorLast} ${b.authorFirst}`.toLowerCase();
+                        return authorA.localeCompare(authorB);
+                    });
+                    
+                    // Preparar datos para la tabla (sin columna de estante ya que es específico)
+                    const tableData = sortedBooks.map(book => [
+                        book.authorLast,
+                        book.authorFirst,
+                        book.title,
+                        book.year || '-'
+                    ]);
+                    
+                    // Generar tabla optimizada para A4
+                    doc.autoTable({
+                        head: [['Apellido', 'Nombre', 'Título', 'Año']],
+                        body: tableData,
+                        startY: marginTop + 30,
+                        margin: { left: marginLeft, right: marginRight },
+                        styles: {
+                            fontSize: 9,
+                            cellPadding: 3,
+                        },
+                        headStyles: {
+                            fillColor: [99, 102, 241], // Color primario
+                            textColor: 255,
+                            fontStyle: 'bold',
+                            fontSize: 10,
+                        },
+                        alternateRowStyles: {
+                            fillColor: [248, 250, 252], // Color gris claro
+                        },
+                        columnStyles: {
+                            0: { cellWidth: contentWidth * 0.25 }, // Apellido
+                            1: { cellWidth: contentWidth * 0.25 }, // Nombre
+                            2: { cellWidth: contentWidth * 0.35 }, // Título
+                            3: { cellWidth: contentWidth * 0.15 }, // Año
+                        },
+                        didDrawPage: function(data) {
+                            // Pie de página se agregará después de generar la tabla
+                        }
+                    });
+                    
+                    // Agregar numeración de páginas después de generar la tabla
+                    const totalPages = doc.internal.getNumberOfPages();
+                    for (let i = 1; i <= totalPages; i++) {
+                        doc.setPage(i);
+                        doc.setFontSize(7);
+                        doc.text(`Página ${i} de ${totalPages}`, pageWidth / 2, pageHeight - 8, { align: 'center' });
+                    }
+                    
+                    // Guardar PDF
+                    const fileName = `Reporte_Estante_${shelfNumber}_Biblioteca_${new Date().toISOString().split('T')[0]}.pdf`;
+                    doc.save(fileName);
+                    
+                    this.showAlert(`✅ Reporte PDF del estante ${shelfNumber} generado correctamente`, 'success');
+                    this.addActivity('report', `Generó reporte PDF del estante ${shelfNumber} con ${books.length} libros`);
+                    
+                } catch (error) {
+                    this.showAlert('❌ Error al generar el reporte PDF', 'error');
+                    console.error(error);
+                } finally {
+                    // Restaurar botón
+                    reportBtn.textContent = originalText;
+                    reportBtn.disabled = false;
+                    reportBtn.style.opacity = '';
+                }
+            }
+
+            importFromExcel(event) {
+                const file = event.target.files[0];
+                if (!file) return;
+
+                const importLabel = document.querySelector('.file-input-label');
+                const originalLabel = importLabel ? importLabel.textContent : '📤 Importar';
+                if (importLabel) {
+                    importLabel.textContent = '⏳ Importando...';
+                    importLabel.style.pointerEvents = 'none';
+                    importLabel.style.opacity = '0.6';
+                }
+
+                const resetImportState = () => {
+                    event.target.value = '';
+                    if (importLabel) {
+                        importLabel.textContent = originalLabel;
+                        importLabel.style.pointerEvents = '';
+                        importLabel.style.opacity = '';
+                    }
+                };
+
+                const parseWorksheet = (worksheet) => {
+                    if (!worksheet) return null;
+                    const rawRows = XLSX.utils.sheet_to_json(worksheet, { raw: false, defval: '' });
+                    if (!Array.isArray(rawRows) || rawRows.length === 0) return null;
+
+                    const normalizeKey = (value) => {
+                        const text = value == null ? '' : value.toString().replace(/^\uFEFF/, '').trim();
+                        return text.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+                    };
+
+                    const normalizedKeyMap = Object.keys(rawRows[0] || {}).reduce((map, key) => {
+                        map[normalizeKey(key)] = key;
+                        return map;
+                    }, {});
+
+                    const findKey = (names) => {
+                        return names
+                            .map(normalizeKey)
+                            .find(normalizedKey => normalizedKey && normalizedKeyMap[normalizedKey]);
+                    };
+
+                    const keyNames = {
+                        shelf: findKey(['Estante', 'estante']),
+                        authorLast: findKey(['Apellido', 'apellido']),
+                        authorFirst: findKey(['Nombre', 'nombre']),
+                        title: findKey(['Título', 'Titulo', 'titulo', 'título']),
+                        year: findKey(['Año', 'Ano', 'ano']),
+                        tomo: findKey(['Tomo', 'tomo']),
+                        volumen: findKey(['Volumen', 'volumen']),
+                        isbn: findKey(['ISBN', 'isbn']),
+                        ejemplares: findKey(['Ejemplares', 'ejemplares']),
+                        status: findKey(['Estado', 'estado'])
+                    };
+
+                    if (!keyNames.shelf || !keyNames.authorLast || !keyNames.authorFirst || !keyNames.title) {
+                        return null;
+                    }
+
+                    const getRowValue = (row, key) => {
+                        if (!key || row[key] == null) return '';
+                        return row[key].toString().trim();
+                    };
+
+                    const books = [];
+                    const errors = [];
+
+                    rawRows.forEach((row, rowIndex) => {
+                        const shelf = getRowValue(row, normalizedKeyMap[normalizeKey(keyNames.shelf)]);
+                        const authorLast = getRowValue(row, normalizedKeyMap[normalizeKey(keyNames.authorLast)]);
+                        const authorFirst = getRowValue(row, normalizedKeyMap[normalizeKey(keyNames.authorFirst)]);
+                        const title = getRowValue(row, normalizedKeyMap[normalizeKey(keyNames.title)]);
+                        const year = getRowValue(row, normalizedKeyMap[normalizeKey(keyNames.year)]);
+                        const tomo = getRowValue(row, normalizedKeyMap[normalizeKey(keyNames.tomo)]);
+                        const volumen = getRowValue(row, normalizedKeyMap[normalizeKey(keyNames.volumen)]);
+                        const isbn = getRowValue(row, normalizedKeyMap[normalizeKey(keyNames.isbn)]);
+                        const ejemplares = parseInt(getRowValue(row, normalizedKeyMap[normalizeKey(keyNames.ejemplares)]) || '1', 10) || 1;
+                        const status = getRowValue(row, normalizedKeyMap[normalizeKey(keyNames.status)]) || 'Disponible';
+
+                        if (!shelf || !authorLast || !authorFirst || !title) {
+                            errors.push(`Fila ${rowIndex + 2}: faltan datos obligatorios`);
+                            return;
+                        }
+
+                        const duplicate = books.some(b =>
+                            b.shelf.toLowerCase() === shelf.toLowerCase() &&
+                            b.authorLast.toLowerCase() === authorLast.toLowerCase() &&
+                            b.authorFirst.toLowerCase() === authorFirst.toLowerCase() &&
+                            b.title.toLowerCase() === title.toLowerCase()
+                        );
+
+                        if (duplicate) {
+                            errors.push(`Fila ${rowIndex + 2}: libro duplicado en el archivo`);
+                            return;
+                        }
+
+                        books.push({
+                            id: 'book_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9),
+                            shelf,
+                            authorLast,
+                            authorFirst,
+                            title,
+                            year,
+                            tomo,
+                            volumen,
+                            isbn,
+                            ejemplares,
+                            status,
+                            loadedFromExcel: true,
+                            createdBy: this.currentUser ? this.currentUser.username : 'Importado',
+                            createdAt: new Date().toISOString()
+                        });
+                    });
+
+                    return { books, errors };
+                };
+
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    try {
+                        const rawData = e.target.result;
+                        let workbook;
+
+                        try {
+                            workbook = XLSX.read(rawData, { type: 'array' });
+                        } catch (arrayError) {
+                            try {
+                                const binary = Array.from(new Uint8Array(rawData), (byte) => String.fromCharCode(byte)).join('');
+                                workbook = XLSX.read(binary, { type: 'binary' });
+                            } catch (binaryError) {
+                                throw new Error('No se pudo leer el archivo Excel');
+                            }
+                        }
+
+                        const firstSheetName = workbook.SheetNames[0];
+                        if (!firstSheetName) {
+                            throw new Error('El archivo no contiene hojas válidas');
+                        }
+
+                        const worksheet = workbook.Sheets[firstSheetName];
+                        const result = parseWorksheet(worksheet);
+                        if (!result) {
+                            this.showAlert('❌ El archivo no tiene las columnas esperadas: Estante, Apellido, Nombre, Título', 'error');
+                            resetImportState();
+                            return;
+                        }
+
+                        if (result.books.length === 0) {
+                            const message = result.errors.length > 0
+                                ? `No se importaron libros. ${result.errors.slice(0, 3).join('. ')}`
+                                : 'No se importaron libros. El archivo no incluye filas válidas.';
+                            this.showAlert(`⚠️ ${message}`, 'warning');
+                            resetImportState();
+                            return;
+                        }
+
+                        this.books = [...this.books, ...result.books];
+                        this.filteredBooks = [];
+                        const searchInput = document.getElementById('searchInput');
+                        const shelfInput = document.getElementById('shelfFilter');
+                        if (searchInput) searchInput.value = '';
+                        if (shelfInput) shelfInput.value = '';
+
+                        const importedCopies = result.books.reduce((sum, book) => sum + ((parseInt(book.ejemplares, 10) || 1)), 0);
+
+                        if (this.socket && this.socket.connected) {
+                            this.socket.emit('bulkAddBooks', { books: result.books });
+                        }
+
+                        this.saveBooks();
+                        this.renderBooks();
+                        this.updateStats();
+                        this.showAlert(`✅ Se cargaron ${importedCopies} ejemplares desde el Excel. ${result.errors.length > 0 ? `${result.errors.length} filas omitidas.` : ''}`, 'success');
+                        this.addActivity('import', `Importó ${importedCopies} ejemplares desde Excel`);
+                    } catch (error) {
+                        this.showAlert(`❌ Error al importar: ${error.message}`, 'error');
+                        console.error(error);
+                    } finally {
+                        resetImportState();
+                    }
+                };
+
+                reader.onerror = () => {
+                    this.showAlert('❌ No se pudo leer el archivo. Intenta con otro archivo Excel.', 'error');
+                    resetImportState();
+                };
+
+                reader.readAsArrayBuffer(file);
+            }
+
+            searchShelf() {
+                const shelfInput = document.getElementById('shelfInput').value.trim();
+                const shelf = this.normalizeText(shelfInput.toLowerCase());
+                const results = document.getElementById('shelfResults');
+
+                if (!shelf) {
+                    results.innerHTML = '';
+                    return;
+                }
+
+                const books = this.books.filter(b => this.normalizeText((b.shelf || '').toLowerCase()) === shelf);
+
+                if (books.length === 0) {
+                    results.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📭</div><div class="empty-state-title">No hay libros</div><div class="empty-state-text">Este estante está vacío</div></div>';
+                    return;
+                }
+
+                let html = `<div style="background: white; border-radius: 12px; padding: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); border: 1px solid #e5e7eb;"><h3 style="color: var(--dark); margin-bottom: 12px; font-size: 16px; font-weight: 700;">Estante ${shelf} (${books.length})</h3><ul style="padding-left: 20px;">`;
+                books.forEach(book => {
+                    html += `<li style="margin-bottom: 10px;"><strong style="color: var(--dark);">${book.title}</strong><br><span style="font-size: 12px; color: var(--gray);">${book.authorLast}, ${book.authorFirst} • ${book.ejemplares || 1} ej.</span></li>`;
+                });
+                html += '</ul></div>';
+                results.innerHTML = html;
+            }
+
+            startBalance() {
+                const shelf = document.getElementById('balanceShelfInput').value.trim();
+                if (!shelf) {
+                    this.showAlert('Ingresa un número de estante', 'warning');
+                    return;
+                }
+
+                this.balanceBooks = this.books.filter(b => b.shelf === shelf).map((b, index) => ({ book: b, present: false, index }));
+                this.balanceSearchQuery = '';
+                this.currentBalanceShelf = shelf;
+                const duplicateCount = this.countDuplicateBooks(this.balanceBooks.map(item => item.book));
+                const existingSession = this.balanceSessions.find(s => s.shelf === shelf && s.status === 'started');
+                if (existingSession) {
+                    this.currentBalanceSessionId = existingSession.id;
+                    existingSession.totalBooks = this.balanceBooks.length;
+                    existingSession.duplicateCount = duplicateCount;
+                    this.saveBalanceSessions();
+                } else {
+                    this.currentBalanceSessionId = 'balance_' + Date.now();
+                    this.balanceSessions.push({
+                        id: this.currentBalanceSessionId,
+                        shelf: shelf,
+                        status: 'started',
+                        startedAt: new Date().toISOString(),
+                        finishedAt: null,
+                        totalBooks: this.balanceBooks.length,
+                        presentCount: 0,
+                        missingCount: 0,
+                        duplicateCount: duplicateCount
+                    });
+                    this.saveBalanceSessions();
+                }
+                const searchInput = document.getElementById('balanceSearchInput');
+                if (searchInput) {
+                    searchInput.value = '';
+                    searchInput.disabled = false;
+                }
+
+                if (this.balanceBooks.length === 0) {
+                    document.getElementById('balanceResults').innerHTML = '<div class="empty-state"><div class="empty-state-icon">📭</div><div class="empty-state-title">No hay libros</div></div>';
+                    return;
+                }
+
+                this.renderBalanceResults(this.balanceBooks, shelf);
+            }
+
+            filterBalanceBooks() {
+                if (!this.balanceBooks || this.balanceBooks.length === 0) {
+                    return;
+                }
+                const query = this.normalizeText(document.getElementById('balanceSearchInput').value.trim().toLowerCase());
+                const shelf = document.getElementById('balanceShelfInput').value.trim();
+                this.balanceSearchQuery = query;
+                if (!query) {
+                    this.renderBalanceResults(this.balanceBooks, shelf);
+                    return;
+                }
+
+                const filtered = this.balanceBooks.filter(item => {
+                    const book = item.book;
+                    return this.normalizeText((book.title || '').toLowerCase()).includes(query) ||
+                        this.normalizeText((book.authorLast || '').toLowerCase()).includes(query) ||
+                        this.normalizeText((book.authorFirst || '').toLowerCase()).includes(query) ||
+                        this.normalizeText((book.tomo || '').toLowerCase()).includes(query) ||
+                        this.normalizeText((book.volumen || '').toLowerCase()).includes(query) ||
+                        this.normalizeText((book.isbn || '').toLowerCase()).includes(query);
+                });
+
+                this.renderBalanceResults(filtered, shelf, query);
+            }
+
+            finishBalance() {
+                if (!this.currentBalanceSessionId || !this.balanceBooks || this.balanceBooks.length === 0) {
+                    this.showAlert('⚠️ Inicia un balance antes de finalizarlo', 'warning');
+                    return;
+                }
+
+                const presentBooks = this.balanceBooks.filter(item => item.present).length;
+                const missingBooks = this.balanceBooks.length - presentBooks;
+                const duplicateCount = this.countDuplicateBooks(this.balanceBooks.map(item => item.book));
+                const session = this.balanceSessions.find(s => s.id === this.currentBalanceSessionId);
+                if (!session) {
+                    this.showAlert('❌ No se encontró la sesión de balance actual', 'error');
+                    return;
+                }
+
+                session.presentCount = presentBooks;
+                session.missingCount = missingBooks;
+                session.duplicateCount = duplicateCount;
+                session.status = 'finalizado';
+                session.finishedAt = new Date().toISOString();
+                this.saveBalanceSessions();
+
+                this.showAlert('✅ Balance finalizado', 'success');
+                const shelf = document.getElementById('balanceShelfInput').value.trim();
+                if (this.balanceSearchQuery) {
+                    this.filterBalanceBooks();
+                } else {
+                    this.renderBalanceResults(this.balanceBooks, shelf);
+                }
+            }
+
+            resetBalance() {
+                this.balanceBooks = [];
+                this.currentBalanceShelf = null;
+                this.currentBalanceSessionId = null;
+                this.balanceSearchQuery = '';
+                const searchInput = document.getElementById('balanceSearchInput');
+                if (searchInput) {
+                    searchInput.value = '';
+                    searchInput.disabled = true;
+                }
+                const shelfInput = document.getElementById('balanceShelfInput');
+                if (shelfInput) {
+                    shelfInput.value = '';
+                }
+                document.getElementById('balanceResults').innerHTML = '';
+                this.showAlert('🔄 Balance reseteado', 'success');
+            }
+
+            showBalanceState() {
+                const sessions = this.balanceSessions;
+                const startedCount = sessions.length;
+                const notFinalized = sessions.filter(s => s.status === 'started');
+                const finalized = sessions.filter(s => s.status === 'finalizado');
+                const totalMissing = finalized.reduce((sum, s) => sum + (s.missingCount || 0), 0);
+                const totalDuplicates = finalized.reduce((sum, s) => sum + (s.duplicateCount || 0), 0);
+
+                const results = document.getElementById('balanceResults');
+                let html = `<div style="background: white; border-radius: 12px; padding: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); border: 1px solid #e5e7eb;">
+                    <h3 style="color: var(--dark); margin-bottom: 12px; font-size: 16px; font-weight: 700;">Estado de Balance</h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-bottom: 16px;">
+                        <div style="background: #e0e7ff; padding: 12px; border-radius: 12px; text-align: center;"><div style="font-size: 20px; font-weight: 700; color: var(--primary);">${startedCount}</div><div style="font-size: 12px; color: var(--gray);">Estantes iniciados</div></div>
+                        <div style="background: #fde68a; padding: 12px; border-radius: 12px; text-align: center;"><div style="font-size: 20px; font-weight: 700; color: #c2410c;">${notFinalized.length}</div><div style="font-size: 12px; color: var(--gray);">No finalizados</div></div>
+                        <div style="background: #D1FAE5; padding: 12px; border-radius: 12px; text-align: center;"><div style="font-size: 20px; font-weight: 700; color: #065F46;">${totalMissing}</div><div style="font-size: 12px; color: var(--gray);">Total faltantes</div></div>
+                        <div style="background: #fee2e2; padding: 12px; border-radius: 12px; text-align: center;"><div style="font-size: 20px; font-weight: 700; color: #991b1b;">${totalDuplicates}</div><div style="font-size: 12px; color: var(--gray);">Total repetidos</div></div>
+                    </div>
+                    <div style="margin-bottom: 12px; color: var(--gray);">Estantes pendientes: ${notFinalized.length ? notFinalized.map(s => s.shelf).join(', ') : 'Ninguno'}</div>
+                    <div style="font-size: 14px; font-weight: 600; margin-bottom: 8px;">Últimas sesiones:</div>
+                    <div style="background: #f8fafc; border-radius: 10px; padding: 12px; max-height: 260px; overflow-y: auto;">`;
+
+                if (sessions.length === 0) {
+                    html += `<div style="color: var(--gray);">No hay registros de balance guardados.</div>`;
+                } else {
+                    sessions.slice().reverse().forEach(session => {
+                        html += `<div onclick="app.resumeBalanceSession('${session.id}')" style="border-bottom: 1px solid #e5e7eb; padding: 10px 0; ${session.status === 'finalizado' ? '' : 'cursor: pointer;'}">
+                            <div style="font-weight: 700; color: var(--dark);">Estante ${session.shelf}</div>
+                            <div style="font-size: 12px; color: var(--gray);">Estado: ${session.status === 'finalizado' ? 'Finalizado' : 'En curso'}</div>
+                            <div style="font-size: 12px; color: var(--gray);">Iniciado: ${new Date(session.startedAt).toLocaleString()}</div>
+                            ${session.finishedAt ? `<div style="font-size: 12px; color: var(--gray);">Finalizado: ${new Date(session.finishedAt).toLocaleString()}</div>` : ''}
+                            <div style="font-size: 12px; color: var(--gray);">Total libros: ${session.totalBooks}</div>
+                            <div style="font-size: 12px; color: var(--gray);">Faltantes: ${session.missingCount || 0}</div>
+                            <div style="font-size: 12px; color: var(--gray);">Repetidos: ${session.duplicateCount || 0}</div>
+                        </div>`;
+                    });
+                }
+
+                html += '</div></div>';
+                results.innerHTML = html;
+            }
+
+            countDuplicateBooks(books) {
+                const counts = {};
+                books.forEach(book => {
+                    const key = `${this.normalizeText((book.title || '').toLowerCase())}||${this.normalizeText((book.authorLast || '').toLowerCase())}||${this.normalizeText((book.authorFirst || '').toLowerCase())}`;
+                    counts[key] = (counts[key] || 0) + 1;
+                });
+                return Object.values(counts).reduce((sum, count) => sum + (count > 1 ? count - 1 : 0), 0);
+            }
+
+            resumeBalanceSession(sessionId) {
+                const session = this.balanceSessions.find(s => s.id === sessionId);
+                if (!session) {
+                    this.showAlert('❌ Sesión de balance no encontrada', 'error');
+                    return;
+                }
+
+                if (session.status === 'finalizado') {
+                    this.showAlert('⚠️ Este balance ya fue finalizado', 'warning');
+                    return;
+                }
+
+                this.currentBalanceSessionId = session.id;
+                this.currentBalanceShelf = session.shelf;
+                const shelfInput = document.getElementById('balanceShelfInput');
+                if (shelfInput) {
+                    shelfInput.value = session.shelf;
+                }
+
+                const searchInput = document.getElementById('balanceSearchInput');
+                if (searchInput) {
+                    searchInput.disabled = false;
+                    searchInput.value = '';
+                }
+
+                this.balanceSearchQuery = '';
+                this.balanceBooks = this.books.filter(b => b.shelf === session.shelf).map((b, index) => ({ book: b, present: false, index }));
+                this.renderBalanceResults(this.balanceBooks, session.shelf);
+                this.showAlert(`⏳ Balance del estante ${session.shelf} cargado`, 'success');
+            }
+
+            renderBalanceResults(balanceBooks, shelf, query = '') {
+                const results = document.getElementById('balanceResults');
+                const totalBooks = this.balanceBooks.length;
+                const presentBooks = this.balanceBooks.filter(item => item.present).length;
+                const missingBooks = totalBooks - presentBooks;
+                const progressPercent = totalBooks === 0 ? 0 : Math.round((presentBooks / totalBooks) * 100);
+
+                let html = `<div style="background: white; border-radius: 12px; padding: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); border: 1px solid #e5e7eb;">
+                    <h3 style="color: var(--dark); margin-bottom: 12px; font-size: 16px; font-weight: 700;">Balance del Estante ${shelf}</h3>
+                    <div style="display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-bottom: 16px;">
+                        <div style="font-size: 14px; color: var(--gray);">Total esperados: ${totalBooks}</div>
+                        <div style="font-size: 14px; color: var(--gray);">Resultados: ${balanceBooks.length}${query ? ` (filtro: ${query})` : ''}</div>
+                    </div>
+                    <div style="margin-bottom: 16px;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 14px;">
+                            <span>Progreso: ${presentBooks}/${totalBooks} libros</span>
+                            <span>${progressPercent}%</span>
+                        </div>
+                        <div style="width: 100%; height: 8px; background: #e5e7eb; border-radius: 4px; overflow: hidden;">
+                            <div style="width: ${progressPercent}%; height: 100%; background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); transition: width 0.3s ease;"></div>
+                        </div>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px;">
+                        <div style="background: #D1FAE5; padding: 8px; border-radius: 6px; text-align: center;">
+                            <div style="font-size: 18px; font-weight: bold; color: #065F46;">${presentBooks}</div>
+                            <div style="font-size: 12px; color: #065F46;">Presentes</div>
+                        </div>
+                        <div style="background: #FEE2E2; padding: 8px; border-radius: 6px; text-align: center;">
+                            <div style="font-size: 18px; font-weight: bold; color: #7F1D1D;">${missingBooks}</div>
+                            <div style="font-size: 12px; color: #7F1D1D;">Faltantes</div>
+                        </div>
+                    </div>
+
+                    <div style="background: #f9fafb; border-radius: 12px; padding: 12px; max-height: 50vh; overflow-y: auto;">
+                        <ul style="padding-left: 20px; margin: 0;">
+                `;
+
+                if (balanceBooks.length === 0) {
+                    html += `<li style="margin-bottom: 10px; color: var(--gray);">No se encontraron libros que coincidan con la búsqueda.</li>`;
+                } else {
+                    balanceBooks.forEach(item => {
+                        const book = item.book;
+                        const checked = item.present ? 'checked' : '';
+                        const textDecoration = item.present ? 'line-through' : 'none';
+                        const opacity = item.present ? '0.6' : '1';
+                        html += `<li style="margin-bottom: 12px; list-style: none; padding: 10px; border-bottom: 1px solid #e5e7eb;">
+                            <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; width: 100%;">
+                                <input type="checkbox" onchange="app.toggleBalance(${item.index})" ${checked}>
+                                <span style="color: var(--dark); font-size: 13px; text-decoration: ${textDecoration}; opacity: ${opacity}; flex: 1;">
+                                    <strong>${book.title}</strong> - ${book.authorLast}, ${book.authorFirst}` +
+                                    `${book.tomo ? ` • Tomo: ${book.tomo}` : ''}` +
+                                    `${book.volumen ? ` • Volumen: ${book.volumen}` : ''}` +
+                                    `${book.isbn ? ` • ISBN: ${book.isbn}` : ''}` +
+                                    ` • Ejemplares: ${book.ejemplares || 1}
+                                </span>
+                            </label>
+                        </li>`;
+                    });
+                }
+
+                html += '</ul></div></div>';
+                results.innerHTML = html;
+            }
+
+            toggleBalance(index) {
+                this.balanceBooks[index].present = !this.balanceBooks[index].present;
+                const shelf = document.getElementById('balanceShelfInput').value.trim();
+                if (this.balanceSearchQuery) {
+                    this.filterBalanceBooks();
+                } else {
+                    this.renderBalanceResults(this.balanceBooks, shelf);
+                }
+            }
+
+            updateBalanceView() {
+                const shelf = document.getElementById('balanceShelfInput').value.trim();
+                if (!shelf || !this.balanceBooks) return;
+
+                const results = document.getElementById('balanceResults');
+                const totalBooks = this.balanceBooks.length;
+                const presentBooks = this.balanceBooks.filter(item => item.present).length;
+                const missingBooks = totalBooks - presentBooks;
+                const progressPercent = Math.round((presentBooks / totalBooks) * 100);
+
+                // Actualizar barra de progreso
+                const progressBar = results.querySelector('div[style*="height: 8px"] div');
+                if (progressBar) {
+                    progressBar.style.width = `${progressPercent}%`;
+                }
+
+                // Actualizar estadísticas
+                const statsDivs = results.querySelectorAll('div[style*="padding: 8px"]');
+                if (statsDivs.length >= 2) {
+                    statsDivs[0].querySelector('div[style*="font-size: 18px"]').textContent = presentBooks;
+                    statsDivs[1].querySelector('div[style*="font-size: 18px"]').textContent = missingBooks;
+                }
+
+                // Actualizar texto de progreso
+                const progressText = results.querySelector('div[style*="display: flex"] span:first-child');
+                if (progressText) {
+                    progressText.textContent = `Progreso: ${presentBooks}/${totalBooks} libros`;
+                }
+
+                const progressPercentText = results.querySelector('div[style*="display: flex"] span:last-child');
+                if (progressPercentText) {
+                    progressPercentText.textContent = `${progressPercent}%`;
+                }
+
+                // Actualizar apariencia de los items marcados
+                const listItems = results.querySelectorAll('li');
+                this.balanceBooks.forEach((item, index) => {
+                    if (listItems[index]) {
+                        const checkbox = listItems[index].querySelector('input[type="checkbox"]');
+                        const textSpan = listItems[index].querySelector('span[style*="text-decoration"]');
+                        
+                        if (checkbox && textSpan) {
+                            checkbox.checked = item.present;
+                            textSpan.style.textDecoration = item.present ? 'line-through' : 'none';
+                            textSpan.style.opacity = item.present ? '0.6' : '1';
+                        }
+                    }
+                });
+            }
+
+            generateBalancePDF() {
+                const shelf = document.getElementById('balanceShelfInput').value.trim();
+                if (!shelf) {
+                    this.showAlert('⚠️ Primero inicia un balance de estante', 'warning');
+                    return;
+                }
+
+                if (!this.balanceBooks || this.balanceBooks.length === 0) {
+                    this.showAlert('⚠️ No hay datos de balance para este estante', 'warning');
+                    return;
+                }
+
+                const missingBooks = this.balanceBooks.filter(item => !item.present);
+                if (missingBooks.length === 0) {
+                    this.showAlert('✅ Todos los libros están presentes en el estante', 'success');
+                    return;
+                }
+
+                // Deshabilitar botón durante generación
+                const reportBtn = document.querySelector('.btn-warning');
+                const originalText = reportBtn.textContent;
+                reportBtn.textContent = '⏳ Generando...';
+                reportBtn.disabled = true;
+                reportBtn.style.opacity = '0.6';
+
+                try {
+                    const { jsPDF } = window.jspdf;
+                    const doc = new jsPDF('p', 'mm', 'a4');
+                    
+                    // Configuración de márgenes optimizada para A4
+                    const marginLeft = 15;
+                    const marginRight = 15;
+                    const marginTop = 25;
+                    const marginBottom = 15;
+                    const pageWidth = doc.internal.pageSize.getWidth();
+                    const pageHeight = doc.internal.pageSize.getHeight();
+                    const contentWidth = pageWidth - marginLeft - marginRight;
+                    
+                    // Título
+                    doc.setFontSize(20);
+                    doc.setFont('helvetica', 'bold');
+                    doc.text('Biblioteca Dr. Jorge Batlle', pageWidth / 2, marginTop, { align: 'center' });
+                    
+                    // Subtítulo
+                    doc.setFontSize(16);
+                    doc.setFont('helvetica', 'bold');
+                    doc.text('Informe de Balance', pageWidth / 2, marginTop + 10, { align: 'center' });
+                    
+                    // Identificación del estante
+                    doc.setFontSize(14);
+                    doc.text(`Estante: ${shelf}`, pageWidth / 2, marginTop + 20, { align: 'center' });
+                    
+                    // Información del balance
+                    const totalBooks = this.balanceBooks.length;
+                    const presentBooks = this.balanceBooks.filter(item => item.present).length;
+                    const missingCount = missingBooks.length;
+                    
+                    doc.setFontSize(10);
+                    doc.setFont('helvetica', 'normal');
+                    doc.text(`Total de libros en estante: ${totalBooks}`, pageWidth / 2, marginTop + 30, { align: 'center' });
+                    doc.text(`Libros presentes: ${presentBooks}`, pageWidth / 2, marginTop + 36, { align: 'center' });
+                    doc.text(`Libros faltantes: ${missingCount}`, pageWidth / 2, marginTop + 42, { align: 'center' });
+                    
+                    // Fecha
+                    doc.text(`Fecha del balance: ${new Date().toLocaleDateString('es-ES')}`, pageWidth / 2, marginTop + 50, { align: 'center' });
+                    
+                    // Ordenar libros faltantes alfabéticamente por apellido del autor
+                    const sortedMissingBooks = missingBooks.sort((a, b) => {
+                        const authorA = `${a.book.authorLast} ${a.book.authorFirst}`.toLowerCase();
+                        const authorB = `${b.book.authorLast} ${b.book.authorFirst}`.toLowerCase();
+                        return authorA.localeCompare(authorB);
+                    });
+                    
+                    // Preparar datos para la tabla
+                    const tableData = sortedMissingBooks.map(item => [
+                        item.book.authorLast,
+                        item.book.authorFirst,
+                        item.book.title,
+                        item.book.year || '-',
+                        item.book.ejemplares || 1
+                    ]);
+                    
+                    // Generar tabla optimizada para A4
+                    doc.autoTable({
+                        head: [['Apellido', 'Nombre', 'Título', 'Año', 'Ejemplares']],
+                        body: tableData,
+                        startY: marginTop + 60,
+                        margin: { left: marginLeft, right: marginRight },
+                        styles: {
+                            fontSize: 8,
+                            cellPadding: 2,
+                        },
+                        headStyles: {
+                            fillColor: [239, 68, 68], // Color rojo para indicar faltantes
+                            textColor: 255,
+                            fontStyle: 'bold',
+                            fontSize: 9,
+                        },
+                        alternateRowStyles: {
+                            fillColor: [254, 226, 226], // Color rojo claro para filas alternas
+                        },
+                        columnStyles: {
+                            0: { cellWidth: contentWidth * 0.22 }, // Apellido
+                            1: { cellWidth: contentWidth * 0.22 }, // Nombre
+                            2: { cellWidth: contentWidth * 0.32 }, // Título
+                            3: { cellWidth: contentWidth * 0.12 }, // Año
+                            4: { cellWidth: contentWidth * 0.12 }, // Ejemplares
+                        },
+                        didDrawPage: function(data) {
+                            // Pie de página se agregará después de generar la tabla
+                        }
+                    });
+                    
+                    // Agregar numeración de páginas y nota después de generar la tabla
+                    const totalPages = doc.internal.getNumberOfPages();
+                    for (let i = 1; i <= totalPages; i++) {
+                        doc.setPage(i);
+                        doc.setFontSize(7);
+                        doc.text(`Página ${i} de ${totalPages}`, pageWidth / 2, pageHeight - 8, { align: 'center' });
+                        
+                        // Nota adicional en cada página
+                        doc.setFontSize(6);
+                        doc.setTextColor(100);
+                        doc.text('Libros marcados como FALTANTES en el balance de inventario', pageWidth / 2, pageHeight - 4, { align: 'center' });
+                    }
+                    
+                    // Guardar PDF
+                    const fileName = `Balance_Estante_${shelf}_${new Date().toISOString().split('T')[0]}.pdf`;
+                    doc.save(fileName);
+                    
+                    this.showAlert(`✅ Reporte de balance generado. ${missingCount} libros faltantes`, 'success');
+                    this.addActivity('balance_report', `Generó reporte de balance del estante ${shelf} con ${missingCount} libros faltantes`);
+                    
+                } catch (error) {
+                    this.showAlert('❌ Error al generar el reporte de balance', 'error');
+                    console.error(error);
+                } finally {
+                    // Restaurar botón
+                    reportBtn.textContent = originalText;
+                    reportBtn.disabled = false;
+                    reportBtn.style.opacity = '';
+                }
+            }
+            openAddUserModal() {
+                if (!this.currentUser || this.currentUser.role !== 'Administrador') {
+                    this.showAlert('❌ Solo los administradores pueden crear usuarios', 'error');
+                    return;
+                }
+                this.editingUsername = null;
+                document.getElementById('userForm').reset();
+                document.getElementById('newUsername').disabled = false;
+                document.getElementById('newRole').disabled = false;
+                document.getElementById('newPassword').required = true;
+                document.getElementById('passwordLabelText').textContent = '*' ;
+                document.getElementById('userModalTitle').textContent = 'Nuevo Usuario';
+                document.getElementById('userModal').classList.add('show');
+            }
+
+            openEditUserModal(username) {
+                if (!this.currentUser || this.currentUser.role !== 'Administrador') {
+                    this.showAlert('❌ Solo los administradores pueden editar usuarios', 'error');
+                    return;
+                }
+                const user = this.users.find(u => u.username === username);
+                if (!user) return;
+
+                this.editingUsername = username;
+                document.getElementById('userModalTitle').textContent = `Editar usuario: ${username}`;
+                document.getElementById('newUsername').value = username;
+                document.getElementById('newUsername').disabled = true;
+                document.getElementById('newPassword').value = '';
+                document.getElementById('newPassword').required = false;
+                document.getElementById('passwordLabelText').textContent = '(dejar vacío para mantener)';
+                document.getElementById('newRole').value = user.role;
+                document.getElementById('newRole').disabled = false;
+                document.getElementById('userModal').classList.add('show');
+            }
+
+            saveUser(event) {
+                event.preventDefault();
+
+                if (!this.currentUser || this.currentUser.role !== 'Administrador') {
+                    this.showAlert('❌ Solo los administradores pueden guardar usuarios', 'error');
+                    return;
+                }
+
+                const username = document.getElementById('newUsername').value.trim();
+                const password = document.getElementById('newPassword').value;
+                const role = document.getElementById('newRole').value;
+
+                if (!username) {
+                    this.showAlert('❌ Completa el nombre de usuario', 'error');
+                    return;
+                }
+
+                if (this.editingUsername) {
+                    const user = this.users.find(u => u.username === this.editingUsername);
+                    if (!user) {
+                        this.showAlert('❌ Usuario no encontrado', 'error');
+                        return;
+                    }
+                    if (password) {
+                        user.password = password;
+                    }
+                    user.role = role;
+                    localStorage.setItem('biblioteca_users', JSON.stringify(this.users));
+                    this.closeModal('userModal');
+                    this.renderUsers();
+                    this.showAlert('✅ Usuario actualizado correctamente', 'success');
+                    return;
+                }
+
+                if (!password) {
+                    this.showAlert('❌ Completa la contraseña', 'error');
+                    return;
+                }
+
+                if (this.users.find(u => u.username === username)) {
+                    this.showAlert('❌ Este usuario ya existe', 'error');
+                    return;
+                }
+
+                const newUser = {
+                    username: username,
+                    password: password,
+                    role: role
+                };
+
+                this.users.push(newUser);
+                localStorage.setItem('biblioteca_users', JSON.stringify(this.users));
+                this.closeModal('userModal');
+                this.renderUsers();
+                this.showAlert('✅ Usuario creado correctamente', 'success');
+            }
+
+            renderUsers() {
+                const container = document.getElementById('usersList');
+                container.innerHTML = '';
+
+                if (this.users.length === 0) {
+                    container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">👥</div><div class="empty-state-title">No hay usuarios</div></div>';
+                    return;
+                }
+
+                this.users.forEach((user) => {
+                    const card = document.createElement('div');
+                    card.style.cssText = 'background: white; padding: 14px; margin-bottom: 10px; border-radius: 10px; border: 1px solid #e5e7eb; display: flex; justify-content: space-between; align-items: center;';
+                    card.innerHTML = `
+                        <div>
+                            <div style="font-weight: 700; color: var(--dark); font-size: 14px;">${user.username}</div>
+                            <div style="font-size: 12px; color: var(--gray); margin-top: 4px;">${user.role}</div>
+                        </div>
+                        <div style="display: flex; gap: 8px; align-items: center;">
+                            ${this.currentUser && this.currentUser.role === 'Administrador' ? `<button class="btn btn-info btn-action" onclick="app.openEditUserModal('${user.username}')">✏️</button>` : ''}
+                            ${user.username !== this.currentUser.username && this.currentUser && this.currentUser.role === 'Administrador' ? `<button class="btn btn-danger btn-action" onclick="app.deleteUser('${user.username}')">🗑️</button>` : user.username === this.currentUser.username ? '<span style="color: var(--gray); font-size: 12px;">Tú</span>' : ''}
+                        </div>
+                    `;
+                    container.appendChild(card);
+                });
+            }
+
+            deleteUser(username) {
+                if (!this.currentUser || this.currentUser.role !== 'Administrador') {
+                    this.showAlert('❌ Solo los administradores pueden eliminar usuarios', 'error');
+                    return;
+                }
+                if (username === this.currentUser.username) {
+                    this.showAlert('❌ No puedes eliminar tu propio usuario', 'error');
+                    return;
+                }
+                if (confirm('¿Estás seguro de eliminar este usuario?')) {
+                    this.users = this.users.filter(u => u.username !== username);
+                    localStorage.setItem('biblioteca_users', JSON.stringify(this.users));
+                    this.renderUsers();
+                    this.showAlert('✅ Usuario eliminado', 'success');
+                }
+            }
+
+            showUserProfile() {
+                this.showAlert(`👤 ${this.currentUser.username} - ${this.currentUser.role}`, 'success');
+            }
+
+            updateUserManagementAccess() {
+                const newUserButton = document.getElementById('newUserButton');
+                if (!newUserButton) return;
+                newUserButton.style.display = this.currentUser && this.currentUser.role === 'Administrador' ? '' : 'none';
+            }
+
+            addActivity(type, message) {
+                const activity = {
+                    type: type,
+                    message: message,
+                    timestamp: new Date().toLocaleTimeString()
+                };
+
+                this.activityLog.unshift(activity);
+                if (this.activityLog.length > 50) this.activityLog.pop();
+
+                this.renderActivity();
+            }
+
+            renderActivity() {
+                const list = document.getElementById('activityList');
+                list.innerHTML = '';
+
+                if (this.activityLog.length === 0) {
+                    list.innerHTML = '<div style="text-align: center; color: var(--gray); padding: 20px;">Esperando actividad...</div>';
+                    return;
+                }
+
+                this.activityLog.forEach(activity => {
+                    const item = document.createElement('div');
+                    item.className = `activity-item ${activity.type}`;
+                    item.innerHTML = `
+                        <div class="activity-action">${activity.message}</div>
+                        <div class="activity-time">${activity.timestamp}</div>
+                    `;
+                    list.appendChild(item);
+                });
+            }
+
+            saveBooks() {
+                localStorage.setItem('biblioteca_books_v6', JSON.stringify(this.books));
+            }
+
+            loadBooks() {
+                const apiUrl = window.location.protocol === 'file:' ? 'http://localhost:3000/api/books' : '/api/books';
+                fetch(apiUrl)
+                    .then(response => response.ok ? response.json() : Promise.reject(response.statusText))
+                    .then(data => {
+                        this.books = Array.isArray(data) ? data : [];
+                        this.filteredBooks = [];
+                        this.saveBooks();
+                    })
+                    .catch(error => {
+                        console.warn('No se pudieron cargar libros desde el servidor:', error);
+                        const stored = localStorage.getItem('biblioteca_books_v6');
+                        this.books = stored ? JSON.parse(stored) : [];
+                    });
+            }
+
+            saveBalanceSessions() {
+                localStorage.setItem('biblioteca_balance_sessions', JSON.stringify(this.balanceSessions));
+            }
+
+            loadBalanceSessions() {
+                const stored = localStorage.getItem('biblioteca_balance_sessions');
+                this.balanceSessions = stored ? JSON.parse(stored) : [];
+            }
+
+            loadUsers() {
+                const stored = localStorage.getItem('biblioteca_users');
+                if (stored) {
+                    this.users = JSON.parse(stored);
+                } else {
+                    this.users = [
+                        { username: 'admin', password: '1234', role: 'Administrador' },
+                        { username: 'editor', password: '1234', role: 'Editor' },
+                        { username: 'lector', password: '1234', role: 'Lector' }
+                    ];
+                    localStorage.setItem('biblioteca_users', JSON.stringify(this.users));
+                }
+            }
+
+            loadSettings() {
+                this.darkMode = localStorage.getItem('biblioteca_dark_mode') === 'true';
+                document.body.classList.toggle('dark-mode', this.darkMode);
+                const darkModeToggle = document.getElementById('darkModeToggle');
+                if (darkModeToggle) {
+                    darkModeToggle.checked = this.darkMode;
+                }
+            }
+
+            saveSettings() {
+                localStorage.setItem('biblioteca_dark_mode', this.darkMode);
+            }
+
+            toggleDarkMode() {
+                this.darkMode = !this.darkMode;
+                document.body.classList.toggle('dark-mode', this.darkMode);
+                this.saveSettings();
+                this.showAlert(this.darkMode ? '🌙 Modo oscuro activado' : '☀️ Modo oscuro desactivado', 'success');
+            }
+
+            closeModal(modalId) {
+                document.getElementById(modalId).classList.remove('show');
+            }
+
+            showAlert(message, type = 'info') {
+                const container = document.getElementById('alertContainer');
+                const alert = document.createElement('div');
+                alert.className = `alert ${type} show`;
+                alert.textContent = message;
+                container.appendChild(alert);
+
+                setTimeout(() => alert.remove(), 3500);
+            }
+        }
+
+        let app;
+        window.addEventListener('load', () => {
+            app = new App();
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.user-button') && !e.target.closest('.user-dropdown')) {
+                document.getElementById('userDropdown').classList.remove('show');
+            }
+        });
+
+        document.addEventListener('touchmove', function(e) {
+            if (e.touches.length > 1) e.preventDefault();
+        });
+    </script>
+</body>
+</html>

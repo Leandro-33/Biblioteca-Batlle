@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no">
     <title>📚 Biblioteca Batlle - Sistema de Gestión</title>
     <link href="https://fonts.googleapis.com/css?family=Poppins:400,500,600,700&display=swap" rel="stylesheet">
-    
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
@@ -32,7 +34,8 @@
             -webkit-tap-highlight-color: transparent;
         }
 
-        html, body {
+        html,
+        body {
             width: 100%;
             height: 100%;
             font-family: 'Poppins', sans-serif;
@@ -61,8 +64,15 @@
         }
 
         @keyframes slideUp {
-            from { opacity: 0; transform: translateY(40px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .login-header {
@@ -858,8 +868,15 @@
         }
 
         @keyframes slideInNew {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .book-card:hover {
@@ -988,8 +1005,13 @@
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
         }
 
         .modal-content {
@@ -1003,8 +1025,13 @@
         }
 
         @keyframes slideUpModal {
-            from { transform: translateY(100%); }
-            to { transform: translateY(0); }
+            from {
+                transform: translateY(100%);
+            }
+
+            to {
+                transform: translateY(0);
+            }
         }
 
         .modal-header {
@@ -1117,8 +1144,15 @@
         }
 
         @keyframes slideDown {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .alert.show {
@@ -1277,7 +1311,8 @@
                 width: 100%;
             }
 
-            th, td {
+            th,
+            td {
                 padding: 10px 8px;
                 font-size: 12px;
             }
@@ -1432,13 +1467,16 @@
                                 <button class="btn btn-success" onclick="app.exportToExcel()">📥 Exportar</button>
                                 <div class="file-input-wrapper">
                                     <label for="excelFile" class="file-input-label">📤 Importar</label>
-                                    <input type="file" id="excelFile" accept=".xlsx,.xls,.csv" onchange="app.importFromExcel(event)">
+                                    <input type="file" id="excelFile" accept=".xlsx,.xls,.csv"
+                                        onchange="app.importFromExcel(event)">
                                 </div>
                             </div>
 
                             <div class="search-shelf">
-                                <input type="text" id="searchInput" placeholder="🔍 Buscar libro..." onkeyup="app.debounceSearch()">
-                                <input type="text" id="shelfFilter" class="shelf-filter" placeholder="Estante" onkeyup="app.debounceSearch()">
+                                <input type="text" id="searchInput" placeholder="🔍 Buscar libro..."
+                                    onkeyup="app.debounceSearch()">
+                                <input type="text" id="shelfFilter" class="shelf-filter" placeholder="Estante"
+                                    onkeyup="app.debounceSearch()">
                             </div>
                         </div>
 
@@ -1446,7 +1484,8 @@
                             <div class="empty-state">
                                 <div class="empty-state-icon">📚</div>
                                 <div class="empty-state-title">No hay libros</div>
-                                <div class="empty-state-text">Agrega el primer libro haciendo clic en "Nuevo Libro"</div>
+                                <div class="empty-state-text">Agrega el primer libro haciendo clic en "Nuevo Libro"
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -1455,12 +1494,17 @@
                     <div id="shelvesSection" class="section-content hidden">
                         <div class="controls-panel">
                             <div class="controls-row">
-                                <button class="btn btn-warning" onclick="app.generatePDFReportGeneral()">📄 Reporte General</button>
-                                <button class="btn btn-info" onclick="app.generatePDFReportByShelf()">📄 Reporte por Estante</button>
+                                <button class="btn btn-warning" onclick="app.generatePDFReportGeneral()">📄 Reporte
+                                    General</button>
+                                <button class="btn btn-info" onclick="app.generatePDFReportByShelf()">📄 Reporte por
+                                    Estante</button>
                             </div>
                             <div class="search-shelf">
-                                <input type="text" id="shelfInput" placeholder="Número de estante" oninput="app.searchShelf()" onkeydown="if(event.key === 'Enter'){ event.preventDefault(); app.searchShelf(); }">
-                                <button class="btn btn-primary" onclick="app.searchShelf()" style="flex: 0 0 auto;">🔍</button>
+                                <input type="text" id="shelfInput" placeholder="Número de estante"
+                                    oninput="app.searchShelf()"
+                                    onkeydown="if(event.key === 'Enter'){ event.preventDefault(); app.searchShelf(); }">
+                                <button class="btn btn-primary" onclick="app.searchShelf()"
+                                    style="flex: 0 0 auto;">🔍</button>
                             </div>
                         </div>
                         <div id="shelfResults"></div>
@@ -1476,9 +1520,14 @@
                                 <button class="btn btn-danger" onclick="app.resetBalance()">🔄 Resetear</button>
                             </div>
                             <div class="search-shelf">
-                                <input type="text" id="balanceShelfInput" placeholder="Estante" style="flex: 0 0 100px; max-width: 100px;" onkeydown="if(event.key === 'Enter'){ event.preventDefault(); app.startBalance(); }">
-                                <input type="text" id="balanceSearchInput" placeholder="Buscar título, autor o tomo..." style="flex: 1;" disabled oninput="app.filterBalanceBooks()" onkeydown="if(event.key === 'Enter'){ event.preventDefault(); app.filterBalanceBooks(); }">
-                                <button class="btn btn-primary" onclick="app.startBalance()" style="flex: 0 0 auto;">⚖️ Iniciar</button>
+                                <input type="text" id="balanceShelfInput" placeholder="Estante"
+                                    style="flex: 0 0 100px; max-width: 100px;"
+                                    onkeydown="if(event.key === 'Enter'){ event.preventDefault(); app.startBalance(); }">
+                                <input type="text" id="balanceSearchInput" placeholder="Buscar título, autor o tomo..."
+                                    style="flex: 1;" disabled oninput="app.filterBalanceBooks()"
+                                    onkeydown="if(event.key === 'Enter'){ event.preventDefault(); app.filterBalanceBooks(); }">
+                                <button class="btn btn-primary" onclick="app.startBalance()" style="flex: 0 0 auto;">⚖️
+                                    Iniciar</button>
                             </div>
                         </div>
                         <div id="balanceResults"></div>
@@ -1488,7 +1537,8 @@
                     <div id="usersSection" class="section-content hidden">
                         <div class="controls-panel">
                             <div class="controls-row">
-<button id="newUserButton" class="btn btn-primary" onclick="app.openAddUserModal()" style="grid-column: 1;">➕ Nuevo Usuario</button>
+                                <button id="newUserButton" class="btn btn-primary" onclick="app.openAddUserModal()"
+                                    style="grid-column: 1;">➕ Nuevo Usuario</button>
                             </div>
                         </div>
                         <div id="usersList"></div>
@@ -1552,7 +1602,8 @@
                         <label>Año</label>
                         <div style="display: flex; gap: 8px; align-items: center;">
                             <input type="number" id="bookYear" style="flex: 1;">
-                            <select id="bookYearOption" onchange="app.updateYearInputState()" style="width: 120px; font-size: 12px; padding: 10px;">
+                            <select id="bookYearOption" onchange="app.updateYearInputState()"
+                                style="width: 120px; font-size: 12px; padding: 10px;">
                                 <option value="">Especificar</option>
                                 <option value="no-especifica">No especifica</option>
                             </select>
@@ -1598,7 +1649,8 @@
                         <textarea id="bookObservations" style="resize: vertical; min-height: 80px;"></textarea>
                     </div>
                     <div class="form-actions">
-                        <button type="button" class="btn" style="background: var(--gray-light); color: var(--dark);" onclick="app.closeModal('bookModal')">Cancelar</button>
+                        <button type="button" class="btn" style="background: var(--gray-light); color: var(--dark);"
+                            onclick="app.closeModal('bookModal')">Cancelar</button>
                         <button type="submit" class="btn btn-primary">Guardar</button>
                     </div>
                 </form>
@@ -1632,7 +1684,8 @@
                         </select>
                     </div>
                     <div class="form-actions">
-                        <button type="button" class="btn" style="background: var(--gray-light); color: var(--dark);" onclick="app.closeModal('userModal')">Cancelar</button>
+                        <button type="button" class="btn" style="background: var(--gray-light); color: var(--dark);"
+                            onclick="app.closeModal('userModal')">Cancelar</button>
                         <button type="submit" class="btn btn-primary">Guardar</button>
                     </div>
                 </form>
@@ -1655,7 +1708,9 @@
                 this.searchCache = new Map();
                 this.socket = null;
                 this.serverUrl = window.location.protocol === 'file:' ? 'http://localhost:3000' : window.location.origin;
-                
+                this.lastSearchQuery = '';
+                this.lastSearchShelf = '';
+
                 this.loadUsers();
                 this.initSocket();
                 this.loadBooks();
@@ -1664,6 +1719,7 @@
 
                 this.balanceSearchQuery = '';
                 this.currentBalanceSessionId = null;
+                this.serverConfigured = false;
 
                 const yearOption = document.getElementById('bookYearOption');
                 if (yearOption) {
@@ -1688,6 +1744,20 @@
 
             initSocket() {
                 if (!window.io) return;
+
+                // If opened as file://, load server URL from localStorage
+                if (window.location.protocol === 'file:') {
+                    const savedServerUrl = localStorage.getItem('bibliotecaServerUrl');
+                    if (savedServerUrl) {
+                        this.serverUrl = savedServerUrl;
+                        this.serverConfigured = true;
+                    } else {
+                        // Show configuration modal
+                        this.showServerConfigModal();
+                        return;
+                    }
+                }
+
                 this.socket = io(this.serverUrl, { transports: ['websocket', 'polling'] });
 
                 this.socket.on('connect', () => {
@@ -1712,11 +1782,19 @@
 
                 this.socket.on('bookAdded', (data) => {
                     if (!data?.book) return;
-                    this.books.push(data.book);
+                    const bookExists = this.books.some(b => b.id === data.book.id);
+                    if (!bookExists) {
+                        this.books.push(data.book);
+                    }
                     this.saveBooks();
                     this.updateStats();
                     this.searchCache = new Map(); // Clear search cache
-                    this.renderBooks();
+                    // Re-apply search if active
+                    if (this.lastSearchQuery || this.lastSearchShelf) {
+                        this.applySearch();
+                    } else {
+                        this.renderBooks();
+                    }
                 });
 
                 this.socket.on('bookUpdated', (data) => {
@@ -1727,7 +1805,12 @@
                         this.saveBooks();
                         this.searchCache = new Map(); // Clear search cache
                         this.updateStats();
-                        this.renderBooks();
+                        // Re-apply search if active
+                        if (this.lastSearchQuery || this.lastSearchShelf) {
+                            this.applySearch();
+                        } else {
+                            this.renderBooks();
+                        }
                     }
                 });
 
@@ -1737,16 +1820,32 @@
                     this.saveBooks();
                     this.updateStats();
                     this.searchCache = new Map(); // Clear search cache
-                    this.renderBooks();
+                    // Re-apply search if active
+                    if (this.lastSearchQuery || this.lastSearchShelf) {
+                        this.applySearch();
+                    } else {
+                        this.renderBooks();
+                    }
                 });
 
                 this.socket.on('booksBulkAdded', (data) => {
                     if (!Array.isArray(data?.books) || data.books.length === 0) return;
-                    this.books = [...this.books, ...data.books];
+                    // Add only new books
+                    const newBooks = data.books.filter(newBook =>
+                        !this.books.some(existingBook => existingBook.id === newBook.id)
+                    );
+                    if (newBooks.length > 0) {
+                        this.books = [...this.books, ...newBooks];
+                    }
                     this.saveBooks();
                     this.searchCache = new Map(); // Clear search cache
                     this.updateStats();
-                    this.renderBooks();
+                    // Re-apply search if active
+                    if (this.lastSearchQuery || this.lastSearchShelf) {
+                        this.applySearch();
+                    } else {
+                        this.renderBooks();
+                    }
                 });
 
                 this.socket.on('activeUsers', (data) => {
@@ -1797,7 +1896,7 @@
                     this.currentUser = user;
                     document.getElementById('loginScreen').style.display = 'none';
                     document.getElementById('app').style.display = 'flex';
-                    
+
                     document.getElementById('userAvatar').textContent = username.charAt(0).toUpperCase();
                     document.getElementById('userName').textContent = username;
                     document.getElementById('dropdownUsername').textContent = username;
@@ -1949,8 +2048,15 @@
                     this.socket.emit(this.editingBookId ? 'editBook' : 'addBook', { book: bookData });
                 }
                 this.searchCache = new Map(); // Clear search cache
-                this.renderBooks();
                 this.updateStats();
+
+                // Re-apply search if active, otherwise just render books
+                if (this.lastSearchQuery || this.lastSearchShelf) {
+                    this.applySearch();
+                } else {
+                    this.renderBooks();
+                }
+
                 this.closeModal('bookModal');
                 this.showAlert('✅ Guardado correctamente', 'success');
             }
@@ -1965,17 +2071,24 @@
                         this.socket.emit('deleteBook', { id });
                     }
                     this.searchCache = new Map(); // Clear search cache
-                    this.renderBooks();
                     this.updateStats();
+
+                    // Re-apply search if active, otherwise just render books
+                    if (this.lastSearchQuery || this.lastSearchShelf) {
+                        this.applySearch();
+                    } else {
+                        this.renderBooks();
+                    }
+
                     this.showAlert('✅ Libro eliminado', 'success');
                 }
             }
 
             renderBooks() {
                 const bookList = document.getElementById('bookList');
-                const hasSearch = document.getElementById('searchInput').value.trim() || document.getElementById('shelfFilter').value.trim();
+                const hasSearch = this.lastSearchQuery || this.lastSearchShelf;
                 const books = hasSearch ? this.filteredBooks : this.books;
-                
+
                 bookList.innerHTML = '';
 
                 if (books.length === 0) {
@@ -2094,12 +2207,21 @@
             searchBooks() {
                 const query = document.getElementById('searchInput').value.trim();
                 const shelf = document.getElementById('shelfFilter').value.trim();
+                this.lastSearchQuery = query;
+                this.lastSearchShelf = shelf;
 
                 if (!query && !shelf) {
                     this.filteredBooks = [];
                     this.renderBooks();
                     return;
                 }
+
+                this.applySearch();
+            }
+
+            applySearch() {
+                const query = this.lastSearchQuery || '';
+                const shelf = this.lastSearchShelf || '';
 
                 // Cache for performance
                 if (!this.searchCache) this.searchCache = new Map();
@@ -2111,8 +2233,9 @@
                     return;
                 }
 
-                const queryWords = query.toLowerCase().split(/\s+/).filter(w => w.length > 0);
                 const normalizedShelf = this.normalizeText(shelf.toLowerCase());
+                const normalizedQuery = this.normalizeText(query.toLowerCase());
+                const queryWords = normalizedQuery.split(/\s+/).filter(w => w.length > 0);
 
                 this.filteredBooks = this.books.filter(b => {
                     // Exact shelf match if specified
@@ -2137,9 +2260,9 @@
 
                     const normalizedSearchable = this.normalizeText(searchableText);
 
-                    // Check if all query words are present
-                    return queryWords.every(word => 
-                        normalizedSearchable.includes(this.normalizeText(word))
+                    // Check if all query words are present (case-insensitive, accent-insensitive)
+                    return queryWords.every(word =>
+                        normalizedSearchable.includes(word)
                     );
                 });
 
@@ -2156,6 +2279,122 @@
 
             normalizeText(text) {
                 return text.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/\s+/g, '');
+            }
+
+            showServerConfigModal() {
+                const modal = document.createElement('div');
+                modal.id = 'serverConfigModal';
+                modal.style.cssText = `
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    background: rgba(0, 0, 0, 0.7);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    z-index: 2000;
+                    font-family: 'Poppins', sans-serif;
+                `;
+
+                modal.innerHTML = `
+                    <div style="
+                        background: white;
+                        padding: 40px;
+                        border-radius: 20px;
+                        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
+                        width: 90%;
+                        max-width: 450px;
+                        text-align: center;
+                    ">
+                        <h2 style="color: #1F2937; font-size: 24px; margin-bottom: 16px; font-weight: 700;">⚙️ Configurar Servidor</h2>
+                        <p style="color: #6B7280; margin-bottom: 24px; font-size: 14px; line-height: 1.6;">
+                            Ingresa la dirección IP o dominio del servidor donde está corriendo la aplicación.
+                        </p>
+                        <div style="margin-bottom: 24px;">
+                            <input 
+                                type="text" 
+                                id="serverUrlInput" 
+                                placeholder="ej: http://192.168.1.100:3000" 
+                                style="
+                                    width: 100%;
+                                    padding: 14px 16px;
+                                    border: 2px solid #E5E7EB;
+                                    border-radius: 10px;
+                                    font-size: 14px;
+                                    font-family: 'Poppins', sans-serif;
+                                    box-sizing: border-box;
+                                "
+                                value="http://localhost:3000"
+                            >
+                        </div>
+                        <p id="serverError" style="color: #EF4444; font-size: 12px; margin-bottom: 16px; min-height: 18px;"></p>
+                        <div style="display: flex; gap: 12px;">
+                            <button 
+                                onclick="app.connectToServer()" 
+                                style="
+                                    flex: 1;
+                                    padding: 14px;
+                                    background: linear-gradient(135deg, #0EA5E9 0%, #0284C7 100%);
+                                    color: white;
+                                    border: none;
+                                    border-radius: 10px;
+                                    font-weight: 600;
+                                    cursor: pointer;
+                                    font-size: 14px;
+                                    font-family: 'Poppins', sans-serif;
+                                    transition: all 0.3s;
+                                "
+                                onmouseover="this.style.transform='translateY(-2px)';"
+                                onmouseout="this.style.transform='translateY(0)';"
+                            >
+                                ✓ Conectar
+                            </button>
+                        </div>
+                    </div>
+                `;
+
+                document.body.appendChild(modal);
+                const input = document.getElementById('serverUrlInput');
+                input.focus();
+                input.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        this.connectToServer();
+                    }
+                });
+            }
+
+            connectToServer() {
+                const urlInput = document.getElementById('serverUrlInput');
+                const serverUrl = urlInput.value.trim();
+                const errorDiv = document.getElementById('serverError');
+
+                if (!serverUrl) {
+                    errorDiv.textContent = 'Por favor ingresa una dirección';
+                    return;
+                }
+
+                // Validate URL format
+                try {
+                    new URL(serverUrl);
+                } catch (e) {
+                    errorDiv.textContent = 'Formato de URL inválido';
+                    return;
+                }
+
+                // Save to localStorage
+                localStorage.setItem('bibliotecaServerUrl', serverUrl);
+                this.serverUrl = serverUrl;
+                this.serverConfigured = true;
+
+                // Remove modal
+                const modal = document.getElementById('serverConfigModal');
+                if (modal) modal.remove();
+
+                // Initialize socket
+                this.initSocket();
+                this.loadBooks();
             }
 
             exportToExcel() {
@@ -2239,7 +2478,7 @@
                 try {
                     const { jsPDF } = window.jspdf;
                     const doc = new jsPDF('p', 'mm', 'a4');
-                    
+
                     // Configuración de márgenes reducidos para maximizar espacio
                     const marginLeft = 15;
                     const marginRight = 15;
@@ -2248,20 +2487,20 @@
                     const pageWidth = doc.internal.pageSize.getWidth();
                     const pageHeight = doc.internal.pageSize.getHeight();
                     const contentWidth = pageWidth - marginLeft - marginRight;
-                    
+
                     // Título
                     doc.setFontSize(20);
                     doc.setFont('helvetica', 'bold');
                     doc.text('Biblioteca Dr. Jorge Batlle', pageWidth / 2, marginTop, { align: 'center' });
-                    
+
                     doc.setFontSize(12);
                     doc.setFont('helvetica', 'normal');
                     doc.text('Reporte General de Estantes', pageWidth / 2, marginTop + 8, { align: 'center' });
-                    
+
                     // Fecha
                     doc.setFontSize(9);
                     doc.text(`Generado el: ${new Date().toLocaleDateString('es-ES')}`, pageWidth / 2, marginTop + 16, { align: 'center' });
-                    
+
                     // Ordenar libros por estante y luego alfabéticamente por autor
                     const sortedBooks = [...this.books].sort((a, b) => {
                         // Primero por estante
@@ -2273,7 +2512,7 @@
                         const authorB = `${b.authorLast} ${b.authorFirst}`.toLowerCase();
                         return authorA.localeCompare(authorB);
                     });
-                    
+
                     // Preparar datos para la tabla con estante incluido
                     const tableData = sortedBooks.map(book => [
                         book.shelf,
@@ -2282,7 +2521,7 @@
                         book.title,
                         book.year || '-'
                     ]);
-                    
+
                     // Generar tabla optimizada para A4
                     doc.autoTable({
                         head: [['Estante', 'Apellido', 'Nombre', 'Título', 'Año']],
@@ -2309,11 +2548,11 @@
                             3: { cellWidth: contentWidth * 0.32 }, // Título
                             4: { cellWidth: contentWidth * 0.10 }, // Año
                         },
-                        didDrawPage: function(data) {
+                        didDrawPage: function (data) {
                             // Pie de página se agregará después de generar la tabla
                         }
                     });
-                    
+
                     // Agregar numeración de páginas después de generar la tabla
                     const totalPages = doc.internal.getNumberOfPages();
                     for (let i = 1; i <= totalPages; i++) {
@@ -2321,14 +2560,14 @@
                         doc.setFontSize(7);
                         doc.text(`Página ${i} de ${totalPages}`, pageWidth / 2, pageHeight - 8, { align: 'center' });
                     }
-                    
+
                     // Guardar PDF
                     const fileName = `Reporte_General_Biblioteca_${new Date().toISOString().split('T')[0]}.pdf`;
                     doc.save(fileName);
-                    
+
                     this.showAlert('✅ Reporte general PDF generado correctamente', 'success');
                     this.addActivity('report', `Generó reporte general PDF con ${this.books.length} libros`);
-                    
+
                 } catch (error) {
                     this.showAlert('❌ Error al generar el reporte PDF', 'error');
                     console.error(error);
@@ -2351,7 +2590,7 @@
                 try {
                     const { jsPDF } = window.jspdf;
                     const doc = new jsPDF('p', 'mm', 'a4');
-                    
+
                     // Configuración de márgenes reducidos para maximizar espacio
                     const marginLeft = 15;
                     const marginRight = 15;
@@ -2360,29 +2599,29 @@
                     const pageWidth = doc.internal.pageSize.getWidth();
                     const pageHeight = doc.internal.pageSize.getHeight();
                     const contentWidth = pageWidth - marginLeft - marginRight;
-                    
+
                     // Título
                     doc.setFontSize(20);
                     doc.setFont('helvetica', 'bold');
                     doc.text('Biblioteca Dr. Jorge Batlle', pageWidth / 2, marginTop, { align: 'center' });
-                    
+
                     // Identificación del estante centrada
                     doc.setFontSize(16);
                     doc.setFont('helvetica', 'bold');
                     doc.text(`Estante ${shelfNumber}`, pageWidth / 2, marginTop + 12, { align: 'center' });
-                    
+
                     // Fecha
                     doc.setFontSize(9);
                     doc.setFont('helvetica', 'normal');
                     doc.text(`Generado el: ${new Date().toLocaleDateString('es-ES')}`, pageWidth / 2, marginTop + 22, { align: 'center' });
-                    
+
                     // Ordenar libros alfabéticamente por apellido del autor
                     const sortedBooks = [...books].sort((a, b) => {
                         const authorA = `${a.authorLast} ${a.authorFirst}`.toLowerCase();
                         const authorB = `${b.authorLast} ${b.authorFirst}`.toLowerCase();
                         return authorA.localeCompare(authorB);
                     });
-                    
+
                     // Preparar datos para la tabla (sin columna de estante ya que es específico)
                     const tableData = sortedBooks.map(book => [
                         book.authorLast,
@@ -2390,7 +2629,7 @@
                         book.title,
                         book.year || '-'
                     ]);
-                    
+
                     // Generar tabla optimizada para A4
                     doc.autoTable({
                         head: [['Apellido', 'Nombre', 'Título', 'Año']],
@@ -2416,11 +2655,11 @@
                             2: { cellWidth: contentWidth * 0.35 }, // Título
                             3: { cellWidth: contentWidth * 0.15 }, // Año
                         },
-                        didDrawPage: function(data) {
+                        didDrawPage: function (data) {
                             // Pie de página se agregará después de generar la tabla
                         }
                     });
-                    
+
                     // Agregar numeración de páginas después de generar la tabla
                     const totalPages = doc.internal.getNumberOfPages();
                     for (let i = 1; i <= totalPages; i++) {
@@ -2428,14 +2667,14 @@
                         doc.setFontSize(7);
                         doc.text(`Página ${i} de ${totalPages}`, pageWidth / 2, pageHeight - 8, { align: 'center' });
                     }
-                    
+
                     // Guardar PDF
                     const fileName = `Reporte_Estante_${shelfNumber}_Biblioteca_${new Date().toISOString().split('T')[0]}.pdf`;
                     doc.save(fileName);
-                    
+
                     this.showAlert(`✅ Reporte PDF del estante ${shelfNumber} generado correctamente`, 'success');
                     this.addActivity('report', `Generó reporte PDF del estante ${shelfNumber} con ${books.length} libros`);
-                    
+
                 } catch (error) {
                     this.showAlert('❌ Error al generar el reporte PDF', 'error');
                     console.error(error);
@@ -2914,10 +3153,10 @@
                                 <input type="checkbox" onchange="app.toggleBalance(${item.index})" ${checked}>
                                 <span style="color: var(--dark); font-size: 13px; text-decoration: ${textDecoration}; opacity: ${opacity}; flex: 1;">
                                     <strong>${book.title}</strong> - ${book.authorLast}, ${book.authorFirst}` +
-                                    `${book.tomo ? ` • Tomo: ${book.tomo}` : ''}` +
-                                    `${book.volumen ? ` • Volumen: ${book.volumen}` : ''}` +
-                                    `${book.isbn ? ` • ISBN: ${book.isbn}` : ''}` +
-                                    ` • Ejemplares: ${book.ejemplares || 1}
+                            `${book.tomo ? ` • Tomo: ${book.tomo}` : ''}` +
+                            `${book.volumen ? ` • Volumen: ${book.volumen}` : ''}` +
+                            `${book.isbn ? ` • ISBN: ${book.isbn}` : ''}` +
+                            ` • Ejemplares: ${book.ejemplares || 1}
                                 </span>
                             </label>
                         </li>`;
@@ -2978,7 +3217,7 @@
                     if (listItems[index]) {
                         const checkbox = listItems[index].querySelector('input[type="checkbox"]');
                         const textSpan = listItems[index].querySelector('span[style*="text-decoration"]');
-                        
+
                         if (checkbox && textSpan) {
                             checkbox.checked = item.present;
                             textSpan.style.textDecoration = item.present ? 'line-through' : 'none';
@@ -3016,7 +3255,7 @@
                 try {
                     const { jsPDF } = window.jspdf;
                     const doc = new jsPDF('p', 'mm', 'a4');
-                    
+
                     // Configuración de márgenes optimizada para A4
                     const marginLeft = 15;
                     const marginRight = 15;
@@ -3025,42 +3264,42 @@
                     const pageWidth = doc.internal.pageSize.getWidth();
                     const pageHeight = doc.internal.pageSize.getHeight();
                     const contentWidth = pageWidth - marginLeft - marginRight;
-                    
+
                     // Título
                     doc.setFontSize(20);
                     doc.setFont('helvetica', 'bold');
                     doc.text('Biblioteca Dr. Jorge Batlle', pageWidth / 2, marginTop, { align: 'center' });
-                    
+
                     // Subtítulo
                     doc.setFontSize(16);
                     doc.setFont('helvetica', 'bold');
                     doc.text('Informe de Balance', pageWidth / 2, marginTop + 10, { align: 'center' });
-                    
+
                     // Identificación del estante
                     doc.setFontSize(14);
                     doc.text(`Estante: ${shelf}`, pageWidth / 2, marginTop + 20, { align: 'center' });
-                    
+
                     // Información del balance
                     const totalBooks = this.balanceBooks.length;
                     const presentBooks = this.balanceBooks.filter(item => item.present).length;
                     const missingCount = missingBooks.length;
-                    
+
                     doc.setFontSize(10);
                     doc.setFont('helvetica', 'normal');
                     doc.text(`Total de libros en estante: ${totalBooks}`, pageWidth / 2, marginTop + 30, { align: 'center' });
                     doc.text(`Libros presentes: ${presentBooks}`, pageWidth / 2, marginTop + 36, { align: 'center' });
                     doc.text(`Libros faltantes: ${missingCount}`, pageWidth / 2, marginTop + 42, { align: 'center' });
-                    
+
                     // Fecha
                     doc.text(`Fecha del balance: ${new Date().toLocaleDateString('es-ES')}`, pageWidth / 2, marginTop + 50, { align: 'center' });
-                    
+
                     // Ordenar libros faltantes alfabéticamente por apellido del autor
                     const sortedMissingBooks = missingBooks.sort((a, b) => {
                         const authorA = `${a.book.authorLast} ${a.book.authorFirst}`.toLowerCase();
                         const authorB = `${b.book.authorLast} ${b.book.authorFirst}`.toLowerCase();
                         return authorA.localeCompare(authorB);
                     });
-                    
+
                     // Preparar datos para la tabla
                     const tableData = sortedMissingBooks.map(item => [
                         item.book.authorLast,
@@ -3069,7 +3308,7 @@
                         item.book.year || '-',
                         item.book.ejemplares || 1
                     ]);
-                    
+
                     // Generar tabla optimizada para A4
                     doc.autoTable({
                         head: [['Apellido', 'Nombre', 'Título', 'Año', 'Ejemplares']],
@@ -3096,31 +3335,31 @@
                             3: { cellWidth: contentWidth * 0.12 }, // Año
                             4: { cellWidth: contentWidth * 0.12 }, // Ejemplares
                         },
-                        didDrawPage: function(data) {
+                        didDrawPage: function (data) {
                             // Pie de página se agregará después de generar la tabla
                         }
                     });
-                    
+
                     // Agregar numeración de páginas y nota después de generar la tabla
                     const totalPages = doc.internal.getNumberOfPages();
                     for (let i = 1; i <= totalPages; i++) {
                         doc.setPage(i);
                         doc.setFontSize(7);
                         doc.text(`Página ${i} de ${totalPages}`, pageWidth / 2, pageHeight - 8, { align: 'center' });
-                        
+
                         // Nota adicional en cada página
                         doc.setFontSize(6);
                         doc.setTextColor(100);
                         doc.text('Libros marcados como FALTANTES en el balance de inventario', pageWidth / 2, pageHeight - 4, { align: 'center' });
                     }
-                    
+
                     // Guardar PDF
                     const fileName = `Balance_Estante_${shelf}_${new Date().toISOString().split('T')[0]}.pdf`;
                     doc.save(fileName);
-                    
+
                     this.showAlert(`✅ Reporte de balance generado. ${missingCount} libros faltantes`, 'success');
                     this.addActivity('balance_report', `Generó reporte de balance del estante ${shelf} con ${missingCount} libros faltantes`);
-                    
+
                 } catch (error) {
                     this.showAlert('❌ Error al generar el reporte de balance', 'error');
                     console.error(error);
@@ -3141,7 +3380,7 @@
                 document.getElementById('newUsername').disabled = false;
                 document.getElementById('newRole').disabled = false;
                 document.getElementById('newPassword').required = true;
-                document.getElementById('passwordLabelText').textContent = '*' ;
+                document.getElementById('passwordLabelText').textContent = '*';
                 document.getElementById('userModalTitle').textContent = 'Nuevo Usuario';
                 document.getElementById('userModal').classList.add('show');
             }
@@ -3398,9 +3637,10 @@
             }
         });
 
-        document.addEventListener('touchmove', function(e) {
+        document.addEventListener('touchmove', function (e) {
             if (e.touches.length > 1) e.preventDefault();
         });
     </script>
 </body>
+
 </html>

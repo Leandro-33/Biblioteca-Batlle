@@ -54,7 +54,7 @@ io.on('connection', (socket) => {
     socket.on('addBook', (data) => {
         books.push(data.book);
         saveBooksToFile(books);
-        socket.broadcast.emit('bookAdded', data);
+        io.emit('bookAdded', data);
     });
 
     socket.on('editBook', (data) => {
@@ -62,21 +62,21 @@ io.on('connection', (socket) => {
         if (index !== -1) {
             books[index] = { ...books[index], ...data.book };
             saveBooksToFile(books);
-            socket.broadcast.emit('bookUpdated', data);
+            io.emit('bookUpdated', data);
         }
     });
 
     socket.on('deleteBook', (data) => {
         books = books.filter(b => b.id !== data.id);
         saveBooksToFile(books);
-        socket.broadcast.emit('bookDeleted', data);
+        io.emit('bookDeleted', data);
     });
 
     socket.on('bulkAddBooks', (data) => {
         if (Array.isArray(data.books) && data.books.length > 0) {
             books = [...books, ...data.books];
             saveBooksToFile(books);
-            socket.broadcast.emit('booksBulkAdded', data);
+            io.emit('booksBulkAdded', data);
         }
     });
 
@@ -94,6 +94,7 @@ io.on('connection', (socket) => {
     });
 });
 
-server.listen(3000, () => {
-    console.log('🚀 Servidor escuchando en puerto 3000');
+server.listen(3000, '0.0.0.0', () => {
+    console.log('🚀 Servidor escuchando en puerto 3000 en todas las interfaces');
+    console.log('📡 Conexión remota disponible');
 });

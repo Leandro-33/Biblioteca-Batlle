@@ -1773,7 +1773,7 @@
                 });
 
                 this.socket.on('initialBooks', (books) => {
-                    this.books = Array.isArray(books) ? books : [];
+                    this.books = Array.isArray(books) ? this.prepareBooksForSearch(books) : [];
                     this.filteredBooks = [];
                     this.saveBooks();
                     this.updateStats();
@@ -1784,12 +1784,11 @@
                     if (!data?.book) return;
                     const bookExists = this.books.some(b => b.id === data.book.id);
                     if (!bookExists) {
-                        this.books.push(data.book);
+                        this.books.push(this.prepareBookForSearch(data.book));
                     }
                     this.saveBooks();
                     this.updateStats();
                     this.searchCache = new Map(); // Clear search cache
-                    // Re-apply search if active
                     if (this.lastSearchQuery || this.lastSearchShelf) {
                         this.applySearch();
                     } else {
@@ -1801,11 +1800,10 @@
                     if (!data?.book) return;
                     const index = this.books.findIndex(b => b.id === data.book.id);
                     if (index !== -1) {
-                        this.books[index] = { ...this.books[index], ...data.book };
+                        this.books[index] = this.prepareBookForSearch({ ...this.books[index], ...data.book });
                         this.saveBooks();
                         this.searchCache = new Map(); // Clear search cache
                         this.updateStats();
-                        // Re-apply search if active
                         if (this.lastSearchQuery || this.lastSearchShelf) {
                             this.applySearch();
                         } else {
@@ -1830,17 +1828,15 @@
 
                 this.socket.on('booksBulkAdded', (data) => {
                     if (!Array.isArray(data?.books) || data.books.length === 0) return;
-                    // Add only new books
                     const newBooks = data.books.filter(newBook =>
                         !this.books.some(existingBook => existingBook.id === newBook.id)
                     );
                     if (newBooks.length > 0) {
-                        this.books = [...this.books, ...newBooks];
+                        this.books = [...this.books, ...this.prepareBooksForSearch(newBooks)];
                     }
                     this.saveBooks();
                     this.searchCache = new Map(); // Clear search cache
                     this.updateStats();
-                    // Re-apply search if active
                     if (this.lastSearchQuery || this.lastSearchShelf) {
                         this.applySearch();
                     } else {
@@ -1999,6 +1995,9 @@
                 if (yearOption) yearOption.value = '';
                 const observationsInput = document.getElementById('bookObservations');
                 if (observationsInput) observationsInput.value = '';
+                // Asegurar estado por defecto al crear un libro
+                const statusSelect = document.getElementById('bookStatus');
+                if (statusSelect) statusSelect.value = 'Disponible';
                 const encuadernado = document.getElementById('bookEncuadernado');
                 if (encuadernado) encuadernado.value = 'No';
                 this.updateYearInputState();
@@ -2035,11 +2034,11 @@
                 if (this.editingBookId) {
                     const index = this.books.findIndex(b => b.id === this.editingBookId);
                     if (index !== -1) {
-                        this.books[index] = { ...this.books[index], ...bookData };
+                        this.books[index] = this.prepareBookForSearch({ ...this.books[index], ...bookData });
                         this.addActivity('edit', `Editó "${bookData.title}"`);
                     }
                 } else {
-                    this.books.push(bookData);
+                    this.books.push(this.prepareBookForSearch(bookData));
                     this.addActivity('add', `Agregó "${bookData.title}"`);
                 }
 
@@ -2050,7 +2049,7 @@
                 this.searchCache = new Map(); // Clear search cache
                 this.updateStats();
 
-                // Re-apply search if active, otherwise just render books
+                // Re-apply search if active, otherwise just render books immediately
                 if (this.lastSearchQuery || this.lastSearchShelf) {
                     this.applySearch();
                 } else {
@@ -2070,10 +2069,10 @@
                     if (this.socket && this.socket.connected) {
                         this.socket.emit('deleteBook', { id });
                     }
-                    this.searchCache = new Map(); // Clear search cache
+                    this.searchCache = new Map();
                     this.updateStats();
 
-                    // Re-apply search if active, otherwise just render books
+                    // Re-apply search if active, otherwise just render books immediately
                     if (this.lastSearchQuery || this.lastSearchShelf) {
                         this.applySearch();
                     } else {
@@ -2190,7 +2189,7 @@
                     document.getElementById('bookVolumen').value = book.volumen || '';
                     document.getElementById('bookISBN').value = book.isbn || '';
                     document.getElementById('bookExemplares').value = book.ejemplares || 1;
-                    document.getElementById('bookStatus').value = book.status;
+                        document.getElementById('bookStatus').value = book.status || 'Disponible';
                     document.getElementById('bookObservations').value = book.observations || '';
                     document.getElementById('bookEncuadernado').value = book.encuadernado || 'No';
                     document.getElementById('bookModal').classList.add('show');
@@ -2220,10 +2219,9 @@
             }
 
             applySearch() {
-                const query = this.lastSearchQuery || '';
-                const shelf = this.lastSearchShelf || '';
+                const query = this.normalizeText(this.lastSearchQuery || '');
+                const shelf = this.normalizeText(this.lastSearchShelf || '');
 
-                // Cache for performance
                 if (!this.searchCache) this.searchCache = new Map();
 
                 const cacheKey = `${query}|${shelf}`;
@@ -2233,43 +2231,21 @@
                     return;
                 }
 
-                const normalizedShelf = this.normalizeText(shelf.toLowerCase());
-                const normalizedQuery = this.normalizeText(query.toLowerCase());
-                const queryWords = normalizedQuery.split(/\s+/).filter(w => w.length > 0);
+                const queryWords = query.split(/\s+/).filter(w => w.length > 0);
 
                 this.filteredBooks = this.books.filter(b => {
-                    // Exact shelf match if specified
-                    if (normalizedShelf && this.normalizeText((b.shelf || '').toLowerCase()) !== normalizedShelf) {
+                    if (shelf && !(b.searchShelf || '').includes(shelf)) {
                         return false;
                     }
 
                     if (!queryWords.length) return true;
 
-                    // Search in all fields
-                    const searchableText = [
-                        b.title || '',
-                        b.authorLast || '',
-                        b.authorFirst || '',
-                        `${b.authorLast || ''} ${b.authorFirst || ''}`,
-                        `${b.authorFirst || ''} ${b.authorLast || ''}`,
-                        b.tomo || '',
-                        b.volumen || '',
-                        b.isbn || '',
-                        b.observations || ''
-                    ].join(' ').toLowerCase();
-
-                    const normalizedSearchable = this.normalizeText(searchableText);
-
-                    // Check if all query words are present (case-insensitive, accent-insensitive)
-                    return queryWords.every(word =>
-                        normalizedSearchable.includes(word)
-                    );
+                    const searchableText = b.searchText || '';
+                    return queryWords.every(word => searchableText.includes(word));
                 });
 
-                // Cache result
                 this.searchCache.set(cacheKey, [...this.filteredBooks]);
-                if (this.searchCache.size > 50) {
-                    // Limit cache size
+                if (this.searchCache.size > 100) {
                     const firstKey = this.searchCache.keys().next().value;
                     this.searchCache.delete(firstKey);
                 }
@@ -2278,7 +2254,34 @@
             }
 
             normalizeText(text) {
-                return text.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/\s+/g, '');
+                return String(text || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/\s+/g, ' ').trim().toLowerCase();
+            }
+
+            prepareBookForSearch(book) {
+                const normalizedShelf = this.normalizeText(book.shelf || '');
+                const searchableText = this.normalizeText([
+                    book.title,
+                    book.authorLast,
+                    book.authorFirst,
+                    `${book.authorLast || ''} ${book.authorFirst || ''}`,
+                    `${book.authorFirst || ''} ${book.authorLast || ''}`,
+                    book.shelf,
+                    book.year,
+                    book.tomo,
+                    book.volumen,
+                    book.isbn,
+                    book.status,
+                    book.observations,
+                    book.encuadernado
+                ].join(' '));
+
+                return { ...book, searchShelf: normalizedShelf, searchText: searchableText };
+            }
+
+            prepareBooksForSearch(books) {
+                return Array.isArray(books)
+                    ? books.map(book => this.prepareBookForSearch(book))
+                    : [];
             }
 
             showServerConfigModal() {
@@ -2738,7 +2741,8 @@
                         volumen: findKey(['Volumen', 'volumen']),
                         isbn: findKey(['ISBN', 'isbn']),
                         ejemplares: findKey(['Ejemplares', 'ejemplares']),
-                        status: findKey(['Estado', 'estado'])
+                        status: findKey(['Estado', 'estado']),
+                        observations: findKey(['Observaciones', 'observaciones', 'Notas', 'notas'])
                     };
 
                     if (!keyNames.shelf || !keyNames.authorLast || !keyNames.authorFirst || !keyNames.title) {
@@ -2764,6 +2768,7 @@
                         const isbn = getRowValue(row, normalizedKeyMap[normalizeKey(keyNames.isbn)]);
                         const ejemplares = parseInt(getRowValue(row, normalizedKeyMap[normalizeKey(keyNames.ejemplares)]) || '1', 10) || 1;
                         const status = getRowValue(row, normalizedKeyMap[normalizeKey(keyNames.status)]) || 'Disponible';
+                        const observations = getRowValue(row, normalizedKeyMap[normalizeKey(keyNames.observations)]) || '';
 
                         if (!shelf || !authorLast || !authorFirst || !title) {
                             errors.push(`Fila ${rowIndex + 2}: faltan datos obligatorios`);
@@ -2794,6 +2799,7 @@
                             isbn,
                             ejemplares,
                             status,
+                            observations,
                             loadedFromExcel: true,
                             createdBy: this.currentUser ? this.currentUser.username : 'Importado',
                             createdAt: new Date().toISOString()
@@ -2878,7 +2884,7 @@
 
             searchShelf() {
                 const shelfInput = document.getElementById('shelfInput').value.trim();
-                const shelf = this.normalizeText(shelfInput.toLowerCase());
+                const shelf = this.normalizeText(shelfInput);
                 const results = document.getElementById('shelfResults');
 
                 if (!shelf) {
@@ -2886,14 +2892,18 @@
                     return;
                 }
 
-                const books = this.books.filter(b => this.normalizeText((b.shelf || '').toLowerCase()) === shelf);
+                const books = this.books.filter(b => this.normalizeText((b.shelf || '')).includes(shelf));
+
+                // Calcular títulos y ejemplares reales
+                const titlesCount = books.length;
+                const totalCopies = books.reduce((sum, b) => sum + (parseInt(b.ejemplares) || 1), 0);
 
                 if (books.length === 0) {
                     results.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📭</div><div class="empty-state-title">No hay libros</div><div class="empty-state-text">Este estante está vacío</div></div>';
                     return;
                 }
 
-                let html = `<div style="background: white; border-radius: 12px; padding: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); border: 1px solid #e5e7eb;"><h3 style="color: var(--dark); margin-bottom: 12px; font-size: 16px; font-weight: 700;">Estante ${shelf} (${books.length})</h3><ul style="padding-left: 20px;">`;
+                let html = `<div style="background: white; border-radius: 12px; padding: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); border: 1px solid #e5e7eb;"><h3 style="color: var(--dark); margin-bottom: 12px; font-size: 16px; font-weight: 700;">Estante ${shelf} — Títulos: ${titlesCount} • Ejemplares: ${totalCopies}</h3><ul style="padding-left: 20px;">`;
                 books.forEach(book => {
                     html += `<li style="margin-bottom: 10px;"><strong style="color: var(--dark);">${book.title}</strong><br><span style="font-size: 12px; color: var(--gray);">${book.authorLast}, ${book.authorFirst} • ${book.ejemplares || 1} ej.</span></li>`;
                 });
@@ -3557,14 +3567,14 @@
                 fetch(apiUrl)
                     .then(response => response.ok ? response.json() : Promise.reject(response.statusText))
                     .then(data => {
-                        this.books = Array.isArray(data) ? data : [];
+                        this.books = Array.isArray(data) ? this.prepareBooksForSearch(data) : [];
                         this.filteredBooks = [];
                         this.saveBooks();
                     })
                     .catch(error => {
                         console.warn('No se pudieron cargar libros desde el servidor:', error);
                         const stored = localStorage.getItem('biblioteca_books_v6');
-                        this.books = stored ? JSON.parse(stored) : [];
+                        this.books = stored ? this.prepareBooksForSearch(JSON.parse(stored)) : [];
                     });
             }
 

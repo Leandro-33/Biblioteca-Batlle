@@ -598,6 +598,13 @@
             box-shadow: 0 4px 12px rgba(6, 182, 212, 0.25);
         }
 
+        .btn-outline {
+            background: transparent;
+            color: var(--warning, #D97706);
+            border: 2px solid var(--warning, #D97706);
+            box-shadow: none;
+        }
+
         .search-container {
             width: 100%;
         }
@@ -899,6 +906,40 @@
             color: #047857;
             font-size: 11px;
             font-weight: 700;
+        }
+
+        .planilla-badge {
+            display: inline-block;
+            margin-top: 6px;
+            margin-bottom: 8px;
+            padding: 4px 10px;
+            border-radius: 999px;
+            background: rgba(99, 102, 241, 0.12);
+            color: #4338CA;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .duplicate-badge {
+            display: inline-block;
+            margin-top: 6px;
+            margin-bottom: 8px;
+            padding: 4px 10px;
+            border-radius: 999px;
+            background: rgba(245, 158, 11, 0.15);
+            color: #B45309;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        #reportDuplicatesOnly {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+            color: var(--text-secondary, #555);
+            margin: 8px 0;
+            cursor: pointer;
         }
 
         .book-card:active {
@@ -1412,6 +1453,24 @@
                     </a>
                 </li>
                 <li class="menu-item">
+                    <a class="menu-link" onclick="app.createNewPlanilla()">
+                        <span class="menu-icon">📑</span>
+                        <span>Crear planilla</span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a class="menu-link" onclick="app.openSelectPlanillaModal()">
+                        <span class="menu-icon">🎯</span>
+                        <span>Elegir planilla</span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a class="menu-link" onclick="app.openDeletePlanillaModal()">
+                        <span class="menu-icon">🗑️</span>
+                        <span>Eliminar planilla</span>
+                    </a>
+                </li>
+                <li class="menu-item">
                     <a class="menu-link" onclick="app.toggleActivity()">
                         <span class="menu-icon">📡</span>
                         <span>Actividad</span>
@@ -1464,7 +1523,7 @@
                         <div class="controls-panel">
                             <div class="controls-row">
                                 <button class="btn btn-primary" onclick="app.openAddBookModal()">➕ Nuevo Libro</button>
-                                <button class="btn btn-success" onclick="app.exportToExcel()">📥 Exportar</button>
+                                <button class="btn btn-success" onclick="app.exportToExcel(event)">📥 Exportar</button>
                                 <div class="file-input-wrapper">
                                     <label for="excelFile" class="file-input-label">📤 Importar</label>
                                     <input type="file" id="excelFile" accept=".xlsx,.xls,.csv"
@@ -1478,6 +1537,7 @@
                                 <input type="text" id="shelfFilter" class="shelf-filter" placeholder="Estante"
                                     oninput="app.debounceSearch()">
                             </div>
+
                         </div>
 
                         <div class="book-list" id="bookList">
@@ -1494,11 +1554,16 @@
                     <div id="shelvesSection" class="section-content hidden">
                         <div class="controls-panel">
                             <div class="controls-row">
-                                <button class="btn btn-warning" onclick="app.generatePDFReportGeneral()">📄 Reporte
+                                <button class="btn btn-warning" onclick="app.generatePDFReportGeneral(event)">📄 Reporte
                                     General</button>
-                                <button class="btn btn-info" onclick="app.generatePDFReportByShelf()">📄 Reporte por
+                                <button class="btn btn-info" onclick="app.generatePDFReportByShelf(event)">📄 Reporte
+                                    por
                                     Estante</button>
                             </div>
+                            <label id="reportDuplicatesOnly">
+                                <input type="checkbox" id="reportOnlyDuplicatesCheckbox" onchange="app.searchShelf()">
+                                🔁 Imprimir solo los libros repetidos (mismo título y autor)
+                            </label>
                             <div class="search-shelf">
                                 <input type="text" id="shelfInput" placeholder="Número de estante"
                                     oninput="app.searchShelf()"
@@ -1515,7 +1580,8 @@
                         <div class="controls-panel">
                             <div class="controls-row balance-actions">
                                 <button class="btn btn-info" onclick="app.showBalanceState()">📊 Estado</button>
-                                <button class="btn btn-warning" onclick="app.generateBalancePDF()">📄 Informe</button>
+                                <button class="btn btn-warning" onclick="app.generateBalancePDF(event)">📄
+                                    Informe</button>
                                 <button class="btn btn-success" onclick="app.finishBalance()">✅ Finalizar</button>
                                 <button class="btn btn-danger" onclick="app.resetBalance()">🔄 Resetear</button>
                             </div>
@@ -1643,6 +1709,20 @@
                                 <option value="Si">Sí</option>
                             </select>
                         </div>
+                        <div class="form-group">
+                            <label>Repetido</label>
+                            <select id="bookRepetido" title="Marca si este libro está repetido en la biblioteca">
+                                <option value="No">No</option>
+                                <option value="Si">Sí</option>
+                            </select>
+                        </div>
+                    </div>
+                    <input type="hidden" id="bookRepeatedCount" value="0">
+                    <div class="form-group">
+                        <label>Planilla</label>
+                        <select id="bookPlanilla" title="Asigna esta planilla al libro">
+                            <option value="Principal">Principal</option>
+                        </select>
                     </div>
                     <div class="form-group">
                         <label>Observaciones</label>
@@ -1654,6 +1734,103 @@
                         <button type="submit" class="btn btn-primary">Guardar</button>
                     </div>
                 </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL REPETIDO -->
+    <div id="duplicateInfoModal" class="modal">
+        <div class="modal-content" style="max-width: 460px; margin: 20px auto; border-radius: 20px;">
+            <div class="modal-header">
+                <h2>🔁 Cantidad de repetidos</h2>
+                <button class="close-btn" onclick="app.cancelDuplicateInfoModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <p style="line-height: 1.6; color: var(--dark); margin-bottom: 16px;">
+                    Ingrese cuántos libros repetidos hay para este título. Ejemplo: 1, 2, 10, etc.
+                </p>
+                <div class="form-group">
+                    <label for="duplicateQuantityInput">Cantidad</label>
+                    <input type="number" id="duplicateQuantityInput" min="1" step="1" placeholder="Ej: 3">
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn" style="background: var(--gray-light); color: var(--dark);"
+                        onclick="app.cancelDuplicateInfoModal()">Cancelar</button>
+                    <button type="button" class="btn btn-primary"
+                        onclick="app.confirmDuplicateQuantity()">Guardar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL ELIMINAR PLANILLA -->
+    <div id="deletePlanillaModal" class="modal">
+        <div class="modal-content" style="max-width: 460px; margin: 20px auto; border-radius: 20px;">
+            <div class="modal-header">
+                <h2>🗑️ Eliminar planilla</h2>
+                <button class="close-btn" onclick="app.closeModal('deletePlanillaModal')">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="deletePlanillaSelect">Planilla</label>
+                    <select id="deletePlanillaSelect">
+                        <option value="">Selecciona una planilla</option>
+                    </select>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn" style="background: var(--gray-light); color: var(--dark);"
+                        onclick="app.closeModal('deletePlanillaModal')">Cancelar</button>
+                    <button type="button" class="btn btn-danger"
+                        onclick="app.confirmDeletePlanilla()">Eliminar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL ELEGIR PLANILLA -->
+    <div id="selectPlanillaModal" class="modal">
+        <div class="modal-content" style="max-width: 460px; margin: 20px auto; border-radius: 20px;">
+            <div class="modal-header">
+                <h2>🎯 Elegir planilla</h2>
+                <button class="close-btn" onclick="app.closeModal('selectPlanillaModal')">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="selectPlanillaFilter">Planilla</label>
+                    <select id="selectPlanillaFilter">
+                        <option value="">Todas las planillas</option>
+                    </select>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn" style="background: var(--gray-light); color: var(--dark);"
+                        onclick="app.closeModal('selectPlanillaModal')">Cancelar</button>
+                    <button type="button" class="btn btn-primary"
+                        onclick="app.confirmSelectPlanilla()">Aplicar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL EXPORTAR PLANILLA -->
+    <div id="exportPlanillaModal" class="modal">
+        <div class="modal-content" style="max-width: 460px; margin: 20px auto; border-radius: 20px;">
+            <div class="modal-header">
+                <h2>📤 Exportar libros</h2>
+                <button class="close-btn" onclick="app.closeModal('exportPlanillaModal')">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="exportPlanillaSelectModal">Planilla</label>
+                    <select id="exportPlanillaSelectModal">
+                        <option value="">Todas las planillas</option>
+                    </select>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn" style="background: var(--gray-light); color: var(--dark);"
+                        onclick="app.closeModal('exportPlanillaModal')">Cancelar</button>
+                    <button type="button" class="btn btn-primary"
+                        onclick="app.confirmExportPlanilla()">Exportar</button>
+                </div>
             </div>
         </div>
     </div>
@@ -1710,6 +1887,11 @@
                 this.serverUrl = window.location.protocol === 'file:' ? 'http://localhost:3000' : window.location.origin;
                 this.lastSearchQuery = '';
                 this.lastSearchShelf = '';
+                this.planillas = [];
+                this.planillaFilterValue = '';
+                this.currentPlanilla = '';
+                this.pendingExportButton = null;
+                this.duplicatesMap = new Map();
 
                 this.loadUsers();
                 this.initSocket();
@@ -1724,6 +1906,15 @@
                 const yearOption = document.getElementById('bookYearOption');
                 if (yearOption) {
                     yearOption.addEventListener('change', () => this.updateYearInputState());
+                }
+
+                const repeatedSelect = document.getElementById('bookRepetido');
+                if (repeatedSelect) {
+                    repeatedSelect.addEventListener('change', (event) => {
+                        if (event.target.value === 'Si') {
+                            this.showDuplicateInfoModal();
+                        }
+                    });
                 }
             }
 
@@ -1826,6 +2017,25 @@
                     }
                 });
 
+                this.socket.on('planillaDeleted', (data) => {
+                    const planillaName = data?.planillaName;
+                    if (!planillaName) return;
+                    this.books = this.books.map(book => {
+                        const currentPlanilla = (book.planilla || 'Principal').trim();
+                        return currentPlanilla.toLowerCase() === planillaName.toLowerCase()
+                            ? { ...book, planilla: 'Principal' }
+                            : book;
+                    });
+                    this.saveBooks();
+                    this.searchCache = new Map();
+                    this.updateStats();
+                    if (this.lastSearchQuery || this.lastSearchShelf) {
+                        this.applySearch();
+                    } else {
+                        this.renderBooks();
+                    }
+                });
+
                 this.socket.on('booksBulkAdded', (data) => {
                     if (!Array.isArray(data?.books) || data.books.length === 0) return;
                     const newBooks = data.books.filter(newBook =>
@@ -1874,6 +2084,96 @@
                 document.getElementById('menuAvailableBooks').textContent = stats.available;
                 document.getElementById('menuLoanedBooks').textContent = stats.loaned;
                 document.getElementById('menuDonatedBooks').textContent = stats.donated;
+                this.recomputeDuplicates();
+                this.refreshPlanillaOptions();
+            }
+
+            // Agrupa los libros por clave de duplicado (título + autor) y guarda solo los grupos con más de 1 copia
+            recomputeDuplicates() {
+                const map = new Map();
+                this.books.forEach(b => {
+                    if (!b.dupKey) return;
+                    if (!map.has(b.dupKey)) map.set(b.dupKey, []);
+                    map.get(b.dupKey).push(b);
+                });
+                this.duplicatesMap = new Map();
+                map.forEach((arr, key) => {
+                    if (arr.length > 1) this.duplicatesMap.set(key, arr);
+                });
+            }
+
+            isDuplicateBook(book) {
+                if (book.repetido === 'Si') return true;
+                return !!(book.dupKey && this.duplicatesMap && this.duplicatesMap.has(book.dupKey));
+            }
+
+            getDuplicateCount(book) {
+                const group = (book.dupKey && this.duplicatesMap) ? this.duplicatesMap.get(book.dupKey) : null;
+                const groupCount = group ? group.length : 1;
+                const manualCount = Number.parseInt(book.repetidoCantidad, 10) || 0;
+                if (book.repetido === 'Si') {
+                    return Math.max(manualCount || groupCount, 2);
+                }
+                return manualCount > 1 ? manualCount : groupCount;
+            }
+
+            getAllDuplicateBooks() {
+                if (!this.duplicatesMap) return [];
+                const result = [];
+                this.duplicatesMap.forEach(group => result.push(...group));
+                return result;
+            }
+
+            // Lista de planillas (hojas/importaciones) presentes en la colección, con su cantidad de libros
+            populateBookPlanillaSelect(selectedValue = '') {
+                const select = document.getElementById('bookPlanilla');
+                if (!select) return;
+
+                const planillas = this.getStoredPlanillas();
+                const values = ['Sin planilla', 'Principal', ...planillas.filter(name => name !== 'Principal' && name !== 'Sin planilla')];
+                select.innerHTML = values.map(name => `<option value="${this.escapeHtml(name)}">${this.escapeHtml(name)}</option>`).join('');
+
+                const choice = selectedValue || this.planillaFilterValue || 'Sin planilla';
+                if (values.includes(choice)) {
+                    select.value = choice;
+                } else {
+                    select.value = 'Sin planilla';
+                }
+            }
+
+            refreshPlanillaOptions() {
+                const savedPlanillas = this.getStoredPlanillas();
+                const counts = new Map();
+                this.books.forEach(b => {
+                    const p = (b.planilla && String(b.planilla).trim()) || 'Sin planilla';
+                    counts.set(p, (counts.get(p) || 0) + 1);
+                });
+
+                savedPlanillas.forEach((name) => {
+                    if (!counts.has(name)) counts.set(name, 0);
+                });
+
+                const normalizedNames = Array.from(new Set(['Sin planilla', 'Principal', ...savedPlanillas.filter(Boolean), ...Array.from(counts.keys())]));
+                const planillaEntries = normalizedNames
+                    .map(name => [name, counts.get(name) || 0])
+                    .sort((a, b) => a[0].localeCompare(b[0], undefined, { sensitivity: 'base' }));
+
+                this.planillas = planillaEntries;
+
+                const exportSelect = document.getElementById('exportPlanillaSelect');
+                if (exportSelect) {
+                    exportSelect.innerHTML = '<option value="">📥 Todas las planillas</option>' +
+                        this.planillas.map(([name]) =>
+                            `<option value="${this.escapeHtml(name)}">${this.escapeHtml(name)}</option>`
+                        ).join('');
+                    if (this.planillaFilterValue && this.planillas.some(([name]) => name === this.planillaFilterValue)) {
+                        exportSelect.value = this.planillaFilterValue;
+                    } else {
+                        exportSelect.value = '';
+                    }
+                }
+
+                this.savePlanillas();
             }
 
             login(event) {
@@ -1984,6 +2284,122 @@
                 this.closeSidebar();
             }
 
+            registerPlanilla(planillaName) {
+                const normalizedName = (planillaName || '').trim();
+                if (!normalizedName) {
+                    return '';
+                }
+
+                const storedNames = this.getStoredPlanillas();
+                const alreadyExists = storedNames.some(existingName => existingName.toLowerCase() === normalizedName.toLowerCase());
+                const namesToStore = alreadyExists
+                    ? storedNames
+                    : [...storedNames, normalizedName];
+
+                localStorage.setItem('biblioteca_planillas', JSON.stringify(namesToStore));
+                this.currentPlanilla = normalizedName;
+                this.planillaFilterValue = normalizedName;
+                this.refreshPlanillaOptions();
+                this.populateBookPlanillaSelect(normalizedName);
+
+                const filterSelect = document.getElementById('selectPlanillaFilter');
+                if (filterSelect) {
+                    filterSelect.value = normalizedName;
+                }
+                const exportSelect = document.getElementById('exportPlanillaSelect');
+                if (exportSelect) {
+                    exportSelect.value = normalizedName;
+                }
+
+                return normalizedName;
+            }
+
+            openDeletePlanillaModal() {
+                const select = document.getElementById('deletePlanillaSelect');
+                if (!select) return;
+
+                const availablePlanillas = this.getStoredPlanillas().filter(name => name !== 'Principal' && name !== 'Sin planilla');
+                if (availablePlanillas.length === 0) {
+                    this.showAlert('⚠️ No hay planillas adicionales para eliminar', 'warning');
+                    return;
+                }
+
+                select.innerHTML = availablePlanillas.map(name => {
+                    const count = this.books.filter(book => (book.planilla && String(book.planilla).trim()) === name).length;
+                    return `<option value="${this.escapeHtml(name)}">${this.escapeHtml(name)} (${count})</option>`;
+                }).join('');
+                this.closeSidebar();
+                document.getElementById('deletePlanillaModal').classList.add('show');
+            }
+
+            confirmDeletePlanilla() {
+                const select = document.getElementById('deletePlanillaSelect');
+                const planillaName = select?.value?.trim();
+
+                if (!planillaName) {
+                    this.showAlert('⚠️ Selecciona una planilla para eliminar', 'warning');
+                    return;
+                }
+
+                const confirmed = confirm(`¿Eliminar la planilla "${planillaName}"? Los libros asignados quedarán sin planilla.`);
+                if (!confirmed) return;
+
+                const storedPlanillas = this.getStoredPlanillas().filter(name => name.toLowerCase() !== planillaName.toLowerCase());
+                localStorage.setItem('biblioteca_planillas', JSON.stringify(storedPlanillas));
+
+                this.books = this.books.map(book => {
+                    const currentPlanilla = String(book.planilla || '').trim();
+                    return currentPlanilla.toLowerCase() === planillaName.toLowerCase()
+                        ? { ...book, planilla: 'Sin planilla' }
+                        : book;
+                });
+
+                this.currentPlanilla = this.currentPlanilla && this.currentPlanilla.toLowerCase() === planillaName.toLowerCase() ? '' : this.currentPlanilla;
+                this.planillaFilterValue = this.planillaFilterValue && this.planillaFilterValue.toLowerCase() === planillaName.toLowerCase() ? '' : this.planillaFilterValue;
+                this.saveBooks();
+                this.searchCache = new Map();
+                this.refreshPlanillaOptions();
+                this.populateBookPlanillaSelect(this.planillaFilterValue || 'Sin planilla');
+
+                const filterSelect = document.getElementById('selectPlanillaFilter');
+                if (filterSelect) {
+                    filterSelect.value = this.planillaFilterValue || 'Todas las planillas';
+                }
+
+                if (this.socket && this.socket.connected) {
+                    this.socket.emit('deletePlanilla', { planillaName });
+                }
+
+                this.updateStats();
+                this.renderBooks();
+                this.closeModal('deletePlanillaModal');
+                this.showAlert(`✅ Planilla "${planillaName}" eliminada`, 'success');
+                this.addActivity('planilla', `Eliminó la planilla "${planillaName}"`);
+            }
+
+            createNewPlanilla() {
+                const currentName = this.planillas.length > 0 ? this.planillas[0][0] : '';
+                const name = window.prompt('📑 Ingrese el nombre de la nueva planilla:', currentName || 'Nueva planilla');
+                if (name === null) return;
+
+                const planillaName = name.trim();
+                if (!planillaName) {
+                    this.showAlert('⚠️ El nombre de la planilla no puede estar vacío', 'warning');
+                    return;
+                }
+
+                const exists = this.getStoredPlanillas().some(existingName => existingName.toLowerCase() === planillaName.toLowerCase());
+                if (exists) {
+                    this.showAlert(`⚠️ La planilla "${planillaName}" ya existe`, 'warning');
+                    return;
+                }
+
+                this.registerPlanilla(planillaName);
+                this.showAlert(`✅ Planilla "${planillaName}" creada`, 'success');
+                this.addActivity('planilla', `Creó la planilla "${planillaName}"`);
+                this.closeSidebar();
+            }
+
             // ===== LIBROS =====
             openAddBookModal() {
                 this.editingBookId = null;
@@ -2000,12 +2416,25 @@
                 if (statusSelect) statusSelect.value = 'Disponible';
                 const encuadernado = document.getElementById('bookEncuadernado');
                 if (encuadernado) encuadernado.value = 'No';
+                const repetido = document.getElementById('bookRepetido');
+                if (repetido) repetido.value = 'No';
+                const repeatedCountInput = document.getElementById('bookRepeatedCount');
+                if (repeatedCountInput) repeatedCountInput.value = '0';
+                this.populateBookPlanillaSelect();
                 this.updateYearInputState();
                 document.getElementById('bookModal').classList.add('show');
             }
 
             saveBook(event) {
                 event.preventDefault();
+
+                const repetidoValue = document.getElementById('bookRepetido').value || 'No';
+                const repetidoCantidad = this.getRepeatedCountValue();
+
+                if (repetidoValue === 'Si' && repetidoCantidad < 1) {
+                    this.showAlert('⚠️ Ingresa la cantidad de libros repetidos', 'warning');
+                    return;
+                }
 
                 const bookData = {
                     id: this.editingBookId || 'book_' + Date.now(),
@@ -2018,10 +2447,13 @@
                     volumen: document.getElementById('bookVolumen').value.trim(),
                     isbn: document.getElementById('bookISBN').value.trim(),
                     ejemplares: parseInt(document.getElementById('bookExemplares').value) || 1,
-                    status: document.getElementById('bookStatus').value,
+                    status: document.getElementById('bookStatus').value || 'Disponible',
                     observations: document.getElementById('bookObservations').value.trim(),
                     encuadernado: document.getElementById('bookEncuadernado').value,
-                    createdBy: this.currentUser.username,
+                    repetido: repetidoValue,
+                    repetidoCantidad,
+                    planilla: document.getElementById('bookPlanilla')?.value || this.planillaFilterValue || 'Sin planilla',
+                    createdBy: this.currentUser ? this.currentUser.username : 'Sistema',
                     createdAt: new Date().toISOString()
                 };
 
@@ -2083,10 +2515,50 @@
                 }
             }
 
+            getVisibleBooks() {
+                const hasSearch = this.lastSearchQuery || this.lastSearchShelf;
+                let books = hasSearch ? this.filteredBooks : this.books;
+
+                if (this.planillaFilterValue) {
+                    books = books.filter(b => ((b.planilla && String(b.planilla).trim()) || 'Sin planilla') === this.planillaFilterValue);
+                }
+
+                return books;
+            }
+
+            openSelectPlanillaModal() {
+                const select = document.getElementById('selectPlanillaFilter');
+                if (!select) return;
+
+                const totalBooks = this.books.length;
+                const options = [
+                    { value: '', label: `Todas las planillas (${totalBooks})` },
+                    { value: 'Sin planilla', label: `Sin planilla (${this.books.filter(book => !(book.planilla && String(book.planilla).trim())).length})` },
+                    ...this.planillas
+                        .filter(([name]) => name !== 'Principal' && name !== 'Sin planilla')
+                        .map(([name, count]) => ({ value: name, label: `${name} (${count})` }))
+                ];
+
+                select.innerHTML = options.map(option => `<option value="${this.escapeHtml(option.value)}">${this.escapeHtml(option.label)}</option>`).join('');
+                select.value = this.planillaFilterValue && options.some(option => option.value === this.planillaFilterValue)
+                    ? this.planillaFilterValue
+                    : '';
+                this.closeSidebar();
+                document.getElementById('selectPlanillaModal').classList.add('show');
+            }
+
+            confirmSelectPlanilla() {
+                const select = document.getElementById('selectPlanillaFilter');
+                const selectedValue = select?.value || '';
+                this.planillaFilterValue = selectedValue === 'Todas las planillas' ? '' : selectedValue;
+                this.renderBooks();
+                this.closeModal('selectPlanillaModal');
+            }
+
             renderBooks() {
                 const bookList = document.getElementById('bookList');
                 const hasSearch = this.lastSearchQuery || this.lastSearchShelf;
-                const books = hasSearch ? this.filteredBooks : this.books;
+                const books = this.getVisibleBooks();
 
                 bookList.innerHTML = '';
 
@@ -2115,10 +2587,16 @@
                 books.forEach((book) => {
                     const card = document.createElement('div');
                     card.className = 'book-card' + (book.loadedFromExcel ? ' imported-row' : '');
+                    const dupCount = this.getDuplicateCount(book);
+                    const planillaName = (book.planilla && String(book.planilla).trim()) || 'Sin planilla';
                     card.innerHTML = `
                         <div class="book-card-title">${book.title}</div>
                         <div class="book-card-author">${book.authorLast}, ${book.authorFirst}</div>
-                        ${book.loadedFromExcel ? '<div class="imported-badge">Importado</div>' : ''}
+                        <div style="display:flex; gap:6px; flex-wrap:wrap;">
+                            <div class="planilla-badge" title="Planilla de origen">📑 ${this.escapeHtml(planillaName)}</div>
+                            ${dupCount > 1 ? `<div class="duplicate-badge" title="Hay ${dupCount} libros con este mismo título y autor">🔁 x${dupCount}</div>` : ''}
+                            ${book.loadedFromExcel ? '<div class="imported-badge">Importado</div>' : ''}
+                        </div>
                         <div class="book-card-details">
                             <div class="book-detail">
                                 <span class="book-detail-label">Estante:</span>
@@ -2146,16 +2624,16 @@
                             </div>
                             <div class="book-detail">
                                 <span class="book-detail-label">Estado:</span>
-                                <span class="book-status-badge ${book.status === 'Disponible' ? '' : book.status === 'Prestado' ? 'prestado' : 'donado'}">${book.status}</span>
+                                <span class="book-status-badge ${(book.status || 'Disponible') === 'Prestado' ? 'prestado' : (book.status || 'Disponible') === 'Donado' ? 'donado' : ''}">${book.status || 'Disponible'}</span>
                             </div>
                             ${book.encuadernado ? `<div class="book-detail">
                                 <span class="book-detail-label">Encuadernado:</span>
                                 <span>${book.encuadernado}</span>
                             </div>` : ''}
-                            ${book.observations ? `<div class="book-detail">
+                            <div class="book-detail" style="grid-column: 1 / -1;">
                                 <span class="book-detail-label">Observaciones:</span>
-                                <span>${book.observations}</span>
-                            </div>` : ''}
+                                <span style="white-space: pre-wrap;">${book.observations ? book.observations : 'Sin observaciones'}</span>
+                            </div>
                             <div class="book-card-actions">
                                 <button class="btn btn-primary btn-action" onclick="event.stopPropagation(); app.editBookById('${book.id}')">✏️ Editar</button>
                                 <button class="btn btn-danger btn-action" onclick="event.stopPropagation(); app.deleteBook('${book.id}')">🗑️ Borrar</button>
@@ -2189,9 +2667,17 @@
                     document.getElementById('bookVolumen').value = book.volumen || '';
                     document.getElementById('bookISBN').value = book.isbn || '';
                     document.getElementById('bookExemplares').value = book.ejemplares || 1;
-                        document.getElementById('bookStatus').value = book.status || 'Disponible';
+                    document.getElementById('bookStatus').value = this.normalizeStatusValue(book.status);
                     document.getElementById('bookObservations').value = book.observations || '';
-                    document.getElementById('bookEncuadernado').value = book.encuadernado || 'No';
+                    document.getElementById('bookEncuadernado').value = this.normalizeEncuadernadoValue(book.encuadernado);
+                    this.populateBookPlanillaSelect(book.planilla || 'Principal');
+                    document.getElementById('bookRepetido').value = this.normalizeEncuadernadoValue(
+                        book.repetido !== undefined ? book.repetido : (this.isDuplicateBook(book) ? 'Si' : 'No')
+                    );
+                    const repeatedCountInput = document.getElementById('bookRepeatedCount');
+                    if (repeatedCountInput) {
+                        repeatedCountInput.value = book.repetidoCantidad && book.repetidoCantidad > 0 ? String(book.repetidoCantidad) : '0';
+                    }
                     document.getElementById('bookModal').classList.add('show');
                 }
             }
@@ -2231,31 +2717,18 @@
                     return;
                 }
 
-                const queryWords = query.split(/\s+/).filter(w => w.length > 0);
+                const queryTerms = this.getSearchTerms(query);
+                const shelfTerms = this.getShelfTerms(shelf);
 
                 this.filteredBooks = this.books.filter(b => {
-                    if (shelf && !(b.searchShelf || this.normalizeText(b.shelf || '')).includes(shelf)) {
+                    if (shelfTerms.length > 0 && !this.matchesShelf(b, shelfTerms)) {
                         return false;
                     }
 
-                    if (!queryWords.length) return true;
+                    if (!queryTerms.length) return true;
 
-                    const searchableText = b.searchText || this.normalizeText([
-                        b.title,
-                        b.authorLast,
-                        b.authorFirst,
-                        `${b.authorLast || ''} ${b.authorFirst || ''}`,
-                        `${b.authorFirst || ''} ${b.authorLast || ''}`,
-                        b.shelf,
-                        b.year,
-                        b.tomo,
-                        b.volumen,
-                        b.isbn,
-                        b.status,
-                        b.observations,
-                        b.encuadernado
-                    ].join(' '));
-                    return queryWords.every(word => searchableText.includes(word));
+                    const searchableText = b.searchText || this.getSearchableText(b);
+                    return queryTerms.every(term => searchableText.includes(term));
                 });
 
                 this.searchCache.set(cacheKey, [...this.filteredBooks]);
@@ -2267,19 +2740,27 @@
                 this.renderBooks();
             }
 
-            normalizeText(text) {
-                return String(text || '')
-                    .normalize('NFD')
-                    .replace(/[\u0300-\u036f]/g, '')
-                    .replace(/[^a-zA-Z0-9\s]/g, ' ')
-                    .replace(/\s+/g, ' ')
-                    .trim()
-                    .toLowerCase();
+            getSearchTerms(text) {
+                return this.normalizeText(text)
+                    .split(/\s+/)
+                    .filter(Boolean);
             }
 
-            prepareBookForSearch(book) {
+            getShelfTerms(text) {
+                return this.getSearchTerms(text)
+                    .filter(term => !['estante', 'shelf', 's'].includes(term));
+            }
+
+            matchesShelf(book, shelfTerms) {
                 const normalizedShelf = this.normalizeText(book.shelf || '');
-                const searchableText = this.normalizeText([
+                if (!normalizedShelf || shelfTerms.length === 0) return true;
+
+                const shelfTokens = normalizedShelf.split(/\s+/).filter(Boolean);
+                return shelfTerms.every(term => shelfTokens.includes(term));
+            }
+
+            getSearchableText(book) {
+                const fields = [
                     book.title,
                     book.authorLast,
                     book.authorFirst,
@@ -2293,15 +2774,123 @@
                     book.status,
                     book.observations,
                     book.encuadernado
-                ].join(' '));
+                ];
 
-                return { ...book, searchShelf: normalizedShelf, searchText: searchableText };
+                return this.normalizeText(fields.join(' '));
+            }
+
+            escapeHtml(text) {
+                const div = document.createElement('div');
+                div.textContent = String(text == null ? '' : text);
+                return div.innerHTML;
+            }
+
+            normalizeText(text) {
+                return String(text || '')
+                    .normalize('NFD')
+                    .replace(/[\u0300-\u036f]/g, '')
+                    .replace(/[^a-zA-Z0-9\s]/g, ' ')
+                    .replace(/\s+/g, ' ')
+                    .trim()
+                    .toLowerCase();
+            }
+
+            // Normaliza el estado a uno de los 3 valores válidos, sin importar tildes/mayúsculas
+            // (evita que el <select> del modal no encuentre coincidencia y "resetee" el valor al editar)
+            normalizeStatusValue(status) {
+                const s = this.normalizeText(status);
+                if (s === 'prestado') return 'Prestado';
+                if (s === 'donado') return 'Donado';
+                return 'Disponible';
+            }
+
+            // Normaliza encuadernado a 'Si' o 'No' sin importar tildes/mayúsculas
+            normalizeEncuadernadoValue(value) {
+                const s = this.normalizeText(value);
+                return (s === 'si' || s === 'yes' || s === 'true' || s === '1') ? 'Si' : 'No';
+            }
+
+            prepareBookForSearch(book) {
+                const normalizedBook = {
+                    ...book,
+                    status: this.normalizeStatusValue(book.status),
+                    observations: typeof book.observations === 'string' ? book.observations.trim() : '',
+                    encuadernado: this.normalizeEncuadernadoValue(book.encuadernado),
+                    planilla: (book.planilla && String(book.planilla).trim()) || 'Sin planilla',
+                    repetido: this.normalizeEncuadernadoValue(book.repetido), // reutiliza la misma normalización Si/No
+                    repetidoCantidad: Number.parseInt(book.repetidoCantidad, 10) || 0
+                };
+                const normalizedShelf = this.normalizeText(normalizedBook.shelf || '');
+                const searchableText = this.getSearchableText(normalizedBook);
+                // Clave para detectar libros repetidos (mismo título y autor, sin importar estante/planilla)
+                const dupKey = this.normalizeText(`${normalizedBook.title || ''}|${normalizedBook.authorLast || ''}|${normalizedBook.authorFirst || ''}`);
+
+                return { ...normalizedBook, searchShelf: normalizedShelf, searchText: searchableText, dupKey };
             }
 
             prepareBooksForSearch(books) {
                 return Array.isArray(books)
                     ? books.map(book => this.prepareBookForSearch(book))
                     : [];
+            }
+
+            showDuplicateInfoModal() {
+                const modal = document.getElementById('duplicateInfoModal');
+                if (!modal) return;
+
+                const input = document.getElementById('duplicateQuantityInput');
+                const hiddenInput = document.getElementById('bookRepeatedCount');
+                if (input) {
+                    input.value = hiddenInput && hiddenInput.value && Number.parseInt(hiddenInput.value, 10) > 0
+                        ? hiddenInput.value
+                        : '';
+                    input.focus();
+                }
+
+                modal.classList.add('show');
+            }
+
+            confirmDuplicateQuantity() {
+                const input = document.getElementById('duplicateQuantityInput');
+                const hiddenInput = document.getElementById('bookRepeatedCount');
+                const value = Number.parseInt(input?.value || '', 10);
+
+                if (!Number.isInteger(value) || value < 1) {
+                    this.showAlert('⚠️ Ingresa una cantidad válida de libros repetidos', 'warning');
+                    input?.focus();
+                    return;
+                }
+
+                if (hiddenInput) {
+                    hiddenInput.value = String(value);
+                }
+
+                this.closeModal('duplicateInfoModal');
+                this.showAlert(`✅ Cantidad de repetidos registrada: ${value}`, 'success');
+            }
+
+            cancelDuplicateInfoModal() {
+                const select = document.getElementById('bookRepetido');
+                const hiddenInput = document.getElementById('bookRepeatedCount');
+                if (select && select.value === 'Si') {
+                    select.value = 'No';
+                }
+                if (hiddenInput) {
+                    hiddenInput.value = '0';
+                }
+                this.closeModal('duplicateInfoModal');
+            }
+
+            getRepeatedCountValue() {
+                const hiddenInput = document.getElementById('bookRepeatedCount');
+                const repetidoValue = document.getElementById('bookRepetido').value || 'No';
+                if (repetidoValue !== 'Si') {
+                    if (hiddenInput) hiddenInput.value = '0';
+                    return 0;
+                }
+
+                const value = Number.parseInt(hiddenInput?.value || '', 10);
+                return Number.isInteger(value) && value > 0 ? value : 0;
             }
 
             showServerConfigModal() {
@@ -2420,20 +3009,59 @@
                 this.loadBooks();
             }
 
-            exportToExcel() {
+            exportToExcel(event) {
                 if (this.books.length === 0) {
                     this.showAlert('⚠️ No hay libros para exportar', 'warning');
                     return;
                 }
 
-                // Deshabilitar botón durante exportación
-                const exportBtn = document.querySelector('.btn-success');
+                this.pendingExportButton = event?.currentTarget || document.querySelector('.btn-success');
+                this.showExportPlanillaModal();
+            }
+
+            showExportPlanillaModal() {
+                const modal = document.getElementById('exportPlanillaModal');
+                const select = document.getElementById('exportPlanillaSelectModal');
+                if (!modal || !select) return;
+
+                const totalBooks = this.books.length;
+                const planillas = [
+                    { value: 'Todas las planillas', label: `Todas las planillas (${totalBooks})` },
+                    ...this.planillas
+                        .filter(([name]) => name !== 'Principal')
+                        .map(([name, count]) => ({ value: name, label: `${name} (${count})` }))
+                ];
+
+                select.innerHTML = planillas.map(option => `<option value="${this.escapeHtml(option.value)}">${this.escapeHtml(option.label)}</option>`).join('');
+                select.value = this.planillaFilterValue && planillas.some(option => option.value === this.planillaFilterValue)
+                    ? this.planillaFilterValue
+                    : 'Todas las planillas';
+
+                modal.classList.add('show');
+            }
+
+            confirmExportPlanilla() {
+                const select = document.getElementById('exportPlanillaSelectModal');
+                const requestedPlanilla = select?.value || '';
+                this.closeModal('exportPlanillaModal');
+
+                let filteredBooks = this.books;
+                if (requestedPlanilla && requestedPlanilla !== 'Todas las planillas') {
+                    filteredBooks = this.books.filter(book => (book.planilla || 'Principal') === requestedPlanilla);
+                }
+
+                if (filteredBooks.length === 0) {
+                    this.showAlert('⚠️ No hay libros para exportar en la planilla seleccionada', 'warning');
+                    return;
+                }
+
+                const exportBtn = this.pendingExportButton || document.querySelector('.btn-success');
                 const originalText = exportBtn.textContent;
                 exportBtn.textContent = '⏳ Exportando...';
                 exportBtn.disabled = true;
                 exportBtn.style.opacity = '0.6';
 
-                const data = this.books.map(book => ({
+                const data = filteredBooks.map(book => ({
                     'Estante': book.shelf,
                     'Apellido': book.authorLast,
                     'Nombre': book.authorFirst,
@@ -2445,54 +3073,72 @@
                     'Ejemplares': book.ejemplares || 1,
                     'Estado': book.status,
                     'Observaciones': book.observations || '',
-                    'Encuadernado': book.encuadernado || ''
+                    'Encuadernado': book.encuadernado || '',
+                    'Planilla': book.planilla || 'Principal'
                 }));
 
                 try {
-                    const worksheet = XLSX.utils.json_to_sheet(data, { header: ['Estante', 'Apellido', 'Nombre', 'Título', 'Año', 'Tomo', 'Volumen', 'ISBN', 'Ejemplares', 'Estado', 'Observaciones', 'Encuadernado'] });
+                    const worksheet = XLSX.utils.json_to_sheet(data, { header: ['Estante', 'Apellido', 'Nombre', 'Título', 'Año', 'Tomo', 'Volumen', 'ISBN', 'Ejemplares', 'Estado', 'Observaciones', 'Encuadernado', 'Planilla'] });
                     const workbook = XLSX.utils.book_new();
                     XLSX.utils.book_append_sheet(workbook, worksheet, 'Libros');
 
-                    const fileName = `Biblioteca_Dr_Jorge_Batlle_${new Date().toISOString().split('T')[0]}.xlsx`;
+                    const planillaSuffix = requestedPlanilla && requestedPlanilla !== 'Todas las planillas'
+                        ? `_${requestedPlanilla.replace(/[^a-z0-9]+/gi, '_')}`
+                        : '';
+                    const fileName = `Biblioteca_Dr_Jorge_Batlle${planillaSuffix}_${new Date().toISOString().split('T')[0]}.xlsx`;
                     XLSX.writeFile(workbook, fileName, { bookType: 'xlsx' });
 
                     this.showAlert('✅ Exportado correctamente', 'success');
-                    this.addActivity('export', `Exportó ${this.books.length} libros`);
+                    this.addActivity('export', `Exportó ${filteredBooks.length} libros${requestedPlanilla && requestedPlanilla !== 'Todas las planillas' ? ` de la planilla "${requestedPlanilla}"` : ''}`);
                 } catch (error) {
                     this.showAlert('❌ Error al exportar', 'error');
                     console.error(error);
                 } finally {
-                    // Restaurar botón
                     exportBtn.textContent = originalText;
                     exportBtn.disabled = false;
                     exportBtn.style.opacity = '';
+                    this.pendingExportButton = null;
                 }
             }
 
-            generatePDFReportByShelf() {
+            generatePDFReportByShelf(event) {
                 const shelfInput = document.getElementById('shelfInput').value.trim();
                 if (!shelfInput) {
                     this.showAlert('⚠️ Ingresa un número de estante para generar el reporte', 'warning');
                     return;
                 }
 
-                const shelfBooks = this.books.filter(book => book.shelf === shelfInput);
-                if (shelfBooks.length === 0) {
+                const onlyDuplicates = document.getElementById('reportOnlyDuplicatesCheckbox')?.checked || false;
+
+                // Comparar con normalización para evitar coincidencias parciales (e.g. '1' vs '10')
+                const shelfNorm = this.normalizeText(shelfInput);
+                let shelfBooks = this.books.filter(book => this.normalizeText((book.shelf || '')) === shelfNorm);
+
+                if (onlyDuplicates) {
+                    shelfBooks = shelfBooks.filter(book => this.isDuplicateBook(book));
+                    if (shelfBooks.length === 0) {
+                        this.showAlert('⚠️ No hay libros repetidos en este estante', 'warning');
+                        return;
+                    }
+                } else if (shelfBooks.length === 0) {
                     this.showAlert('⚠️ No hay libros en este estante', 'warning');
                     return;
                 }
 
-                this.generateShelfPDF(shelfBooks, shelfInput);
+                this.generateShelfPDF(shelfBooks, shelfInput, event, onlyDuplicates);
             }
 
-            generatePDFReportGeneral() {
-                if (this.books.length === 0) {
-                    this.showAlert('⚠️ No hay libros para generar el reporte', 'warning');
+            generatePDFReportGeneral(event) {
+                const onlyDuplicates = document.getElementById('reportOnlyDuplicatesCheckbox')?.checked || false;
+                const sourceBooks = onlyDuplicates ? this.getAllDuplicateBooks() : this.books;
+
+                if (sourceBooks.length === 0) {
+                    this.showAlert(onlyDuplicates ? '⚠️ No hay libros repetidos para generar el reporte' : '⚠️ No hay libros para generar el reporte', 'warning');
                     return;
                 }
 
-                // Deshabilitar botón durante generación
-                const reportBtn = document.querySelector('.btn-warning');
+                // Deshabilitar botón durante generación (usar el botón pulsado, no el primero con esa clase)
+                const reportBtn = event?.currentTarget || document.querySelector('.btn-warning');
                 const originalText = reportBtn.textContent;
                 reportBtn.textContent = '⏳ Generando...';
                 reportBtn.disabled = true;
@@ -2518,17 +3164,17 @@
 
                     doc.setFontSize(12);
                     doc.setFont('helvetica', 'normal');
-                    doc.text('Reporte General de Estantes', pageWidth / 2, marginTop + 8, { align: 'center' });
+                    doc.text(onlyDuplicates ? 'Reporte de Libros Repetidos' : 'Reporte General de Estantes', pageWidth / 2, marginTop + 8, { align: 'center' });
 
                     // Fecha
                     doc.setFontSize(9);
                     doc.text(`Generado el: ${new Date().toLocaleDateString('es-ES')}`, pageWidth / 2, marginTop + 16, { align: 'center' });
 
                     // Ordenar libros por estante y luego alfabéticamente por autor
-                    const sortedBooks = [...this.books].sort((a, b) => {
-                        // Primero por estante
+                    const sortedBooks = [...sourceBooks].sort((a, b) => {
+                        // Primero por estante (orden numérico natural: 2 antes que 10)
                         if (a.shelf !== b.shelf) {
-                            return a.shelf.localeCompare(b.shelf);
+                            return String(a.shelf || '').localeCompare(String(b.shelf || ''), undefined, { numeric: true, sensitivity: 'base' });
                         }
                         // Luego por autor
                         const authorA = `${a.authorLast} ${a.authorFirst}`.toLowerCase();
@@ -2537,17 +3183,43 @@
                     });
 
                     // Preparar datos para la tabla con estante incluido
-                    const tableData = sortedBooks.map(book => [
-                        book.shelf,
-                        book.authorLast,
-                        book.authorFirst,
-                        book.title,
-                        book.year || '-'
-                    ]);
+                    const tableData = sortedBooks.map(book => {
+                        const row = [
+                            book.shelf,
+                            book.authorLast,
+                            book.authorFirst,
+                            book.title,
+                            book.year || '-',
+                            book.planilla || 'Principal'
+                        ];
+                        if (onlyDuplicates) row.push(String(this.getDuplicateCount(book)));
+                        return row;
+                    });
+
+                    const tableHead = onlyDuplicates
+                        ? ['Estante', 'Apellido', 'Nombre', 'Título', 'Año', 'Planilla', 'Cant.']
+                        : ['Estante', 'Apellido', 'Nombre', 'Título', 'Año', 'Planilla'];
+
+                    const columnStyles = onlyDuplicates ? {
+                        0: { cellWidth: contentWidth * 0.10 }, // Estante
+                        1: { cellWidth: contentWidth * 0.18 }, // Apellido
+                        2: { cellWidth: contentWidth * 0.18 }, // Nombre
+                        3: { cellWidth: contentWidth * 0.28 }, // Título
+                        4: { cellWidth: contentWidth * 0.08 }, // Año
+                        5: { cellWidth: contentWidth * 0.12 }, // Planilla
+                        6: { cellWidth: contentWidth * 0.06 }, // Cant.
+                    } : {
+                        0: { cellWidth: contentWidth * 0.10 }, // Estante
+                        1: { cellWidth: contentWidth * 0.20 }, // Apellido
+                        2: { cellWidth: contentWidth * 0.20 }, // Nombre
+                        3: { cellWidth: contentWidth * 0.28 }, // Título
+                        4: { cellWidth: contentWidth * 0.08 }, // Año
+                        5: { cellWidth: contentWidth * 0.14 }, // Planilla
+                    };
 
                     // Generar tabla optimizada para A4
                     doc.autoTable({
-                        head: [['Estante', 'Apellido', 'Nombre', 'Título', 'Año']],
+                        head: [tableHead],
                         body: tableData,
                         startY: marginTop + 25,
                         margin: { left: marginLeft, right: marginRight },
@@ -2564,13 +3236,7 @@
                         alternateRowStyles: {
                             fillColor: [248, 250, 252], // Color gris claro
                         },
-                        columnStyles: {
-                            0: { cellWidth: contentWidth * 0.12 }, // Estante
-                            1: { cellWidth: contentWidth * 0.23 }, // Apellido
-                            2: { cellWidth: contentWidth * 0.23 }, // Nombre
-                            3: { cellWidth: contentWidth * 0.32 }, // Título
-                            4: { cellWidth: contentWidth * 0.10 }, // Año
-                        },
+                        columnStyles: columnStyles,
                         didDrawPage: function (data) {
                             // Pie de página se agregará después de generar la tabla
                         }
@@ -2585,11 +3251,15 @@
                     }
 
                     // Guardar PDF
-                    const fileName = `Reporte_General_Biblioteca_${new Date().toISOString().split('T')[0]}.pdf`;
+                    const fileName = onlyDuplicates
+                        ? `Reporte_Repetidos_Biblioteca_${new Date().toISOString().split('T')[0]}.pdf`
+                        : `Reporte_General_Biblioteca_${new Date().toISOString().split('T')[0]}.pdf`;
                     doc.save(fileName);
 
-                    this.showAlert('✅ Reporte general PDF generado correctamente', 'success');
-                    this.addActivity('report', `Generó reporte general PDF con ${this.books.length} libros`);
+                    this.showAlert(onlyDuplicates ? '✅ Reporte de repetidos PDF generado correctamente' : '✅ Reporte general PDF generado correctamente', 'success');
+                    this.addActivity('report', onlyDuplicates
+                        ? `Generó reporte de repetidos PDF con ${sourceBooks.length} libros`
+                        : `Generó reporte general PDF con ${sourceBooks.length} libros`);
 
                 } catch (error) {
                     this.showAlert('❌ Error al generar el reporte PDF', 'error');
@@ -2602,9 +3272,9 @@
                 }
             }
 
-            generateShelfPDF(books, shelfNumber) {
-                // Deshabilitar botón durante generación
-                const reportBtn = document.querySelector('.btn-info');
+            generateShelfPDF(books, shelfNumber, event, onlyDuplicates) {
+                // Deshabilitar botón durante generación (usar el botón pulsado, no el primero con esa clase)
+                const reportBtn = event?.currentTarget || document.querySelector('.btn-info');
                 const originalText = reportBtn.textContent;
                 reportBtn.textContent = '⏳ Generando...';
                 reportBtn.disabled = true;
@@ -2631,7 +3301,7 @@
                     // Identificación del estante centrada
                     doc.setFontSize(16);
                     doc.setFont('helvetica', 'bold');
-                    doc.text(`Estante ${shelfNumber}`, pageWidth / 2, marginTop + 12, { align: 'center' });
+                    doc.text(`Estante ${shelfNumber}${onlyDuplicates ? ' — Solo repetidos' : ''}`, pageWidth / 2, marginTop + 12, { align: 'center' });
 
                     // Fecha
                     doc.setFontSize(9);
@@ -2646,16 +3316,40 @@
                     });
 
                     // Preparar datos para la tabla (sin columna de estante ya que es específico)
-                    const tableData = sortedBooks.map(book => [
-                        book.authorLast,
-                        book.authorFirst,
-                        book.title,
-                        book.year || '-'
-                    ]);
+                    const tableData = sortedBooks.map(book => {
+                        const row = [
+                            book.authorLast,
+                            book.authorFirst,
+                            book.title,
+                            book.year || '-',
+                            book.planilla || 'Principal'
+                        ];
+                        if (onlyDuplicates) row.push(String(this.getDuplicateCount(book)));
+                        return row;
+                    });
+
+                    const tableHead = onlyDuplicates
+                        ? ['Apellido', 'Nombre', 'Título', 'Año', 'Planilla', 'Cant.']
+                        : ['Apellido', 'Nombre', 'Título', 'Año', 'Planilla'];
+
+                    const columnStyles = onlyDuplicates ? {
+                        0: { cellWidth: contentWidth * 0.20 }, // Apellido
+                        1: { cellWidth: contentWidth * 0.20 }, // Nombre
+                        2: { cellWidth: contentWidth * 0.28 }, // Título
+                        3: { cellWidth: contentWidth * 0.10 }, // Año
+                        4: { cellWidth: contentWidth * 0.14 }, // Planilla
+                        5: { cellWidth: contentWidth * 0.08 }, // Cant.
+                    } : {
+                        0: { cellWidth: contentWidth * 0.22 }, // Apellido
+                        1: { cellWidth: contentWidth * 0.22 }, // Nombre
+                        2: { cellWidth: contentWidth * 0.30 }, // Título
+                        3: { cellWidth: contentWidth * 0.10 }, // Año
+                        4: { cellWidth: contentWidth * 0.16 }, // Planilla
+                    };
 
                     // Generar tabla optimizada para A4
                     doc.autoTable({
-                        head: [['Apellido', 'Nombre', 'Título', 'Año']],
+                        head: [tableHead],
                         body: tableData,
                         startY: marginTop + 30,
                         margin: { left: marginLeft, right: marginRight },
@@ -2672,12 +3366,7 @@
                         alternateRowStyles: {
                             fillColor: [248, 250, 252], // Color gris claro
                         },
-                        columnStyles: {
-                            0: { cellWidth: contentWidth * 0.25 }, // Apellido
-                            1: { cellWidth: contentWidth * 0.25 }, // Nombre
-                            2: { cellWidth: contentWidth * 0.35 }, // Título
-                            3: { cellWidth: contentWidth * 0.15 }, // Año
-                        },
+                        columnStyles: columnStyles,
                         didDrawPage: function (data) {
                             // Pie de página se agregará después de generar la tabla
                         }
@@ -2692,11 +3381,13 @@
                     }
 
                     // Guardar PDF
-                    const fileName = `Reporte_Estante_${shelfNumber}_Biblioteca_${new Date().toISOString().split('T')[0]}.pdf`;
+                    const fileName = onlyDuplicates
+                        ? `Reporte_Estante_${shelfNumber}_Repetidos_${new Date().toISOString().split('T')[0]}.pdf`
+                        : `Reporte_Estante_${shelfNumber}_Biblioteca_${new Date().toISOString().split('T')[0]}.pdf`;
                     doc.save(fileName);
 
                     this.showAlert(`✅ Reporte PDF del estante ${shelfNumber} generado correctamente`, 'success');
-                    this.addActivity('report', `Generó reporte PDF del estante ${shelfNumber} con ${books.length} libros`);
+                    this.addActivity('report', `Generó reporte PDF del estante ${shelfNumber} con ${books.length} libros${onlyDuplicates ? ' (solo repetidos)' : ''}`);
 
                 } catch (error) {
                     this.showAlert('❌ Error al generar el reporte PDF', 'error');
@@ -2712,6 +3403,19 @@
             importFromExcel(event) {
                 const file = event.target.files[0];
                 if (!file) return;
+
+                const defaultPlanillaName = file.name.replace(/\.(xlsx|xls|csv)$/i, '');
+                const planillaNameInput = window.prompt(
+                    '📑 Nombre para esta planilla (permite identificarla y convivir con las demás ya cargadas):',
+                    defaultPlanillaName
+                );
+                if (planillaNameInput === null) {
+                    // El usuario canceló la importación
+                    event.target.value = '';
+                    return;
+                }
+                const planillaName = planillaNameInput.trim() || defaultPlanillaName || 'Sin nombre';
+                const importPlanillaName = this.registerPlanilla(planillaName) || planillaName;
 
                 const importLabel = document.querySelector('.file-input-label');
                 const originalLabel = importLabel ? importLabel.textContent : '📤 Importar';
@@ -2761,8 +3465,9 @@
                         volumen: findKey(['Volumen', 'volumen']),
                         isbn: findKey(['ISBN', 'isbn']),
                         ejemplares: findKey(['Ejemplares', 'ejemplares']),
-                        status: findKey(['Estado', 'estado']),
-                        observations: findKey(['Observaciones', 'observaciones', 'Notas', 'notas'])
+                        status: findKey(['Estado', 'estado', 'Disponibilidad', 'disponibilidad', 'Estatus', 'estatus']),
+                        observations: findKey(['Observaciones', 'observaciones', 'Notas', 'notas', 'Comentario', 'comentario']),
+                        planilla: findKey(['Planilla', 'planilla', 'Hoja', 'hoja'])
                     };
 
                     if (!keyNames.shelf || !keyNames.authorLast || !keyNames.authorFirst || !keyNames.title) {
@@ -2789,6 +3494,7 @@
                         const ejemplares = parseInt(getRowValue(row, normalizedKeyMap[normalizeKey(keyNames.ejemplares)]) || '1', 10) || 1;
                         const status = getRowValue(row, normalizedKeyMap[normalizeKey(keyNames.status)]) || 'Disponible';
                         const observations = getRowValue(row, normalizedKeyMap[normalizeKey(keyNames.observations)]) || '';
+                        const rowPlanilla = importPlanillaName;
 
                         if (!shelf || !authorLast || !authorFirst || !title) {
                             errors.push(`Fila ${rowIndex + 2}: faltan datos obligatorios`);
@@ -2820,6 +3526,7 @@
                             ejemplares,
                             status,
                             observations,
+                            planilla: rowPlanilla,
                             loadedFromExcel: true,
                             createdBy: this.currentUser ? this.currentUser.username : 'Importado',
                             createdAt: new Date().toISOString()
@@ -2882,11 +3589,13 @@
                             this.socket.emit('bulkAddBooks', { books: result.books });
                         }
 
+                        this.currentPlanilla = importPlanillaName;
+                        this.planillaFilterValue = importPlanillaName;
                         this.saveBooks();
                         this.renderBooks();
                         this.updateStats();
-                        this.showAlert(`✅ Se cargaron ${importedCopies} ejemplares desde el Excel. ${result.errors.length > 0 ? `${result.errors.length} filas omitidas.` : ''}`, 'success');
-                        this.addActivity('import', `Importó ${importedCopies} ejemplares desde Excel`);
+                        this.showAlert(`✅ Se cargaron ${importedCopies} ejemplares en la planilla "${importPlanillaName}". ${result.errors.length > 0 ? `${result.errors.length} filas omitidas.` : ''}`, 'success');
+                        this.addActivity('import', `Importó ${importedCopies} ejemplares desde Excel (planilla "${importPlanillaName}")`);
                     } catch (error) {
                         this.showAlert(`❌ Error al importar: ${error.message}`, 'error');
                         console.error(error);
@@ -2913,20 +3622,29 @@
                     return;
                 }
 
-                const books = this.books.filter(b => this.normalizeText((b.shelf || '')).includes(shelf));
+                // Usar igualdad normalizada para evitar que '1' coincida con '10', '11', etc.
+                let books = this.books.filter(b => this.normalizeText((b.shelf || '')) === shelf);
+
+                const onlyDuplicates = document.getElementById('reportOnlyDuplicatesCheckbox')?.checked || false;
+                if (onlyDuplicates) {
+                    books = books.filter(b => this.isDuplicateBook(b));
+                }
 
                 // Calcular títulos y ejemplares reales
                 const titlesCount = books.length;
                 const totalCopies = books.reduce((sum, b) => sum + (parseInt(b.ejemplares) || 1), 0);
 
                 if (books.length === 0) {
-                    results.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📭</div><div class="empty-state-title">No hay libros</div><div class="empty-state-text">Este estante está vacío</div></div>';
+                    results.innerHTML = onlyDuplicates
+                        ? '<div class="empty-state"><div class="empty-state-icon">🔁</div><div class="empty-state-title">Sin repetidos</div><div class="empty-state-text">Este estante no tiene libros repetidos</div></div>'
+                        : '<div class="empty-state"><div class="empty-state-icon">📭</div><div class="empty-state-title">No hay libros</div><div class="empty-state-text">Este estante está vacío</div></div>';
                     return;
                 }
 
-                let html = `<div style="background: white; border-radius: 12px; padding: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); border: 1px solid #e5e7eb;"><h3 style="color: var(--dark); margin-bottom: 12px; font-size: 16px; font-weight: 700;">Estante ${shelf} — Títulos: ${titlesCount} • Ejemplares: ${totalCopies}</h3><ul style="padding-left: 20px;">`;
+                let html = `<div style="background: white; border-radius: 12px; padding: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); border: 1px solid #e5e7eb;"><h3 style="color: var(--dark); margin-bottom: 12px; font-size: 16px; font-weight: 700;">Estante ${shelf}${onlyDuplicates ? ' (solo repetidos)' : ''} — Títulos: ${titlesCount} • Ejemplares: ${totalCopies}</h3><ul style="padding-left: 20px;">`;
                 books.forEach(book => {
-                    html += `<li style="margin-bottom: 10px;"><strong style="color: var(--dark);">${book.title}</strong><br><span style="font-size: 12px; color: var(--gray);">${book.authorLast}, ${book.authorFirst} • ${book.ejemplares || 1} ej.</span></li>`;
+                    const dupCount = this.getDuplicateCount(book);
+                    html += `<li style="margin-bottom: 10px;"><strong style="color: var(--dark);">${book.title}</strong>${dupCount > 1 ? ` <span style="color:#B45309; font-weight:700;">🔁 x${dupCount}</span>` : ''}<br><span style="font-size: 12px; color: var(--gray);">${book.authorLast}, ${book.authorFirst} • ${book.ejemplares || 1} ej. • 📑 ${this.escapeHtml(book.planilla || 'Principal')}</span></li>`;
                 });
                 html += '</ul></div>';
                 results.innerHTML = html;
@@ -2939,7 +3657,8 @@
                     return;
                 }
 
-                this.balanceBooks = this.books.filter(b => b.shelf === shelf).map((b, index) => ({ book: b, present: false, index }));
+                const shelfNormStart = this.normalizeText(shelf);
+                this.balanceBooks = this.books.filter(b => this.normalizeText(b.shelf || '') === shelfNormStart).map((b, index) => ({ book: b, present: false, index }));
                 this.balanceSearchQuery = '';
                 this.currentBalanceShelf = shelf;
                 const duplicateCount = this.countDuplicateBooks(this.balanceBooks.map(item => item.book));
@@ -3128,7 +3847,8 @@
                 }
 
                 this.balanceSearchQuery = '';
-                this.balanceBooks = this.books.filter(b => b.shelf === session.shelf).map((b, index) => ({ book: b, present: false, index }));
+                const shelfNormResume = this.normalizeText(session.shelf);
+                this.balanceBooks = this.books.filter(b => this.normalizeText(b.shelf || '') === shelfNormResume).map((b, index) => ({ book: b, present: false, index }));
                 this.renderBalanceResults(this.balanceBooks, session.shelf);
                 this.showAlert(`⏳ Balance del estante ${session.shelf} cargado`, 'success');
             }
@@ -3258,7 +3978,7 @@
                 });
             }
 
-            generateBalancePDF() {
+            generateBalancePDF(event) {
                 const shelf = document.getElementById('balanceShelfInput').value.trim();
                 if (!shelf) {
                     this.showAlert('⚠️ Primero inicia un balance de estante', 'warning');
@@ -3276,8 +3996,8 @@
                     return;
                 }
 
-                // Deshabilitar botón durante generación
-                const reportBtn = document.querySelector('.btn-warning');
+                // Deshabilitar botón durante generación (usar el botón pulsado, no el primero con esa clase)
+                const reportBtn = event?.currentTarget || document.querySelector('.btn-warning');
                 const originalText = reportBtn.textContent;
                 reportBtn.textContent = '⏳ Generando...';
                 reportBtn.disabled = true;
@@ -3579,8 +4299,54 @@
                 });
             }
 
+            getStoredPlanillas() {
+                try {
+                    const stored = localStorage.getItem('biblioteca_planillas');
+                    const parsed = stored ? JSON.parse(stored) : [];
+                    return Array.isArray(parsed) ? parsed.filter(Boolean) : [];
+                } catch (e) {
+                    console.warn('biblioteca_planillas corrupto en localStorage, se restaura vacío:', e);
+                    return [];
+                }
+            }
+
+            savePlanillas() {
+                const names = this.planillas
+                    .map(([name]) => name)
+                    .filter(name => name && name !== 'Principal' && name !== 'Sin planilla');
+                localStorage.setItem('biblioteca_planillas', JSON.stringify(names));
+            }
+
             saveBooks() {
-                localStorage.setItem('biblioteca_books_v6', JSON.stringify(this.books));
+                const compactBooks = this.books.map(book => {
+                    const { searchText, searchShelf, dupKey, ...rest } = book;
+                    return rest;
+                });
+
+                const payload = JSON.stringify(compactBooks);
+
+                const tryPersist = (attempt = 0) => {
+                    try {
+                        localStorage.setItem('biblioteca_books_v6', payload);
+                        return true;
+                    } catch (error) {
+                        console.warn('No se pudo guardar la biblioteca en localStorage:', error);
+
+                        if (attempt === 0) {
+                            try { localStorage.removeItem('biblioteca_balance_sessions'); } catch {}
+                            return tryPersist(1);
+                        }
+
+                        if (attempt === 1) {
+                            try { localStorage.removeItem('biblioteca_planillas'); } catch {}
+                            return tryPersist(2);
+                        }
+
+                        return false;
+                    }
+                };
+
+                return tryPersist();
             }
 
             loadBooks() {
@@ -3591,11 +4357,19 @@
                         this.books = Array.isArray(data) ? this.prepareBooksForSearch(data) : [];
                         this.filteredBooks = [];
                         this.saveBooks();
+                        if (this.currentUser) { this.updateStats(); this.renderBooks(); }
                     })
                     .catch(error => {
                         console.warn('No se pudieron cargar libros desde el servidor:', error);
-                        const stored = localStorage.getItem('biblioteca_books_v6');
-                        this.books = stored ? this.prepareBooksForSearch(JSON.parse(stored)) : [];
+                        try {
+                            const stored = localStorage.getItem('biblioteca_books_v6');
+                            const parsed = stored ? JSON.parse(stored) : [];
+                            this.books = this.prepareBooksForSearch(Array.isArray(parsed) ? parsed : []);
+                        } catch (e) {
+                            console.warn('biblioteca_books_v6 corrupto en localStorage, se usa lista vacía:', e);
+                            this.books = [];
+                        }
+                        if (this.currentUser) { this.updateStats(); this.renderBooks(); }
                     });
             }
 
@@ -3604,22 +4378,46 @@
             }
 
             loadBalanceSessions() {
-                const stored = localStorage.getItem('biblioteca_balance_sessions');
-                this.balanceSessions = stored ? JSON.parse(stored) : [];
+                try {
+                    const stored = localStorage.getItem('biblioteca_balance_sessions');
+                    const parsed = stored ? JSON.parse(stored) : [];
+                    this.balanceSessions = Array.isArray(parsed) ? parsed : [];
+                } catch (e) {
+                    console.warn('biblioteca_balance_sessions corrupto en localStorage, se restaura vacío:', e);
+                    this.balanceSessions = [];
+                }
             }
 
             loadUsers() {
-                const stored = localStorage.getItem('biblioteca_users');
-                if (stored) {
-                    this.users = JSON.parse(stored);
-                } else {
-                    this.users = [
-                        { username: 'admin', password: '1234', role: 'Administrador' },
-                        { username: 'editor', password: '1234', role: 'Editor' },
-                        { username: 'lector', password: '1234', role: 'Lector' }
-                    ];
-                    localStorage.setItem('biblioteca_users', JSON.stringify(this.users));
+                const defaultUsers = [
+                    { username: 'admin', password: '1234', role: 'Administrador' },
+                    { username: 'editor', password: '1234', role: 'Editor' },
+                    { username: 'lector', password: '1234', role: 'Lector' }
+                ];
+
+                let stored = null;
+                try {
+                    const raw = localStorage.getItem('biblioteca_users');
+                    stored = raw ? JSON.parse(raw) : null;
+                } catch (e) {
+                    console.warn('biblioteca_users corrupto en localStorage, se restaura por defecto:', e);
+                    stored = null;
                 }
+
+                if (Array.isArray(stored) && stored.length > 0) {
+                    this.users = stored;
+                } else {
+                    this.users = defaultUsers;
+                }
+
+                // Garantiza que siempre exista al menos un Administrador funcional,
+                // para que nunca quede bloqueado el acceso a la app.
+                const hasWorkingAdmin = this.users.some(u => u.role === 'Administrador' && u.username && u.password);
+                if (!hasWorkingAdmin) {
+                    this.users.push({ username: 'admin', password: '1234', role: 'Administrador' });
+                }
+
+                localStorage.setItem('biblioteca_users', JSON.stringify(this.users));
             }
 
             loadSettings() {
@@ -3659,7 +4457,12 @@
 
         let app;
         window.addEventListener('load', () => {
-            app = new App();
+            try {
+                app = new App();
+            } catch (e) {
+                console.error('Error al iniciar la aplicación:', e);
+                alert('⚠️ Ocurrió un error al iniciar la aplicación. Se recomienda borrar los datos guardados del navegador (localStorage) para este sitio y recargar. Detalle: ' + (e && e.message ? e.message : e));
+            }
         });
 
         document.addEventListener('click', (e) => {

@@ -65,7 +65,20 @@ io.on('connection', (socket) => {
             io.emit('bookUpdated', data);
         }
     });
+    socket.on('deletePlanilla', (data) => {
+        const planillaName = data?.planillaName;
+        if (!planillaName) return;
 
+        books = books.map(book => {
+            const currentPlanilla = String(book.planilla || 'Principal').trim();
+            return currentPlanilla.toLowerCase() === planillaName.toLowerCase()
+                ? { ...book, planilla: 'Principal' }
+                : book;
+        });
+
+        saveBooksToFile(books);
+        io.emit('planillaDeleted', { planillaName });
+    });
     socket.on('deleteBook', (data) => {
         books = books.filter(b => b.id !== data.id);
         saveBooksToFile(books);
